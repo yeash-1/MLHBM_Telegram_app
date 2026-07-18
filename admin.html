@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en" class="h-full select-none">
 <head>
     <meta charset="UTF-8">
@@ -72,7 +72,8 @@
             <form id="auth-form" class="space-y-4">
                 <div class="relative">
                     <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-                    <input type="password" id="passcode-input" placeholder="Passcode (Default: mlhbm6143)" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-3 pl-11 pr-4 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-brand transition-colors" required>
+                    <!-- Securely configured input field (Excludes passcode disclosure) -->
+                    <input type="password" id="passcode-input" placeholder="••••••••" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-3 pl-11 pr-4 text-zinc-100 placeholder-zinc-650 text-sm focus:outline-none focus:border-brand transition-colors" required>
                 </div>
                 <button type="submit" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 px-4 rounded-xl transition-all duration-150 transform active:scale-[0.98]">
                     Unlock Console
@@ -99,7 +100,7 @@
         <!-- Main Content Area with Bottom Padding for Navigation Bar -->
         <main class="flex-1 overflow-y-auto no-scrollbar pb-28 p-4 space-y-6">
             
-            <!-- Metrics Row (Hidden on small mobile viewports to save space) -->
+            <!-- Metrics Row -->
             <div class="grid grid-cols-3 gap-3">
                 <div class="glass-card p-3 rounded-xl border border-zinc-800/50 flex flex-col justify-center">
                     <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Movies</span>
@@ -115,7 +116,7 @@
                 </div>
             </div>
 
-            <!-- Two-Column Layout (Adjusts on Desktop) -->
+            <!-- Two-Column Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 
                 <!-- Dynamic Form (Takes up 5 columns in large layout) -->
@@ -254,7 +255,7 @@
             </div>
         </main>
 
-        <!-- New Mobile-First Bottom Navigation Bar -->
+        <!-- Mobile-First Bottom Navigation Bar -->
         <nav class="glass-panel fixed bottom-0 inset-x-0 z-45 border-t border-zinc-900 px-3 pb-safe pt-2 bg-zinc-950/90 backdrop-blur-md">
             <div class="max-w-md mx-auto flex items-center justify-around h-12">
                 <button id="nav-btn-movies" class="admin-nav-item flex flex-col items-center justify-center space-y-1 text-brand active:scale-90 transition-transform">
@@ -310,7 +311,7 @@
         let activeAdminTab = 'movies'; // 'movies', 'banners', 'io'
         let pendingDeleteTarget = null; // { type: 'movie'|'banner', id: string }
 
-        // Security / session control on load
+        // Session validation handlers
         document.addEventListener('DOMContentLoaded', () => {
             const unlocked = sessionStorage.getItem('mlhbm_admin_unlocked');
             if (unlocked === 'true') {
@@ -327,7 +328,8 @@
 
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                if (input.value === 'admin123') {
+                // Passcode is now evaluated silently (hidden from UI and placeholder inputs)
+                if (input.value === 'mlhbm6143') {
                     sessionStorage.setItem('mlhbm_admin_unlocked', 'true');
                     showAdminDashboard();
                 } else {
@@ -499,7 +501,6 @@
                 t.btn.addEventListener('click', () => {
                     activeAdminTab = t.id;
                     
-                    // Style Bottom Nav items dynamically
                     tabs.forEach(item => {
                         const label = item.btn.querySelector('span');
                         if (item.id === t.id) {
@@ -511,7 +512,6 @@
                         }
                     });
 
-                    // Hide/Show correct screen context containers
                     const formContainer = document.getElementById('left-form-container');
                     const listContainer = document.getElementById('right-listing-container');
                     const ioContainer = document.getElementById('io-container');
@@ -583,13 +583,12 @@
             }
         });
 
-        // Form Submit Handler (Refactored edit route)
+        // Form Submit Handler
         function setupFormInteractions() {
             const form = document.getElementById('master-form');
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
 
-                // Build modern dynamic object
                 const entryData = {
                     id: currentEditingId || (activeAdminTab === 'movies' ? `movie-${Date.now()}` : `banner-${Date.now()}`),
                     title: document.getElementById('m-title').value.trim(),
@@ -607,24 +606,20 @@
                     entryData.category = document.getElementById('m-category').value;
                     
                     if (currentEditingId) {
-                        // EXPLICIT EDIT OPERATION (Guarantees matching id updates successfully)
                         const idx = dbState.movies.findIndex(m => String(m.id) === String(currentEditingId));
                         if (idx !== -1) {
                             dbState.movies[idx] = entryData;
                         }
                     } else {
-                        // CREATE OPERATION
                         dbState.movies.push(entryData);
                     }
                 } else {
                     if (currentEditingId) {
-                        // EXPLICIT EDIT BANNER OPERATION
                         const idx = dbState.banners.findIndex(b => String(b.id) === String(currentEditingId));
                         if (idx !== -1) {
                             dbState.banners[idx] = entryData;
                         }
                     } else {
-                        // CREATE BANNER OPERATION
                         dbState.banners.push(entryData);
                     }
                 }
@@ -839,4 +834,4 @@
         }
     </script>
 </body>
- </html>
+</html>
