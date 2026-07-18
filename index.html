@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="h-full select-none">
 <head>
     <meta charset="UTF-8">
@@ -43,10 +43,10 @@
             -ms-user-select: none;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
         body::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
+            display: none;
         }
         .no-scrollbar::-webkit-scrollbar {
             display: none;
@@ -57,7 +57,7 @@
         }
         /* Custom glassmorphism classes */
         .glass-panel {
-            background: rgba(24, 24, 27, 0.8);
+            background: rgba(24, 24, 27, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(63, 63, 70, 0.4);
@@ -70,7 +70,7 @@
         }
         /* Page transitions */
         .view-section {
-            transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
         }
     </style>
 </head>
@@ -81,14 +81,10 @@
         <div class="flex items-center space-x-2">
             <span class="text-brand font-extrabold text-xl tracking-wider">MLHBM</span>
         </div>
-        <div class="flex items-center space-x-3">
-            <button id="notiBtn" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-colors">
-                <i class="fa-regular fa-bell text-lg"></i>
-            </button>
-            <div class="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300">
-                <i class="fa-regular fa-user text-sm"></i>
-            </div>
-        </div>
+        <!-- Profile Avatar Trigger -->
+        <button id="profile-trigger" class="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-850 flex items-center justify-center text-zinc-300 active:scale-95 transition-transform hover:text-white">
+            <i class="fa-regular fa-user text-xs"></i>
+        </button>
     </header>
 
     <!-- Main Viewport Context -->
@@ -96,43 +92,45 @@
         
         <!-- View: Home -->
         <section id="view-home" class="view-section space-y-6">
-            <!-- Hero Carousel -->
-            <div class="relative w-full aspect-[16/10] overflow-hidden">
+            <!-- Cinematic Hero Slider Container -->
+            <div class="relative w-full h-[420px] overflow-hidden">
                 <div id="hero-container" class="w-full h-full relative transition-all duration-500">
-                    <!-- Dynamic Hero Inject -->
+                    <!-- Dynamic Hero Image Rendered Here -->
                 </div>
-                <!-- Banner gradient overlays -->
-                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent pointer-events-none"></div>
+                <!-- Premium Vignette overlays -->
+                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/45 to-transparent pointer-events-none"></div>
                 <div class="absolute inset-x-0 bottom-0 p-4 flex flex-col justify-end space-y-2 pointer-events-auto">
                     <div class="flex items-center space-x-2">
-                        <span id="hero-rating" class="bg-zinc-900/90 text-brand font-bold text-xs px-2 py-0.5 rounded border border-zinc-800"></span>
+                        <span id="hero-rating" class="bg-zinc-900/95 text-brand font-bold text-xs px-2 py-0.5 rounded border border-zinc-800"></span>
                         <span id="hero-year" class="text-zinc-300 text-xs font-semibold"></span>
-                        <span class="bg-brand/10 text-brand text-[10px] font-bold px-1.5 py-0.5 rounded border border-brand/20">TV</span>
+                        <span class="bg-brand/15 text-brand text-[10px] font-bold px-1.5 py-0.5 rounded border border-brand/20">HD</span>
                     </div>
-                    <h1 id="hero-title" class="text-2xl font-bold tracking-tight text-white leading-tight"></h1>
-                    <p id="hero-desc" class="text-zinc-400 text-xs line-clamp-2 max-w-lg leading-relaxed"></p>
+                    <h1 id="hero-title" class="text-2xl font-black tracking-tight text-white leading-tight"></h1>
+                    <p id="hero-desc" class="text-zinc-400 text-xs line-clamp-2 max-w-md leading-relaxed"></p>
                     
-                    <!-- Slider Action Buttons -->
-                    <div class="flex items-center space-x-3 pt-2">
-                        <button id="hero-info-btn" class="flex-1 bg-zinc-900/90 border border-zinc-800 text-white font-medium text-sm py-2 px-4 rounded-lg flex items-center justify-center space-x-2 active:scale-95 transition-transform backdrop-blur-sm">
-                            <i class="fa-solid fa-circle-info"></i>
+                    <!-- Balanced, Compact Action Row -->
+                    <div class="flex items-center space-x-2 pt-1.5 max-w-[150px]">
+                        <!-- Info Button -->
+                        <button id="hero-info-btn" class="flex-1 bg-zinc-900/90 border border-zinc-800/80 text-white font-semibold text-[10px] h-8 rounded-lg flex items-center justify-center space-x-1.5 active:scale-95 transition-transform backdrop-blur-sm">
+                            <i class="fa-solid fa-circle-info text-[10px]"></i>
                             <span>Info</span>
                         </button>
-                        <button id="hero-save-btn" class="w-12 bg-zinc-900/90 border border-zinc-800 text-white py-2 rounded-lg flex items-center justify-center active:scale-95 transition-transform backdrop-blur-sm">
-                            <i class="fa-regular fa-bookmark text-base"></i>
+                        <!-- Bookmark Button (Aligned height with Info button, square proportion) -->
+                        <button id="hero-save-btn" class="w-8 h-8 bg-zinc-900/90 border border-zinc-800/80 text-white rounded-lg flex items-center justify-center active:scale-95 transition-transform backdrop-blur-sm shrink-0">
+                            <!-- Toggle icon dynamically inside script -->
                         </button>
                     </div>
 
                     <!-- Slide Indicators -->
-                    <div id="carousel-indicators" class="flex items-center justify-center space-x-1.5 pt-3">
-                        <!-- Dynamic indicators -->
+                    <div id="carousel-indicators" class="flex items-center justify-center space-x-1 pt-3">
+                        <!-- Indicators Injected Here -->
                     </div>
                 </div>
             </div>
 
-            <!-- Custom Rows (Dynamic Categorized Lists) -->
+            <!-- Category Rows -->
             <div id="home-categories" class="px-4 space-y-6">
-                <!-- Dynamic standard category blocks injected dynamically -->
+                <!-- Injected dynamically -->
             </div>
         </section>
 
@@ -140,43 +138,41 @@
         <section id="view-search" class="view-section hidden p-4 space-y-4">
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-                <input type="text" id="search-input" placeholder="Search movies, TV shows..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-3 pl-10 pr-10 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-brand/50 transition-colors">
+                <input type="text" id="search-input" placeholder="Search movies, TV shows..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-2.5 pl-10 pr-10 text-zinc-100 placeholder-zinc-500 text-xs focus:outline-none focus:border-brand/50 transition-colors">
                 <button id="search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white hidden">
                     <i class="fa-solid fa-circle-xmark"></i>
                 </button>
             </div>
             
-            <div class="flex items-center justify-between text-xs text-zinc-400 font-medium px-1">
+            <div class="flex items-center justify-between text-[10px] text-zinc-500 font-bold uppercase tracking-wider px-1">
                 <span id="search-results-count">Type to begin searching</span>
             </div>
 
-            <!-- Grid Layout -->
             <div id="search-results-grid" class="grid grid-cols-2 gap-3 pb-8">
                 <!-- Search Result Items -->
             </div>
         </section>
 
-        <!-- View: Browse (Genres) -->
+        <!-- View: Browse -->
         <section id="view-browse" class="view-section hidden p-4 space-y-4">
             <div class="flex flex-col">
-                <h2 class="text-xl font-bold tracking-tight text-white">Categories</h2>
-                <p class="text-xs text-zinc-500">Explore movies by dynamic genres</p>
+                <h2 class="text-lg font-extrabold tracking-tight text-white">Categories</h2>
+                <p class="text-[10px] text-zinc-500">Explore movies by genre tags</p>
             </div>
 
-            <!-- Categories Grid Structure matching screenshots -->
             <div id="browse-genres-grid" class="grid grid-cols-2 gap-3 pb-8">
-                <!-- Injected dynamically -->
+                <!-- Genre Grid Cards -->
             </div>
 
-            <!-- Filtered Genre Catalog Drawer -->
+            <!-- Filtered Catalog Drawer overlay -->
             <div id="genre-filtered-view" class="fixed inset-0 bg-zinc-950 z-50 overflow-y-auto no-scrollbar hidden flex flex-col">
                 <header class="glass-panel sticky top-0 z-10 flex items-center justify-between px-4 py-3 border-b border-zinc-900">
                     <button id="genre-close-btn" class="flex items-center space-x-1 text-zinc-400 hover:text-white">
                         <i class="fa-solid fa-chevron-left text-lg"></i>
-                        <span class="text-sm font-medium">Browse</span>
+                        <span class="text-xs font-medium">Browse</span>
                     </button>
-                    <h3 id="genre-title-header" class="text-sm font-bold tracking-wider text-white uppercase">Category</h3>
-                    <div class="w-8"></div> <!-- Spacer -->
+                    <h3 id="genre-title-header" class="text-xs font-bold tracking-wider text-white uppercase">Category</h3>
+                    <div class="w-8"></div>
                 </header>
                 <div class="flex-1 p-4">
                     <div id="genre-filtered-grid" class="grid grid-cols-2 gap-3 pb-8">
@@ -189,86 +185,96 @@
         <!-- View: Watchlist -->
         <section id="view-watchlist" class="view-section hidden p-4 space-y-4">
             <div class="flex flex-col">
-                <h2 class="text-xl font-bold tracking-tight text-white">My Watchlist</h2>
-                <p class="text-xs text-zinc-500">Saved items synced to local profile</p>
+                <h2 class="text-lg font-extrabold tracking-tight text-white">My Watchlist</h2>
+                <p class="text-[10px] text-zinc-500">Saved items synced to your profile</p>
             </div>
 
-            <!-- Watchlist Items -->
             <div id="watchlist-empty-state" class="flex flex-col items-center justify-center py-20 text-center space-y-3">
-                <div class="w-16 h-16 rounded-full bg-zinc-900/80 border border-zinc-850 flex items-center justify-center text-zinc-600">
-                    <i class="fa-regular fa-bookmark text-2xl"></i>
+                <div class="w-14 h-14 rounded-full bg-zinc-900 border border-zinc-850 flex items-center justify-center text-zinc-600">
+                    <i class="fa-regular fa-bookmark text-xl"></i>
                 </div>
                 <div class="space-y-1">
-                    <p class="text-sm font-medium text-zinc-300">Your Watchlist is empty</p>
-                    <p class="text-xs text-zinc-500 max-w-xs">Save movies and series using the bookmark controls to view them later.</p>
+                    <p class="text-xs font-semibold text-zinc-300">Your Watchlist is empty</p>
+                    <p class="text-[10px] text-zinc-500 max-w-xs">Save movies using the bookmark controls to view them here.</p>
                 </div>
             </div>
 
             <div id="watchlist-grid" class="grid grid-cols-2 gap-3 pb-8 hidden">
-                <!-- Filtered items dynamically -->
+                <!-- Saved Items Grid -->
             </div>
         </section>
 
     </main>
 
-    <!-- Global Movie Detail Overlay/Sheet Context -->
+    <!-- Fullscreen Movie Detail Sheet overlay -->
     <div id="movie-detail-overlay" class="fixed inset-0 bg-zinc-950 z-50 flex flex-col transform translate-y-full transition-transform duration-300 overflow-y-auto no-scrollbar hidden">
-        <div class="relative w-full aspect-[16/10] bg-zinc-900">
-            <img id="detail-backdrop" src="" alt="" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent"></div>
-            <button id="detail-back-top-btn" class="absolute top-4 left-4 w-10 h-10 rounded-full bg-zinc-900/80 backdrop-blur-md border border-zinc-800 text-white flex items-center justify-center active:scale-95 transition-transform">
-                <i class="fa-solid fa-chevron-left text-sm"></i>
+        
+        <!-- Interactive Detail Header / Background blur -->
+        <div class="relative w-full overflow-hidden flex flex-col items-center pt-8 pb-4 border-b border-zinc-900/40 shrink-0">
+            <!-- Glowing Blurred Backdrop Effect -->
+            <div id="detail-blur-bg" class="absolute inset-0 bg-cover bg-center blur-3xl opacity-20 scale-125 pointer-events-none"></div>
+            
+            <!-- Static top control -->
+            <button id="detail-back-top-btn" class="absolute top-4 left-4 w-9 h-9 rounded-full bg-zinc-900/80 backdrop-blur-md border border-zinc-800 text-white flex items-center justify-center active:scale-95 transition-transform z-20">
+                <i class="fa-solid fa-chevron-left text-xs"></i>
             </button>
+
+            <!-- Floating Centered Sharp Poster Image -->
+            <div class="relative w-36 h-52 rounded-2xl overflow-hidden shadow-2xl border border-zinc-800/80 mt-2 z-10 bg-zinc-900 shrink-0">
+                <img id="detail-poster" src="" alt="" class="w-full h-full object-cover select-none pointer-events-none">
+            </div>
         </div>
 
-        <div class="flex-1 px-4 py-6 space-y-6 flex flex-col justify-between -mt-8 relative z-10">
-            <div class="space-y-5">
-                <!-- Metadata Info Block -->
-                <div class="space-y-2">
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span id="detail-year" class="text-zinc-400 text-xs font-semibold"></span>
-                        <span class="text-zinc-600 text-xs">•</span>
-                        <span id="detail-runtime" class="text-zinc-400 text-xs font-semibold"></span>
-                        <span class="text-zinc-600 text-xs">•</span>
-                        <div class="flex items-center space-x-1">
-                            <i class="fa-solid fa-star text-brand text-xs"></i>
+        <!-- Contents Content Section -->
+        <div class="flex-1 px-5 py-4 space-y-5 flex flex-col justify-between relative z-10">
+            <div class="space-y-4 text-center">
+                
+                <!-- Center Block Title & Metadata -->
+                <div class="space-y-1.5 flex flex-col items-center">
+                    <h2 id="detail-title" class="text-xl font-bold tracking-tight text-white leading-tight"></h2>
+                    <div class="flex items-center space-x-1.5 text-zinc-400 text-xs font-semibold">
+                        <span id="detail-year"></span>
+                        <span class="text-zinc-600 text-[9px]">•</span>
+                        <span id="detail-runtime"></span>
+                        <span class="text-zinc-600 text-[9px]">•</span>
+                        <div class="flex items-center space-x-0.5">
+                            <i class="fa-solid fa-star text-brand text-[10px]"></i>
                             <span id="detail-rating" class="text-white text-xs font-bold"></span>
                         </div>
                     </div>
-                    <h2 id="detail-title" class="text-2xl font-bold tracking-tight text-white leading-tight"></h2>
                     
-                    <!-- Dynamic Badges -->
-                    <div id="detail-genres-container" class="flex flex-wrap gap-1.5 pt-1">
-                        <!-- Dynamic genre labels dynamically structured -->
+                    <!-- Dynamic Badges Centered Row -->
+                    <div id="detail-genres-container" class="flex flex-wrap justify-center gap-1.5 pt-1.5">
+                        <!-- Dynamic Genre badges -->
                     </div>
                 </div>
 
-                <!-- Primary Action Interfaces -->
-                <div class="grid grid-cols-2 gap-3 pt-1">
-                    <a id="detail-download-btn" href="#" target="_blank" class="bg-brand hover:bg-brand-hover text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 active:scale-95 transition-transform shadow-lg shadow-brand/10">
+                <!-- Two Buttons Layout Side-By-Side -->
+                <div class="grid grid-cols-2 gap-3 max-w-sm mx-auto w-full">
+                    <a id="detail-download-btn" href="#" target="_blank" class="bg-brand hover:bg-brand-hover text-white text-xs font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-1.5 active:scale-95 transition-transform shadow-lg shadow-brand/10">
                         <i class="fa-solid fa-download"></i>
                         <span>Download</span>
                     </a>
-                    <button id="detail-share-btn" class="bg-zinc-900 border border-zinc-800 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 active:scale-95 transition-transform hover:bg-zinc-850">
+                    <button id="detail-share-btn" class="bg-zinc-900 border border-zinc-800 text-white text-xs font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-1.5 active:scale-95 transition-transform hover:bg-zinc-850">
                         <i class="fa-solid fa-arrow-up-from-bracket"></i>
                         <span>Share</span>
                     </button>
                 </div>
 
-                <!-- Description Block -->
-                <div class="space-y-2">
-                    <h4 class="text-xs uppercase tracking-wider text-zinc-500 font-bold">Overview</h4>
-                    <p id="detail-overview" class="text-zinc-300 text-sm leading-relaxed text-justify"></p>
+                <!-- Simple Overview text description -->
+                <div class="space-y-1.5 text-left max-w-md mx-auto w-full">
+                    <h4 class="text-[10px] uppercase tracking-wider text-zinc-500 font-bold">Overview</h4>
+                    <p id="detail-overview" class="text-zinc-300 text-xs leading-relaxed text-justify"></p>
                 </div>
             </div>
 
-            <!-- Footer Sheet Actions -->
-            <div class="pt-6 border-t border-zinc-900 flex items-center space-x-3 mt-auto">
-                <button id="detail-close-btn" class="flex-1 bg-zinc-900 border border-zinc-800 text-zinc-300 py-3 rounded-xl text-sm font-semibold active:scale-95 transition-transform flex items-center justify-center space-x-2">
+            <!-- Lower Sticky control actions -->
+            <div class="pt-4 border-t border-zinc-900 flex items-center space-x-3 mt-auto max-w-md mx-auto w-full">
+                <button id="detail-close-btn" class="flex-1 bg-zinc-900 border border-zinc-800 text-zinc-300 py-3 rounded-xl text-xs font-semibold active:scale-95 transition-transform flex items-center justify-center space-x-1.5">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>Back</span>
                 </button>
-                <button id="detail-watchlist-btn" class="flex-1 bg-zinc-900 border border-zinc-850 text-white py-3 rounded-xl text-sm font-semibold active:scale-95 transition-transform flex items-center justify-center space-x-2">
+                <button id="detail-watchlist-btn" class="flex-1 bg-zinc-900 border border-zinc-850 text-white py-3 rounded-xl text-xs font-semibold active:scale-95 transition-transform flex items-center justify-center space-x-1.5">
                     <i class="fa-regular fa-bookmark"></i>
                     <span id="detail-watchlist-txt">Add to List</span>
                 </button>
@@ -276,7 +282,47 @@
         </div>
     </div>
 
-    <!-- Interactive Navigation System -->
+    <!-- Dynamic Profile Modal Dashboard -->
+    <div id="profile-modal" class="fixed inset-0 z-50 bg-zinc-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="w-full max-w-sm glass-panel p-6 rounded-2xl border border-zinc-800 text-center space-y-6 shadow-2xl relative">
+            <button id="profile-close-btn" class="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            
+            <div class="space-y-2">
+                <div class="w-16 h-16 bg-brand/10 border border-brand/20 rounded-full flex items-center justify-center mx-auto text-brand">
+                    <i class="fa-solid fa-user-gear text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">My Profile Console</h3>
+                <p class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Telegram Authentication Status</p>
+            </div>
+
+            <div class="space-y-3 text-left bg-zinc-900/60 p-4 rounded-xl border border-zinc-850">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-zinc-500 font-semibold">First Name:</span>
+                    <span id="prof-name" class="text-zinc-200 font-bold">Guest User</span>
+                </div>
+                <div class="flex justify-between items-center text-xs border-t border-zinc-950 pt-2.5">
+                    <span class="text-zinc-500 font-semibold">Username:</span>
+                    <span id="prof-user" class="text-brand font-bold">@guest</span>
+                </div>
+                <div class="flex justify-between items-center text-xs border-t border-zinc-950 pt-2.5">
+                    <span class="text-zinc-500 font-semibold">User ID:</span>
+                    <span id="prof-id" class="text-zinc-400 font-mono">Not Linked</span>
+                </div>
+                <div class="flex justify-between items-center text-xs border-t border-zinc-950 pt-2.5">
+                    <span class="text-zinc-500 font-semibold">Saved Items:</span>
+                    <span id="prof-count" class="text-zinc-200 font-bold">0 titles</span>
+                </div>
+            </div>
+            
+            <button id="profile-ok-btn" class="w-full bg-zinc-900 hover:bg-zinc-850 text-white font-bold py-2.5 rounded-xl text-xs transition-colors border border-zinc-800">
+                Close Console
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation System fixed bottom -->
     <nav class="glass-panel fixed bottom-0 inset-x-0 z-45 border-t border-zinc-900 px-3 pb-safe pt-2">
         <div class="max-w-md mx-auto flex items-center justify-around h-12">
             <button data-target="home" class="nav-item flex flex-col items-center justify-center space-y-1 text-brand active:scale-90 transition-transform">
@@ -298,15 +344,15 @@
         </div>
     </nav>
 
-    <!-- Visual Dynamic Toast Notifications -->
+    <!-- Visual Action Toast -->
     <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 glass-panel border border-brand/20 px-4 py-2 rounded-xl flex items-center space-x-2 transform translate-y-10 opacity-0 transition-all pointer-events-none duration-350">
-        <i class="fa-solid fa-circle-check text-brand text-sm"></i>
+        <i class="fa-solid fa-circle-check text-brand text-xs"></i>
         <span id="toast-text" class="text-xs font-semibold text-zinc-200">Shared successfully</span>
     </div>
 
-    <!-- JavaScript Application Handler -->
+    <!-- Application Script Engine Context -->
     <script>
-        // Security implementation context
+        // Security logic implementation
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('selectstart', e => e.preventDefault());
         document.addEventListener('keydown', e => {
@@ -317,7 +363,7 @@
             }
         });
 
-        // Application State Management
+        // App state
         let appState = {
             activeTab: 'home',
             movies: [],
@@ -329,12 +375,9 @@
             heroTimer: null
         };
 
-        // Fallback production-ready offline dataset
+        // Fallback local dataset structure
         const fallbackDatabase = {
-            settings: {
-                appName: "MLHBM",
-                primaryColor: "#E50914"
-            },
+            settings: { appName: "MLHBM", primaryColor: "#E50914" },
             categories: ["Trending Now", "Top Rated Movies", "Top Rated Series"],
             banners: [
                 {
@@ -457,48 +500,47 @@
             ]
         };
 
-        // Initialize Telegram SDK
+        // Initialize Telegram configuration
         const tg = window.Telegram?.WebApp;
         if (tg) {
             tg.ready();
             tg.expand();
-            tg.headerColor = '#09090b'; // matching bg-zinc-950
+            tg.headerColor = '#09090b';
             tg.backgroundColor = '#09090b';
             if (tg.initDataUnsafe?.user?.id) {
                 appState.userId = String(tg.initDataUnsafe.user.id);
             }
         }
 
-        // Event Listeners initialization
         document.addEventListener('DOMContentLoaded', initializeApp);
 
         async function initializeApp() {
             setupNavigation();
             setupSearch();
             setupDetailsView();
+            setupProfileDashboard();
             await loadData();
             loadWatchlist();
             renderAllViews();
         }
 
-        // Pull database dynamically with fallback state
         async function loadData() {
             try {
                 const response = await fetch('movies.json');
-                if (!response.ok) throw new Error('Network file access error');
+                if (!response.ok) throw new Error('File fetch failed');
                 const data = await response.json();
                 appState.movies = data.movies || [];
                 appState.categories = data.categories || [];
                 appState.banners = data.banners || [];
             } catch (err) {
-                console.warn('Syncing with internal standard database structure:', err);
+                console.warn('Syncing fallback dataset state:', err);
                 appState.movies = fallbackDatabase.movies;
                 appState.categories = fallbackDatabase.categories;
                 appState.banners = fallbackDatabase.banners;
             }
         }
 
-        // Sync local storage profile
+        // Pull saved list
         function loadWatchlist() {
             const stored = localStorage.getItem(`mlhbm_watchlist_${appState.userId}`);
             appState.watchlist = stored ? JSON.parse(stored) : [];
@@ -509,7 +551,6 @@
             updateWatchlistView();
         }
 
-        // Navigation Engine
         function setupNavigation() {
             const navButtons = document.querySelectorAll('.nav-item');
             navButtons.forEach(btn => {
@@ -523,7 +564,6 @@
         function switchTab(tabId) {
             appState.activeTab = tabId;
             
-            // Toggle screen sections
             document.querySelectorAll('.view-section').forEach(section => {
                 section.classList.add('hidden');
                 section.style.opacity = '0';
@@ -539,19 +579,15 @@
                 }, 50);
             }
 
-            // Update Navigation Highlights
             document.querySelectorAll('.nav-item').forEach(btn => {
-                const icon = btn.querySelector('i');
                 const label = btn.querySelector('span');
                 const isTarget = btn.getAttribute('data-target') === tabId;
                 
                 if (isTarget) {
                     btn.className = "nav-item flex flex-col items-center justify-center space-y-1 text-brand active:scale-90 transition-transform";
-                    icon.className = icon.className.replace('fa-regular', 'fa-solid');
                     label.classList.add('font-bold');
                 } else {
                     btn.className = "nav-item flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300 active:scale-90 transition-transform";
-                    icon.className = icon.className.replace('fa-solid', 'fa-regular');
                     label.classList.remove('font-bold');
                 }
             });
@@ -561,7 +597,6 @@
             }
         }
 
-        // Render Controller
         function renderAllViews() {
             renderHeroSlider();
             renderHomeCategories();
@@ -569,20 +604,16 @@
             updateWatchlistView();
         }
 
-        // Slider Component
         function renderHeroSlider() {
-            const container = document.getElementById('hero-container');
             const indicators = document.getElementById('carousel-indicators');
             if (!appState.banners || appState.banners.length === 0) return;
 
-            // Render Hero Banner
             updateHeroView(0);
 
-            // Create dot indicators
             indicators.innerHTML = '';
             appState.banners.forEach((_, idx) => {
                 const indicator = document.createElement('button');
-                indicator.className = `w-1.5 h-1.5 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-brand w-3' : 'bg-zinc-600'}`;
+                indicator.className = `w-1 h-1 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-brand w-2.5' : 'bg-zinc-600'}`;
                 indicator.addEventListener('click', () => {
                     clearInterval(appState.heroTimer);
                     updateHeroView(idx);
@@ -603,35 +634,33 @@
                 <img src="${banner.backdrop}" alt="${banner.title}" class="w-full h-full object-cover select-none pointer-events-none absolute inset-0 transition-opacity duration-500 opacity-0" id="hero-img">
             `;
             
-            // Fade-in effect
             const img = document.getElementById('hero-img');
-            setTimeout(() => img.classList.remove('opacity-0'), 50);
+            setTimeout(() => img?.classList.remove('opacity-0'), 50);
 
-            // Update Metadata labels
             document.getElementById('hero-title').textContent = banner.title;
-            document.getElementById('hero-rating').innerHTML = `<i class="fa-solid fa-star text-brand text-[10px]"></i> ${banner.rating}`;
+            document.getElementById('hero-rating').innerHTML = `<i class="fa-solid fa-star text-brand text-[9px] mr-0.5"></i> ${banner.rating}`;
             document.getElementById('hero-year').textContent = banner.year;
             document.getElementById('hero-desc').textContent = banner.overview;
 
-            // Attach dynamic info button logic
             document.getElementById('hero-info-btn').onclick = () => showMovieDetails(banner);
             
-            // Setup dynamic bookmark toggle inside hero
+            // Adjusted slider Bookmark layout integration
             const saveBtn = document.getElementById('hero-save-btn');
             const isSaved = appState.watchlist.includes(banner.id);
-            saveBtn.innerHTML = isSaved ? `<i class="fa-solid fa-bookmark text-brand text-base"></i>` : `<i class="fa-regular fa-bookmark text-base"></i>`;
+            saveBtn.innerHTML = isSaved 
+                ? `<i class="fa-solid fa-bookmark text-brand text-[10px]"></i>` 
+                : `<i class="fa-regular fa-bookmark text-[10px]"></i>`;
             saveBtn.onclick = () => {
                 toggleWatchlist(banner.id);
                 updateHeroView(index);
             };
 
-            // Update dot sizes
             const dots = document.getElementById('carousel-indicators').children;
             Array.from(dots).forEach((dot, idx) => {
                 if (idx === index) {
-                    dot.className = "w-1.5 h-1.5 rounded-full transition-all duration-300 bg-brand w-3";
+                    dot.className = "w-1 h-1 rounded-full transition-all duration-350 bg-brand w-2.5";
                 } else {
-                    dot.className = "w-1.5 h-1.5 rounded-full transition-all duration-300 bg-zinc-600";
+                    dot.className = "w-1 h-1 rounded-full transition-all duration-350 bg-zinc-600";
                 }
             });
         }
@@ -645,7 +674,6 @@
             }, 5500);
         }
 
-        // Categorized list block render matches design
         function renderHomeCategories() {
             const section = document.getElementById('home-categories');
             section.innerHTML = '';
@@ -655,36 +683,33 @@
                 if (matchedMovies.length === 0) return;
 
                 const catBlock = document.createElement('div');
-                catBlock.className = "space-y-3";
-                
-                // Block Header block
+                catBlock.className = "space-y-2.5";
                 catBlock.innerHTML = `
                     <div class="flex items-center space-x-2">
-                        <div class="w-1 h-4 bg-brand rounded-full"></div>
-                        <h3 class="text-base font-bold text-white tracking-tight">${categoryName}</h3>
+                        <div class="w-1 h-3.5 bg-brand rounded-full"></div>
+                        <h3 class="text-sm font-bold text-white tracking-tight">${categoryName}</h3>
                     </div>
                 `;
 
-                // Horizontal Carousel Row Context
                 const carousel = document.createElement('div');
-                carousel.className = "flex overflow-x-auto space-x-3.5 pb-2 no-scrollbar scroll-smooth snap-x";
+                carousel.className = "flex overflow-x-auto space-x-3 pb-1 no-scrollbar scroll-smooth snap-x";
                 
                 matchedMovies.forEach(movie => {
                     const item = document.createElement('div');
-                    item.className = "w-[125px] flex-shrink-0 snap-start space-y-2 group active:scale-95 transition-transform";
+                    item.className = "w-[110px] flex-shrink-0 snap-start space-y-1.5 group active:scale-95 transition-transform";
                     item.addEventListener('click', () => showMovieDetails(movie));
 
                     item.innerHTML = `
                         <div class="relative aspect-[2/3] w-full rounded-xl overflow-hidden glass-card">
                             <img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover pointer-events-none select-none">
                             <div class="absolute top-1.5 left-1.5 glass-panel border border-zinc-800/60 rounded px-1.5 py-0.5 flex items-center space-x-0.5">
-                                <i class="fa-solid fa-star text-brand text-[9px]"></i>
-                                <span class="text-white font-extrabold text-[9px]">${movie.rating}</span>
+                                <i class="fa-solid fa-star text-brand text-[8px]"></i>
+                                <span class="text-white font-extrabold text-[8px]">${movie.rating}</span>
                             </div>
                         </div>
-                        <div class="space-y-0.5 px-1">
-                            <h4 class="text-xs font-bold text-zinc-100 truncate group-hover:text-brand transition-colors">${movie.title}</h4>
-                            <p class="text-[10px] text-zinc-500 font-semibold">${movie.year}</p>
+                        <div class="space-y-0.5 px-0.5">
+                            <h4 class="text-[11px] font-bold text-zinc-100 truncate group-hover:text-brand transition-colors">${movie.title}</h4>
+                            <p class="text-[9px] text-zinc-500 font-semibold">${movie.year}</p>
                         </div>
                     `;
                     carousel.appendChild(item);
@@ -695,41 +720,37 @@
             });
         }
 
-        // Browse Categories view matches original card layouts grid (Image 2)
         function renderBrowseGenres() {
             const grid = document.getElementById('browse-genres-grid');
             grid.innerHTML = '';
 
-            // Unique genre structures extracted from complete database context
             const genresSet = new Set();
             appState.movies.forEach(m => m.genres?.forEach(g => genresSet.add(g)));
             const genres = Array.from(genresSet);
 
-            // Dynamic layout mapping with beautiful linear design patterns
             const presetGradients = [
-                'from-red-950/80 to-zinc-950/90',
-                'from-zinc-900/80 to-zinc-950/90',
-                'from-zinc-850/80 to-zinc-950/90',
-                'from-brand-dark/80 to-zinc-950/90'
+                'from-red-950/80 to-zinc-950/95',
+                'from-zinc-900/80 to-zinc-950/95',
+                'from-zinc-850/80 to-zinc-950/95',
+                'from-brand-dark/80 to-zinc-950/95'
             ];
 
             genres.forEach((genre, idx) => {
                 const card = document.createElement('div');
                 card.className = "relative aspect-[16/10] rounded-xl overflow-hidden glass-card group cursor-pointer active:scale-95 transition-transform flex flex-col justify-between p-3 border border-zinc-800/40";
                 
-                // Get one fallback backdrop image from the current matched movies
                 const matchedMovie = appState.movies.find(m => m.genres?.includes(genre));
                 const bgImage = matchedMovie ? matchedMovie.poster : '';
 
                 card.innerHTML = `
-                    <div class="absolute inset-0 bg-cover bg-center opacity-20 group-hover:opacity-30 transition-opacity" style="background-image: url('${bgImage}')"></div>
+                    <div class="absolute inset-0 bg-cover bg-center opacity-15 group-hover:opacity-25 transition-opacity" style="background-image: url('${bgImage}')"></div>
                     <div class="absolute inset-0 bg-gradient-to-br ${presetGradients[idx % presetGradients.length]} mix-blend-multiply"></div>
                     
-                    <span class="text-xs bg-brand/10 text-brand font-bold px-2 py-0.5 rounded border border-brand/20 self-start z-10 uppercase tracking-wider">${genre}</span>
-                    <div class="flex items-center justify-between z-10 pt-4">
-                        <h4 class="text-base font-extrabold text-white tracking-tight">${genre}</h4>
-                        <div class="w-7 h-7 rounded-full bg-zinc-900/95 border border-zinc-800/80 flex items-center justify-center text-zinc-400 group-hover:text-brand transition-colors">
-                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                    <span class="text-[9px] bg-brand/10 text-brand font-bold px-1.5 py-0.5 rounded border border-brand/20 self-start z-10 uppercase tracking-wide">${genre}</span>
+                    <div class="flex items-center justify-between z-10 pt-2">
+                        <h4 class="text-xs font-extrabold text-white tracking-tight">${genre}</h4>
+                        <div class="w-6 h-6 rounded-full bg-zinc-900/90 border border-zinc-800/80 flex items-center justify-center text-zinc-400 group-hover:text-brand transition-colors">
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
                         </div>
                     </div>
                 `;
@@ -739,7 +760,6 @@
             });
         }
 
-        // Genre Drawer controller
         function openGenreDrawer(genre) {
             const drawer = document.getElementById('genre-filtered-view');
             const grid = document.getElementById('genre-filtered-grid');
@@ -751,20 +771,20 @@
             const matched = appState.movies.filter(m => m.genres?.includes(genre));
             matched.forEach(movie => {
                 const item = document.createElement('div');
-                item.className = "space-y-2 group active:scale-95 transition-transform";
+                item.className = "space-y-1.5 group active:scale-95 transition-transform";
                 item.addEventListener('click', () => showMovieDetails(movie));
 
                 item.innerHTML = `
                     <div class="relative aspect-[2/3] w-full rounded-xl overflow-hidden glass-card">
                         <img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover pointer-events-none select-none">
                         <div class="absolute top-1.5 left-1.5 glass-panel border border-zinc-800/60 rounded px-1.5 py-0.5 flex items-center space-x-0.5">
-                            <i class="fa-solid fa-star text-brand text-[9px]"></i>
-                            <span class="text-white font-extrabold text-[9px]">${movie.rating}</span>
+                            <i class="fa-solid fa-star text-brand text-[8px]"></i>
+                            <span class="text-white font-extrabold text-[8px]">${movie.rating}</span>
                         </div>
                     </div>
-                    <div class="space-y-0.5 px-1">
-                        <h4 class="text-xs font-bold text-zinc-100 truncate group-hover:text-brand transition-colors">${movie.title}</h4>
-                        <p class="text-[10px] text-zinc-500 font-semibold">${movie.year}</p>
+                    <div class="space-y-0.5 px-0.5">
+                        <h4 class="text-[11px] font-bold text-zinc-100 truncate group-hover:text-brand transition-colors">${movie.title}</h4>
+                        <p class="text-[9px] text-zinc-500 font-semibold">${movie.year}</p>
                     </div>
                 `;
                 grid.appendChild(item);
@@ -775,13 +795,11 @@
                 drawer.style.transform = 'translateY(0)';
             }, 50);
 
-            // Drawer controls
             document.getElementById('genre-close-btn').onclick = () => {
                 drawer.classList.add('hidden');
             };
         }
 
-        // Live Search implementation context
         function setupSearch() {
             const input = document.getElementById('search-input');
             const clearBtn = document.getElementById('search-clear');
@@ -800,7 +818,6 @@
                     return;
                 }
 
-                // Filtering algorithms matches titles and description
                 const matched = appState.movies.filter(m => 
                     m.title.toLowerCase().includes(query) || 
                     m.overview.toLowerCase().includes(query) ||
@@ -812,20 +829,20 @@
 
                 matched.forEach(movie => {
                     const item = document.createElement('div');
-                    item.className = "space-y-2 group active:scale-95 transition-transform";
+                    item.className = "space-y-1.5 group active:scale-95 transition-transform";
                     item.addEventListener('click', () => showMovieDetails(movie));
 
                     item.innerHTML = `
                         <div class="relative aspect-[2/3] w-full rounded-xl overflow-hidden glass-card">
                             <img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover pointer-events-none select-none">
                             <div class="absolute top-1.5 left-1.5 glass-panel border border-zinc-800/60 rounded px-1.5 py-0.5 flex items-center space-x-0.5">
-                                <i class="fa-solid fa-star text-brand text-[9px]"></i>
-                                <span class="text-white font-extrabold text-[9px]">${movie.rating}</span>
+                                <i class="fa-solid fa-star text-brand text-[8px]"></i>
+                                <span class="text-white font-extrabold text-[8px]">${movie.rating}</span>
                             </div>
                         </div>
-                        <div class="space-y-0.5 px-1">
-                            <h4 class="text-xs font-bold text-zinc-100 truncate group-hover:text-brand transition-colors">${movie.title}</h4>
-                            <p class="text-[10px] text-zinc-500 font-semibold">${movie.year}</p>
+                        <div class="space-y-0.5 px-0.5">
+                            <h4 class="text-[11px] font-bold text-zinc-100 truncate group-hover:text-brand transition-colors">${movie.title}</h4>
+                            <p class="text-[9px] text-zinc-500 font-semibold">${movie.year}</p>
                         </div>
                     `;
                     grid.appendChild(item);
@@ -841,7 +858,6 @@
             });
         }
 
-        // Watchlist update handlers
         function updateWatchlistView() {
             const emptyState = document.getElementById('watchlist-empty-state');
             const grid = document.getElementById('watchlist-grid');
@@ -858,20 +874,20 @@
 
                 savedMovies.forEach(movie => {
                     const item = document.createElement('div');
-                    item.className = "space-y-2 group active:scale-95 transition-transform";
+                    item.className = "space-y-1.5 group active:scale-95 transition-transform";
                     item.addEventListener('click', () => showMovieDetails(movie));
 
                     item.innerHTML = `
                         <div class="relative aspect-[2/3] w-full rounded-xl overflow-hidden glass-card">
                             <img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover pointer-events-none select-none">
                             <div class="absolute top-1.5 left-1.5 glass-panel border border-zinc-800/60 rounded px-1.5 py-0.5 flex items-center space-x-0.5">
-                                <i class="fa-solid fa-star text-brand text-[9px]"></i>
-                                <span class="text-white font-extrabold text-[9px]">${movie.rating}</span>
+                                <i class="fa-solid fa-star text-brand text-[8px]"></i>
+                                <span class="text-white font-extrabold text-[8px]">${movie.rating}</span>
                             </div>
                         </div>
-                        <div class="space-y-0.5 px-1">
-                            <h4 class="text-xs font-bold text-zinc-100 truncate group-hover:text-brand transition-colors">${movie.title}</h4>
-                            <p class="text-[10px] text-zinc-500 font-semibold">${movie.year}</p>
+                        <div class="space-y-0.5 px-0.5">
+                            <h4 class="text-[11px] font-bold text-zinc-100 truncate group-hover:text-brand transition-colors">${movie.title}</h4>
+                            <p class="text-[9px] text-zinc-500 font-semibold">${movie.year}</p>
                         </div>
                     `;
                     grid.appendChild(item);
@@ -891,7 +907,6 @@
             saveWatchlist();
         }
 
-        // Movie Detail Modal engine with transition sheets
         function setupDetailsView() {
             const overlay = document.getElementById('movie-detail-overlay');
             const closeBtn = document.getElementById('detail-close-btn');
@@ -901,7 +916,7 @@
                 overlay.style.transform = 'translateY(100%)';
                 setTimeout(() => {
                     overlay.classList.add('hidden');
-                }, 300);
+                }, 200);
             };
 
             closeBtn.addEventListener('click', hideDetails);
@@ -911,31 +926,39 @@
         function showMovieDetails(movie) {
             const overlay = document.getElementById('movie-detail-overlay');
             
-            // Render basic parameters
-            document.getElementById('detail-backdrop').src = movie.backdrop;
+            const posterSrc = movie.poster || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=600';
+            const backdropSrc = movie.backdrop || posterSrc;
+
+            const blurBg = document.getElementById('detail-blur-bg');
+            if (blurBg) {
+                blurBg.style.backgroundImage = `url('${backdropSrc}')`;
+            }
+
+            const detailPoster = document.getElementById('detail-poster');
+            if (detailPoster) {
+                detailPoster.src = posterSrc;
+            }
+
             document.getElementById('detail-title').textContent = movie.title;
             document.getElementById('detail-year').textContent = movie.year;
             document.getElementById('detail-runtime').textContent = movie.runtime;
             document.getElementById('detail-rating').textContent = movie.rating;
             document.getElementById('detail-overview').textContent = movie.overview;
 
-            // Direct actions integration
             const downloadBtn = document.getElementById('detail-download-btn');
-            downloadBtn.href = movie.downloadUrl;
+            downloadBtn.href = movie.downloadUrl || '#';
 
-            // Handle multiple tag values dynamically matches requirements
             const genresContainer = document.getElementById('detail-genres-container');
             genresContainer.innerHTML = '';
             if (movie.genres && Array.isArray(movie.genres)) {
                 movie.genres.forEach(g => {
                     const pill = document.createElement('span');
-                    pill.className = "bg-brand/10 text-brand text-[10px] font-bold px-2 py-0.5 rounded border border-brand/20 uppercase tracking-wide";
+                    pill.className = "bg-brand/10 text-brand text-[9px] font-bold px-2 py-0.5 rounded border border-brand/20 uppercase tracking-wide";
                     pill.textContent = g;
                     genresContainer.appendChild(pill);
                 });
             }
 
-            // Sync dynamic watchlist interactions
             updateWatchlistBtnUI(movie.id);
 
             const watchlistBtn = document.getElementById('detail-watchlist-btn');
@@ -944,10 +967,9 @@
                 updateWatchlistBtnUI(movie.id);
             };
 
-            // Programmatic dynamic share link configuration
             const shareBtn = document.getElementById('detail-share-btn');
             shareBtn.onclick = () => {
-                let botUsername = "your_telegram_bot"; // Change this parameter as required
+                let botUsername = "your_telegram_bot"; 
                 let shareLink = `https://t.me/${botUsername}/app?startapp=id_${movie.id}`;
                 
                 navigator.clipboard.writeText(shareLink).then(() => {
@@ -957,7 +979,6 @@
                 });
             };
 
-            // Overlay display transitions animation
             overlay.classList.remove('hidden');
             setTimeout(() => {
                 overlay.style.transform = 'translateY(0)';
@@ -971,17 +992,50 @@
             const isSaved = appState.watchlist.includes(movieId);
 
             if (isSaved) {
-                watchlistBtn.className = "flex-1 bg-brand text-white py-3 rounded-xl text-sm font-semibold active:scale-95 transition-transform flex items-center justify-center space-x-2";
+                watchlistBtn.className = "flex-1 bg-brand text-white py-3 rounded-xl text-xs font-semibold active:scale-95 transition-transform flex items-center justify-center space-x-1.5";
                 icon.className = "fa-solid fa-bookmark";
                 label.textContent = "Saved";
             } else {
-                watchlistBtn.className = "flex-1 bg-zinc-900 border border-zinc-850 text-white py-3 rounded-xl text-sm font-semibold active:scale-95 transition-transform flex items-center justify-center space-x-2";
+                watchlistBtn.className = "flex-1 bg-zinc-900 border border-zinc-850 text-white py-3 rounded-xl text-xs font-semibold active:scale-95 transition-transform flex items-center justify-center space-x-1.5";
                 icon.className = "fa-regular fa-bookmark";
                 label.textContent = "Add to List";
             }
         }
 
-        // Action Toast System
+        // Profile Console triggers implementation
+        function setupProfileDashboard() {
+            const modal = document.getElementById('profile-modal');
+            const trigger = document.getElementById('profile-trigger');
+            const closeBtn = document.getElementById('profile-close-btn');
+            const okBtn = document.getElementById('profile-ok-btn');
+
+            trigger.addEventListener('click', () => {
+                // Populate Telegram parameters
+                const nameLabel = document.getElementById('prof-name');
+                const userLabel = document.getElementById('prof-user');
+                const idLabel = document.getElementById('prof-id');
+                const countLabel = document.getElementById('prof-count');
+
+                if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+                    const u = window.Telegram.WebApp.initDataUnsafe.user;
+                    nameLabel.textContent = u.first_name || 'Anonymous Developer';
+                    userLabel.textContent = u.username ? `@${u.username}` : 'No username';
+                    idLabel.textContent = u.id || 'Not linked';
+                } else {
+                    nameLabel.textContent = 'Guest Developer';
+                    userLabel.textContent = '@guest';
+                    idLabel.textContent = 'Not connected';
+                }
+
+                countLabel.textContent = `${appState.watchlist.length} titles`;
+                modal.classList.remove('hidden');
+            });
+
+            const hideProfile = () => modal.classList.add('hidden');
+            closeBtn.addEventListener('click', hideProfile);
+            okBtn.addEventListener('click', hideProfile);
+        }
+
         function showToast(message) {
             const toast = document.getElementById('toast');
             const text = document.getElementById('toast-text');
@@ -997,4 +1051,4 @@
         }
     </script>
 </body>
-             </html>
+ </html>
