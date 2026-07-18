@@ -1,673 +1,842 @@
- <!DOCTYPE html>
-<html lang="en" class="dark">
+<!DOCTYPE html>
+<html lang="en" class="h-full select-none">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MLHBM - Console Management</title>
-    <!-- Tailwind CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MLHBM - Admin Console</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
                         brand: {
-                            500: '#ef4444',
-                            600: '#dc2626',
-                            700: '#b91c1c'
+                            DEFAULT: '#E50914',
+                            hover: '#B80710',
+                            dark: '#1F0103',
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'Inter', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #09090b;
-        }
+        /* Custom scrollbars and transitions */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            display: none;
         }
-        ::-webkit-scrollbar-track {
-            background: #09090b;
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #27272a;
-            border-radius: 4px;
+        .glass-panel {
+            background: rgba(24, 24, 27, 0.85);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(63, 63, 70, 0.4);
+        }
+        .glass-card {
+            background: rgba(39, 39, 42, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(63, 63, 70, 0.3);
         }
     </style>
 </head>
-<body class="text-zinc-100 min-h-screen pb-12 antialiased">
+<body class="bg-zinc-950 text-zinc-100 font-sans h-full flex flex-col overflow-hidden">
 
-    <!-- LOGIN WRAPPER OVERLAY -->
-    <div id="login-modal" class="fixed inset-0 z-50 bg-zinc-950 flex items-center justify-center p-4">
-        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-            <div class="text-center space-y-1">
-                <div class="w-12 h-12 rounded-xl bg-brand-600 flex items-center justify-center mx-auto mb-2">
-                    <i class="fa-solid fa-lock-open text-white text-lg"></i>
+    <!-- Passcode Gate Overlay -->
+    <div id="auth-overlay" class="fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center p-4">
+        <div class="w-full max-w-md glass-panel p-8 rounded-2xl border border-zinc-800 space-y-6 text-center shadow-2xl">
+            <div class="space-y-2">
+                <div class="w-16 h-16 bg-brand/10 border border-brand/20 rounded-full flex items-center justify-center mx-auto text-brand">
+                    <i class="fa-solid fa-lock text-2xl"></i>
                 </div>
-                <h2 class="text-lg font-bold text-white">Console Access Required</h2>
-                <p class="text-xs text-zinc-500">Provide passcode to modify content assets.</p>
+                <h2 class="text-2xl font-bold tracking-tight text-white">MLHBM Admin Panel</h2>
+                <p class="text-xs text-zinc-400">Please enter your management credentials</p>
             </div>
-            <div class="space-y-3">
-                <input type="password" id="passcode-input" placeholder="Enter administrative key" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-center text-zinc-100 focus:outline-none focus:border-brand-500">
-                <button onclick="attemptLogin()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-3 rounded-xl transition-colors">
-                    Authenticate
+            
+            <form id="auth-form" class="space-y-4">
+                <div class="relative">
+                    <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+                    <input type="password" id="passcode-input" placeholder="Passcode (Default: admin123)" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-3 pl-11 pr-4 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-brand transition-colors" required>
+                </div>
+                <button type="submit" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 px-4 rounded-xl transition-all duration-150 transform active:scale-[0.98]">
+                    Unlock Console
                 </button>
-            </div>
-            <p id="login-error" class="text-xs text-red-500 text-center hidden"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Invalid passcode key.</p>
+                <p id="auth-error" class="text-xs text-brand font-medium hidden">Invalid password. Please try again.</p>
+            </form>
         </div>
     </div>
 
-    <!-- MAIN ADMIN INTERFACE -->
-    <div id="admin-panel" class="hidden">
-        
-        <!-- Header -->
-        <header class="bg-zinc-900 border-b border-zinc-800/80 sticky top-0 z-20 px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center">
-                    <i class="fa-solid fa-screwdriver-wrench text-white"></i>
-                </div>
-                <div>
-                    <h1 class="font-extrabold text-base tracking-tight">Console Engine</h1>
-                    <p class="text-[10px] text-zinc-500 font-semibold tracking-wider uppercase">Content Delivery System</p>
-                </div>
+    <!-- Main Admin Shell Container -->
+    <div id="admin-shell" class="flex-1 flex flex-col overflow-hidden hidden">
+        <!-- Top Header -->
+        <header class="glass-panel sticky top-0 z-40 border-b border-zinc-900 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-brand font-black text-xl tracking-wider">MLHBM</span>
+                <span class="text-zinc-700">|</span>
+                <span class="text-[10px] font-bold uppercase bg-zinc-900 border border-zinc-800 text-zinc-400 px-2 py-0.5 rounded">Admin</span>
             </div>
-            <div class="flex items-center gap-3">
-                <button onclick="triggerImport()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-xs px-3.5 py-2 rounded-lg transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-file-import"></i> Import movies.json
-                </button>
-                <button onclick="exportJson()" class="bg-gradient-to-r from-brand-700 to-brand-600 hover:from-brand-600 hover:to-brand-500 text-white font-bold text-xs px-4 py-2 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-brand-950/20">
-                    <i class="fa-solid fa-circle-down"></i> Export JSON
-                </button>
-                <button onclick="terminateSession()" class="text-zinc-500 hover:text-zinc-300" title="Sign out">
-                    <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
-                </button>
-            </div>
+            <button id="logout-btn" class="bg-zinc-900 hover:bg-zinc-850 text-zinc-400 hover:text-white border border-zinc-800 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">
+                <i class="fa-solid fa-power-off"></i>
+            </button>
         </header>
 
-        <!-- Main Body Wrapper -->
-        <main class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+        <!-- Main Content Area with Bottom Padding for Navigation Bar -->
+        <main class="flex-1 overflow-y-auto no-scrollbar pb-28 p-4 space-y-6">
             
-            <!-- Dashboard Metrics -->
-            <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-zinc-900 border border-zinc-800/60 p-4.5 rounded-xl flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-lg bg-zinc-800/80 flex items-center justify-center text-brand-500 text-lg">
-                        <i class="fa-solid fa-film"></i>
-                    </div>
-                    <div>
-                        <span class="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Total Movies</span>
-                        <span id="metric-movies" class="text-xl font-black text-white">0</span>
-                    </div>
+            <!-- Metrics Row (Hidden on small mobile viewports to save space) -->
+            <div class="grid grid-cols-3 gap-3">
+                <div class="glass-card p-3 rounded-xl border border-zinc-800/50 flex flex-col justify-center">
+                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Movies</span>
+                    <h3 id="stat-movies-count" class="text-lg font-black text-white mt-0.5">0</h3>
                 </div>
-                <div class="bg-zinc-900 border border-zinc-800/60 p-4.5 rounded-xl flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-lg bg-zinc-800/80 flex items-center justify-center text-brand-500 text-lg">
-                        <i class="fa-solid fa-tags"></i>
-                    </div>
-                    <div>
-                        <span class="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Genres</span>
-                        <span id="metric-genres" class="text-xl font-black text-white">0</span>
-                    </div>
+                <div class="glass-card p-3 rounded-xl border border-zinc-800/50 flex flex-col justify-center">
+                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Genres</span>
+                    <h3 id="stat-genres-count" class="text-lg font-black text-white mt-0.5">0</h3>
                 </div>
-                <div class="bg-zinc-900 border border-zinc-800/60 p-4.5 rounded-xl flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-lg bg-zinc-800/80 flex items-center justify-center text-brand-500 text-lg">
-                        <i class="fa-solid fa-rectangle-ad"></i>
-                    </div>
-                    <div>
-                        <span class="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Active Banners</span>
-                        <span id="metric-banners" class="text-xl font-black text-white">0</span>
-                    </div>
+                <div class="glass-card p-3 rounded-xl border border-zinc-800/50 flex flex-col justify-center">
+                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Banners</span>
+                    <h3 id="stat-banners-count" class="text-lg font-black text-white mt-0.5">0</h3>
                 </div>
-                <div class="bg-zinc-900 border border-zinc-800/60 p-4.5 rounded-xl flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-lg bg-zinc-800/80 flex items-center justify-center text-brand-500 text-lg">
-                        <i class="fa-solid fa-globe"></i>
-                    </div>
-                    <div>
-                        <span class="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Bot Integration</span>
-                        <span id="metric-bot-status" class="text-xs font-black text-green-500 uppercase">Configured</span>
-                    </div>
-                </div>
-            </section>
+            </div>
 
-            <!-- Global Settings Section -->
-            <section class="bg-zinc-900 border border-zinc-800/60 rounded-2xl p-6 space-y-4">
-                <h3 class="text-base font-extrabold text-white flex items-center gap-2 border-b border-zinc-800 pb-3">
-                    <i class="fa-solid fa-sliders text-brand-500"></i> Settings Configuration
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-zinc-400 mb-1">Application Name</label>
-                        <input type="text" id="setting-app-name" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-zinc-400 mb-1">Telegram Bot Username (without @)</label>
-                        <input type="text" id="setting-bot-username" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-zinc-400 mb-1">Base Theme Color (Hex)</label>
-                        <input type="text" id="setting-theme-color" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500">
+            <!-- Two-Column Layout (Adjusts on Desktop) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- Dynamic Form (Takes up 5 columns in large layout) -->
+                <div id="left-form-container" class="lg:col-span-5 space-y-4">
+                    <div class="glass-panel p-5 rounded-2xl border border-zinc-800 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-zinc-900 pb-2">
+                            <h3 id="form-heading" class="text-xs font-bold text-white uppercase tracking-wider">Register New Movie</h3>
+                            <button id="form-reset-btn" class="text-xs text-brand font-semibold hover:underline hidden">
+                                Cancel Edit
+                            </button>
+                        </div>
+
+                        <form id="master-form" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-semibold text-zinc-400">Media Title</label>
+                                    <input type="text" id="m-title" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. Silo" required>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-semibold text-zinc-400">Release Year</label>
+                                    <input type="text" id="m-year" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. 2026" required>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-semibold text-zinc-400">Duration/Episodes</label>
+                                    <input type="text" id="m-runtime" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. 2h 10m" required>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-semibold text-zinc-400">Rating (0.0 - 10.0)</label>
+                                    <input type="text" id="m-rating" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. 8.5" required>
+                                </div>
+                            </div>
+
+                            <div id="category-select-wrapper" class="space-y-1">
+                                <label class="text-[10px] font-semibold text-zinc-400">Display Row Category</label>
+                                <select id="m-category" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand">
+                                    <!-- Populated Dynamically -->
+                                </select>
+                            </div>
+
+                            <!-- Multiple Dynamic Genre Tag Selection System -->
+                            <div class="space-y-1.5 border-t border-zinc-900 pt-3">
+                                <label class="text-[10px] font-semibold text-zinc-400 block">Select Dynamic Genres (Multiple)</label>
+                                <div id="genre-pool" class="flex flex-wrap gap-1 max-h-24 overflow-y-auto p-1.5 border border-zinc-900 rounded-lg no-scrollbar">
+                                    <!-- Dynamic Genre Pill Switches -->
+                                </div>
+                                <div class="flex gap-2">
+                                    <input type="text" id="new-genre-input" placeholder="Create tag..." class="flex-1 bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand">
+                                    <button type="button" id="add-genre-tag-btn" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold px-2.5 rounded-lg border border-zinc-750">
+                                        Create
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-semibold text-zinc-400">Media Description / Overview</label>
+                                <textarea id="m-overview" rows="2" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand resize-none" placeholder="Enter overview text..." required></textarea>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-semibold text-zinc-400">Poster URL</label>
+                                <input type="url" id="m-poster" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="https://domain.com/poster.jpg" required>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-semibold text-zinc-400">Backdrop/Banner URL</label>
+                                <input type="url" id="m-backdrop" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="https://domain.com/backdrop.jpg" required>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-semibold text-zinc-400">Download Target Link (URL)</label>
+                                <input type="url" id="m-download" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="https://t.me/your_bot" required>
+                            </div>
+
+                            <button type="submit" id="form-submit-btn" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-2.5 rounded-xl text-xs transition-colors shadow-lg shadow-brand/10">
+                                Save Catalog Entry
+                            </button>
+                        </form>
                     </div>
                 </div>
-            </section>
 
-            <!-- Genres Segment Manager -->
-            <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Genre List & Add -->
-                <div class="bg-zinc-900 border border-zinc-800/60 rounded-2xl p-6 space-y-4">
-                    <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center justify-between border-b border-zinc-800 pb-3">
-                        <span>Genres Taxonomy</span>
-                    </h3>
-                    <div class="flex gap-2">
-                        <input type="text" id="new-genre-input" placeholder="New genre..." class="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-brand-500">
-                        <button onclick="addGenre()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-3.5 py-2 rounded-lg">Add</button>
+                <!-- Database Listing Console (Takes up 7 columns) -->
+                <div id="right-listing-container" class="lg:col-span-7 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 id="list-panel-heading" class="text-xs font-bold text-white uppercase tracking-wider">Dynamic Catalog Records</h3>
+                        <span id="record-count-label" class="text-[10px] text-zinc-500 font-bold">0 Active Items</span>
                     </div>
-                    <div id="genres-list" class="flex flex-wrap gap-2 pt-2">
-                        <!-- Dynamic list pills with remove buttons -->
+
+                    <!-- Card Grid Container -->
+                    <div id="records-grid-container" class="grid grid-cols-1 gap-3 max-h-[600px] overflow-y-auto pr-1 no-scrollbar pb-10">
+                        <!-- Dynamic Records Cards -->
                     </div>
                 </div>
 
-                <!-- Banner Manager segment -->
-                <div class="lg:col-span-2 bg-zinc-900 border border-zinc-800/60 rounded-2xl p-6 space-y-4">
-                    <h3 class="text-sm font-bold text-white uppercase tracking-wider border-b border-zinc-800 pb-3 flex justify-between items-center">
-                        <span>Dynamic Hero Banners</span>
-                        <button onclick="openBannerForm()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold text-[10px] px-2.5 py-1 rounded">Add Banner</button>
-                    </h3>
-                    <div id="banners-list-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Dynamic Banners display -->
+                <!-- Database File Management (Takes up full width when active) -->
+                <div id="io-container" class="lg:col-span-12 space-y-4 hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Export Card -->
+                        <div class="glass-panel p-5 rounded-2xl border border-zinc-800 space-y-3">
+                            <div class="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400">
+                                <i class="fa-solid fa-cloud-arrow-down text-lg"></i>
+                            </div>
+                            <div class="space-y-0.5">
+                                <h3 class="text-sm font-bold text-white">Export movies.json</h3>
+                                <p class="text-[10px] text-zinc-400">Convert local modifications to a downloadable JSON file for your server.</p>
+                            </div>
+                            <button id="io-export-btn" class="bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-400 font-bold py-2 px-4 rounded-xl text-xs transition-all flex items-center space-x-2">
+                                <i class="fa-solid fa-file-export"></i>
+                                <span>Export database file</span>
+                            </button>
+                        </div>
+
+                        <!-- Import Card -->
+                        <div class="glass-panel p-5 rounded-2xl border border-zinc-800 space-y-3">
+                            <div class="w-10 h-10 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center text-blue-400">
+                                <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                            </div>
+                            <div class="space-y-0.5">
+                                <h3 class="text-sm font-bold text-white">Import movies.json</h3>
+                                <p class="text-[10px] text-zinc-400">Load a pre-configured movies.json database into your current editor memory.</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="file" id="io-file-input" accept=".json" class="hidden">
+                                <button id="io-trigger-btn" class="bg-zinc-900 hover:bg-zinc-850 text-white font-bold py-2 px-4 border border-zinc-800 rounded-xl text-xs transition-colors flex items-center space-x-2">
+                                    <i class="fa-solid fa-folder-open"></i>
+                                    <span>Choose File</span>
+                                </button>
+                                <span id="io-file-status" class="text-[10px] text-zinc-500">No file loaded</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </section>
 
-            <!-- Major Movie Database section -->
-            <section class="bg-zinc-900 border border-zinc-800/60 rounded-2xl p-6 space-y-4">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-4">
-                    <h3 class="text-base font-extrabold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-clapperboard text-brand-500"></i> Movie Library Catalog
-                    </h3>
-                    <button onclick="openMovieForm()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-lg flex items-center gap-2 shadow-md">
-                        <i class="fa-solid fa-plus"></i> Register New Movie
-                    </button>
-                </div>
-
-                <!-- Database Listing Grid -->
-                <div id="admin-movies-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Cards with individual edit and delete handles -->
-                </div>
-            </section>
-
+            </div>
         </main>
+
+        <!-- New Mobile-First Bottom Navigation Bar -->
+        <nav class="glass-panel fixed bottom-0 inset-x-0 z-45 border-t border-zinc-900 px-3 pb-safe pt-2 bg-zinc-950/90 backdrop-blur-md">
+            <div class="max-w-md mx-auto flex items-center justify-around h-12">
+                <button id="nav-btn-movies" class="admin-nav-item flex flex-col items-center justify-center space-y-1 text-brand active:scale-90 transition-transform">
+                    <i class="fa-solid fa-film text-lg"></i>
+                    <span class="text-[10px] font-bold">Movies</span>
+                </button>
+                <button id="nav-btn-banners" class="admin-nav-item flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300 active:scale-90 transition-transform">
+                    <i class="fa-solid fa-images text-lg"></i>
+                    <span class="text-[10px] font-semibold">Banners</span>
+                </button>
+                <button id="nav-btn-io" class="admin-nav-item flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300 active:scale-90 transition-transform">
+                    <i class="fa-solid fa-database text-lg"></i>
+                    <span class="text-[10px] font-semibold">Database</span>
+                </button>
+            </div>
+        </nav>
     </div>
 
-    <!-- DYNAMIC POPUP MODAL: MOVIE FORM -->
-    <div id="movie-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-zinc-900 border border-zinc-800 max-w-lg w-full rounded-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-4">
-            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
-                <h4 id="movie-modal-title" class="font-bold text-white text-base">Register Movie</h4>
-                <button onclick="closeMovieForm()" class="text-zinc-500 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <!-- Delete Confirmation Modal -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 bg-zinc-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="w-full max-w-sm glass-panel p-6 rounded-2xl border border-zinc-800 text-center space-y-5 shadow-2xl">
+            <div class="w-14 h-14 bg-brand/10 border border-brand/20 rounded-full flex items-center justify-center mx-auto text-brand">
+                <i class="fa-solid fa-triangle-exclamation text-xl"></i>
             </div>
-            <form id="movie-form" onsubmit="saveMovie(event)" class="space-y-4">
-                <input type="hidden" id="form-movie-id">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Title</label>
-                        <input type="text" id="form-movie-title" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Genre</label>
-                        <select id="form-movie-genre" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                            <!-- Populated options -->
-                        </select>
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Rating (e.g. 8.5)</label>
-                        <input type="text" id="form-movie-rating" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Release Year</label>
-                        <input type="text" id="form-movie-year" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Runtime</label>
-                        <input type="text" id="form-movie-runtime" placeholder="e.g. 120 min" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Poster Image Link</label>
-                        <input type="url" id="form-movie-image" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Backdrop Image Link</label>
-                        <input type="url" id="form-movie-backdrop" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Download Destination URL</label>
-                    <input type="url" id="form-movie-download" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Cast (comma separated)</label>
-                    <input type="text" id="form-movie-cast" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Synopsis</label>
-                    <textarea id="form-movie-synopsis" required rows="3" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500 resize-none"></textarea>
-                </div>
-                <div class="flex justify-end gap-2 border-t border-zinc-800 pt-3">
-                    <button type="button" onclick="closeMovieForm()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-xs px-4 py-2 rounded-lg">Cancel</button>
-                    <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-lg">Save Changes</button>
-                </div>
-            </form>
+            <div class="space-y-1.5">
+                <h3 class="text-base font-bold text-white">Confirm Removal</h3>
+                <p class="text-xs text-zinc-400 leading-relaxed">Are you sure you want to permanently delete this catalog entry? This process cannot be undone.</p>
+            </div>
+            <div class="flex items-center space-x-3 pt-1">
+                <button id="modal-cancel" class="flex-1 bg-zinc-900 border border-zinc-800 text-zinc-300 py-2.5 rounded-xl text-xs font-semibold hover:bg-zinc-850 transition-colors">
+                    No, Cancel
+                </button>
+                <button id="modal-confirm" class="flex-1 bg-brand hover:bg-brand-hover text-white py-2.5 rounded-xl text-xs font-bold transition-colors">
+                    Yes, Delete
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- DYNAMIC POPUP MODAL: BANNER FORM -->
-    <div id="banner-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-zinc-900 border border-zinc-800 max-w-sm w-full rounded-2xl shadow-2xl p-6 space-y-4">
-            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
-                <h4 id="banner-modal-title" class="font-bold text-white text-base">Setup Spotlight Banner</h4>
-                <button onclick="closeBannerForm()" class="text-zinc-500 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form id="banner-form" onsubmit="saveBanner(event)" class="space-y-4">
-                <input type="hidden" id="form-banner-id">
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Banner Title</label>
-                    <input type="text" id="form-banner-title" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Subtitle Description</label>
-                    <input type="text" id="form-banner-subtitle" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Banner Image Link</label>
-                    <input type="url" id="form-banner-image" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Connects to Movie Link ID</label>
-                    <select id="form-banner-movie" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
-                        <!-- Populated movies -->
-                    </select>
-                </div>
-                <div class="flex justify-end gap-2 border-t border-zinc-800 pt-3">
-                    <button type="button" onclick="closeBannerForm()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-xs px-4 py-2 rounded-lg">Cancel</button>
-                    <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-lg">Save Banner</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- SYSTEM TEXT AREA/FILE IMPORTER -->
-    <input type="file" id="json-file-input" class="hidden" accept=".json" onchange="processImportFile(event)">
-
-    <!-- CORE ADMIN ENGINE -->
+    <!-- Application Controller Logic -->
     <script>
-        const STORAGE_KEY = 'mlhbm_admin_authed';
-        // Admin credentials matching standard instruction
-        const DEFAULT_PASSCODE = 'admin123';
-
-        // Internal Working Memory Database Template
-        let db = {
-            settings: {
-                appName: "MLHBM Premium Cinema",
-                themeColor: "#09090b",
-                telegramBotUsername: "MLHBMBot",
-                contactSupport: ""
-            },
-            genres: ["Trending", "Action", "Drama", "Sci-Fi", "Thriller"],
+        // Core Working State
+        let dbState = {
+            settings: { appName: "MLHBM", primaryColor: "#E50914" },
+            categories: ["Trending Now", "Top Rated Movies", "Top Rated Series"],
             banners: [],
             movies: []
         };
 
-        // Authentication Gate Checks
-        function attemptLogin() {
-            const inputVal = document.getElementById('passcode-input').value;
-            const errEl = document.getElementById('login-error');
-            
-            if (inputVal === DEFAULT_PASSCODE) {
-                sessionStorage.setItem(STORAGE_KEY, 'true');
-                document.getElementById('login-modal').classList.add('hidden');
-                document.getElementById('admin-panel').classList.remove('hidden');
-                errEl.classList.add('hidden');
-                initDashboard();
+        let dynamicGenres = ["Action", "Sci-Fi", "Thriller", "Adventure", "Fantasy", "Horror", "Drama", "Romance", "Comedy", "Animation"];
+        let selectedFormGenres = [];
+        let currentEditingId = null;
+        let activeAdminTab = 'movies'; // 'movies', 'banners', 'io'
+        let pendingDeleteTarget = null; // { type: 'movie'|'banner', id: string }
+
+        // Security / session control on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const unlocked = sessionStorage.getItem('mlhbm_admin_unlocked');
+            if (unlocked === 'true') {
+                showAdminDashboard();
             } else {
-                errEl.classList.remove('hidden');
+                setupAuth();
             }
-        }
-
-        function checkSession() {
-            if (sessionStorage.getItem(STORAGE_KEY) === 'true') {
-                document.getElementById('login-modal').classList.add('hidden');
-                document.getElementById('admin-panel').classList.remove('hidden');
-                initDashboard();
-            }
-        }
-
-        function terminateSession() {
-            sessionStorage.removeItem(STORAGE_KEY);
-            window.location.reload();
-        }
-
-        // Dashboard Initializations
-        async function initDashboard() {
-            // Check for previous cached schema in localStorage first so states survive reloads
-            const cachedSchema = localStorage.getItem('mlhbm_current_schema');
-            if (cachedSchema) {
-                try {
-                    db = JSON.parse(cachedSchema);
-                } catch(e) {
-                    console.error("Local storage schema load failed. Reverting to empty configuration.");
-                }
-            }
-            syncUiFromData();
-        }
-
-        function syncUiFromData() {
-            // Metrics
-            document.getElementById('metric-movies').innerText = db.movies.length;
-            document.getElementById('metric-genres').innerText = db.genres.length;
-            document.getElementById('metric-banners').innerText = db.banners.length;
-
-            // Settings Fields
-            document.getElementById('setting-app-name').value = db.settings.appName;
-            document.getElementById('setting-bot-username').value = db.settings.telegramBotUsername;
-            document.getElementById('setting-theme-color').value = db.settings.themeColor;
-
-            // Save state to quick browser cache storage
-            localStorage.setItem('mlhbm_current_schema', JSON.stringify(db));
-
-            renderGenrePills();
-            renderBannersList();
-            renderMoviesList();
-            populateFormDropdowns();
-        }
-
-        // Generic Event Listeners: Watch settings inputs for updates
-        ['setting-app-name', 'setting-bot-username', 'setting-theme-color'].forEach(id => {
-            document.getElementById(id).addEventListener('input', () => {
-                db.settings.appName = document.getElementById('setting-app-name').value;
-                db.settings.telegramBotUsername = document.getElementById('setting-bot-username').value;
-                db.settings.themeColor = document.getElementById('setting-theme-color').value;
-                localStorage.setItem('mlhbm_current_schema', JSON.stringify(db));
-            });
         });
 
-        // Genres Management Rules
-        function renderGenrePills() {
-            const container = document.getElementById('genres-list');
-            container.innerHTML = db.genres.map(genre => {
-                return `
-                    <span class="inline-flex items-center gap-1.5 bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-semibold px-3 py-1.5 rounded-xl">
-                        ${genre}
-                        <button onclick="removeGenre('${genre}')" class="text-zinc-500 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
-                    </span>
-                `;
-            }).join('');
+        function setupAuth() {
+            const form = document.getElementById('auth-form');
+            const input = document.getElementById('passcode-input');
+            const errorMsg = document.getElementById('auth-error');
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (input.value === 'admin123') {
+                    sessionStorage.setItem('mlhbm_admin_unlocked', 'true');
+                    showAdminDashboard();
+                } else {
+                    errorMsg.classList.remove('hidden');
+                    input.value = '';
+                    input.focus();
+                }
+            });
         }
 
-        function addGenre() {
+        function showAdminDashboard() {
+            document.getElementById('auth-overlay').classList.add('hidden');
+            document.getElementById('admin-shell').classList.remove('hidden');
+            
+            loadMockDataset();
+            setupTabControls();
+            setupFormInteractions();
+            setupDataHandlers();
+            
+            // Sync current forms & dataset
+            resetMasterForm();
+            syncDynamicDashboardView();
+        }
+
+        // Lock Panel Action
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            sessionStorage.removeItem('mlhbm_admin_unlocked');
+            window.location.reload();
+        });
+
+        // Initialize fallback content mapping (matches client application schema)
+        function loadMockDataset() {
+            dbState.banners = [
+                {
+                    id: "banner-1",
+                    title: "Silo",
+                    year: "2023",
+                    rating: "8.2",
+                    overview: "In a ruined and toxic future, thousands live in a giant silo deep underground. After its sheriff breaks a cardinal rule and residents die mysteriously, engineer Juliette starts to uncover shocking secrets.",
+                    backdrop: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1200",
+                    poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=600",
+                    runtime: "10 Episodes",
+                    genres: ["Sci-Fi", "Drama", "Thriller"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=silo"
+                },
+                {
+                    id: "banner-2",
+                    title: "The Odyssey",
+                    year: "2026",
+                    rating: "6.9",
+                    overview: "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
+                    backdrop: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=1200",
+                    poster: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=600",
+                    runtime: "2h 53m",
+                    genres: ["Adventure", "Action", "Fantasy"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=odyssey"
+                }
+            ];
+
+            dbState.movies = [
+                {
+                    id: "movie-1",
+                    title: "The Odyssey",
+                    category: "Trending Now",
+                    year: "2026",
+                    rating: "6.9",
+                    overview: "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
+                    poster: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "2h 53m",
+                    genres: ["Adventure", "Action", "Fantasy"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=odyssey"
+                },
+                {
+                    id: "movie-2",
+                    title: "Backrooms",
+                    category: "Trending Now",
+                    year: "2026",
+                    rating: "7.0",
+                    overview: "An atmospheric exploration into the liminal terror of anomalous, yellow-walled spaces. A rescue team must map out an endless, repeating layout while evading unidentified entity signatures.",
+                    poster: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "1h 44m",
+                    genres: ["Horror", "Sci-Fi", "Thriller"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=backrooms"
+                },
+                {
+                    id: "movie-3",
+                    title: "Obsession",
+                    category: "Trending Now",
+                    year: "2026",
+                    rating: "8.2",
+                    overview: "A psychological thriller detailing the breakdown of a renowned cryptographer who is lured into decoding ancient texts of unknown origin, gradually revealing secrets best kept forgotten.",
+                    poster: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "2h 10m",
+                    genres: ["Drama", "Thriller"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=obsession"
+                },
+                {
+                    id: "movie-4",
+                    title: "Accidental Love",
+                    category: "Top Rated Movies",
+                    year: "2026",
+                    rating: "9.1",
+                    overview: "Two polar opposite rival investigators are forced together when their respective cases intersect. Soon they learn that their professional collision is anything but accidental.",
+                    poster: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "2h 15m",
+                    genres: ["Romance", "Comedy"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=accident"
+                },
+                {
+                    id: "movie-5",
+                    title: "Swapped",
+                    category: "Top Rated Movies",
+                    year: "2026",
+                    rating: "8.9",
+                    overview: "When a world-renowned fantasy designer trades lives with a simple village artisan, chaotic high-stakes events force both to re-evaluate what truly matters.",
+                    poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "1h 56m",
+                    genres: ["Animation", "Comedy", "Fantasy"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=swapped"
+                },
+                {
+                    id: "movie-6",
+                    title: "Teach You a Lesson",
+                    category: "Top Rated Series",
+                    year: "2026",
+                    rating: "9.5",
+                    overview: "An brilliant but unorthodox professor takes a personal interest in systemic school fraud, orchestrating complex, psychological traps to hold corrupt board administrators accountable.",
+                    poster: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "12 Episodes",
+                    genres: ["Drama", "Thriller"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=teach"
+                },
+                {
+                    id: "movie-7",
+                    title: "Dutton Ranch",
+                    category: "Top Rated Series",
+                    year: "2026",
+                    rating: "9.3",
+                    overview: "A grit-infused drama exploring the legal maneuvers, family sacrifices, and high-tension standoffs of managing a historic mountain valley boundary reservation.",
+                    poster: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "8 Episodes",
+                    genres: ["Action", "Drama"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=dutton"
+                }
+            ];
+
+            // Auto-load genres
+            const customPool = new Set(dynamicGenres);
+            dbState.movies.forEach(m => m.genres?.forEach(g => customPool.add(g)));
+            dynamicGenres = Array.from(customPool);
+        }
+
+        // Bottom Navigation Controller Tab Selection
+        function setupTabControls() {
+            const tabs = [
+                { id: 'movies', btn: document.getElementById('nav-btn-movies') },
+                { id: 'banners', btn: document.getElementById('nav-btn-banners') },
+                { id: 'io', btn: document.getElementById('nav-btn-io') }
+            ];
+
+            tabs.forEach(t => {
+                t.btn.addEventListener('click', () => {
+                    activeAdminTab = t.id;
+                    
+                    // Style Bottom Nav items dynamically
+                    tabs.forEach(item => {
+                        const label = item.btn.querySelector('span');
+                        if (item.id === t.id) {
+                            item.btn.className = "admin-nav-item flex flex-col items-center justify-center space-y-1 text-brand active:scale-90 transition-transform";
+                            label.classList.add('font-bold');
+                        } else {
+                            item.btn.className = "admin-nav-item flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300 active:scale-90 transition-transform";
+                            label.classList.remove('font-bold');
+                        }
+                    });
+
+                    // Hide/Show correct screen context containers
+                    const formContainer = document.getElementById('left-form-container');
+                    const listContainer = document.getElementById('right-listing-container');
+                    const ioContainer = document.getElementById('io-container');
+
+                    if (t.id === 'io') {
+                        formContainer.classList.add('hidden');
+                        listContainer.classList.add('hidden');
+                        ioContainer.classList.remove('hidden');
+                    } else {
+                        formContainer.classList.remove('hidden');
+                        listContainer.classList.remove('hidden');
+                        ioContainer.classList.add('hidden');
+
+                        resetMasterForm();
+                        syncDynamicDashboardView();
+                    }
+                });
+            });
+        }
+
+        // Tag switches rendering engine
+        function renderGenreSwitches() {
+            const pool = document.getElementById('genre-pool');
+            pool.innerHTML = '';
+
+            dynamicGenres.forEach(genre => {
+                const isSelected = selectedFormGenres.includes(genre);
+                const pill = document.createElement('button');
+                pill.type = 'button';
+                pill.className = `text-[10px] px-2 py-0.5 rounded-md border transition-all ${
+                    isSelected 
+                    ? 'bg-brand/20 border-brand text-brand font-bold' 
+                    : 'bg-zinc-900 border-zinc-800 text-zinc-400 font-medium'
+                }`;
+                pill.textContent = genre;
+                pill.addEventListener('click', () => {
+                    if (isSelected) {
+                        selectedFormGenres = selectedFormGenres.filter(g => g !== genre);
+                    } else {
+                        selectedFormGenres.push(genre);
+                    }
+                    renderGenreSwitches();
+                });
+                pool.appendChild(pill);
+            });
+        }
+
+        // Populate dynamic drop-down selectors
+        function populateCategorySelectors() {
+            const selector = document.getElementById('m-category');
+            selector.innerHTML = '';
+            dbState.categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                selector.appendChild(opt);
+            });
+        }
+
+        // Dynamically add a new genre pill switch
+        document.getElementById('add-genre-tag-btn').addEventListener('click', () => {
             const input = document.getElementById('new-genre-input');
             const val = input.value.trim();
-            if (val && !db.genres.includes(val)) {
-                db.genres.push(val);
+            if (val.length > 0 && !dynamicGenres.includes(val)) {
+                dynamicGenres.push(val);
+                selectedFormGenres.push(val);
                 input.value = '';
-                syncUiFromData();
+                renderGenreSwitches();
             }
-        }
+        });
 
-        function removeGenre(genre) {
-            db.genres = db.genres.filter(g => g !== genre);
-            syncUiFromData();
-        }
+        // Form Submit Handler (Refactored edit route)
+        function setupFormInteractions() {
+            const form = document.getElementById('master-form');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
 
-        // Dropdown dynamic selectors builder
-        function populateFormDropdowns() {
-            const genreSelect = document.getElementById('form-movie-genre');
-            genreSelect.innerHTML = db.genres.map(g => `<option value="${g}">${g}</option>`).join('');
+                // Build modern dynamic object
+                const entryData = {
+                    id: currentEditingId || (activeAdminTab === 'movies' ? `movie-${Date.now()}` : `banner-${Date.now()}`),
+                    title: document.getElementById('m-title').value.trim(),
+                    year: document.getElementById('m-year').value.trim(),
+                    runtime: document.getElementById('m-runtime').value.trim(),
+                    rating: document.getElementById('m-rating').value.trim(),
+                    overview: document.getElementById('m-overview').value.trim(),
+                    poster: document.getElementById('m-poster').value.trim(),
+                    backdrop: document.getElementById('m-backdrop').value.trim(),
+                    downloadUrl: document.getElementById('m-download').value.trim(),
+                    genres: [...selectedFormGenres]
+                };
 
-            const bannerMovieSelect = document.getElementById('form-banner-movie');
-            bannerMovieSelect.innerHTML = `<option value="">No link target</option>` + db.movies.map(m => `<option value="${m.id}">${m.title}</option>`).join('');
-        }
-
-        // Banner Lists Renderers
-        function renderBannersList() {
-            const container = document.getElementById('banners-list-grid');
-            if (db.banners.length === 0) {
-                container.innerHTML = `<div class="col-span-2 text-center py-6 text-xs text-zinc-500">No Hero Banners declared.</div>`;
-                return;
-            }
-
-            container.innerHTML = db.banners.map(banner => {
-                const targetMovie = db.movies.find(m => m.id === banner.movieId);
-                return `
-                    <div class="bg-zinc-950 border border-zinc-850 p-3 rounded-xl flex gap-3.5 items-center relative">
-                        <div class="w-16 h-16 bg-zinc-900 border border-zinc-850 rounded-lg overflow-hidden flex-shrink-0">
-                            <img src="${banner.image}" alt="" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1 space-y-1">
-                            <h4 class="text-xs font-bold text-white leading-tight">${banner.title}</h4>
-                            <p class="text-[10px] text-zinc-500 font-medium">${banner.subtitle}</p>
-                            <span class="inline-block text-[9px] bg-zinc-900 text-brand-400 border border-zinc-800 px-2 py-0.5 rounded font-extrabold">Link: ${targetMovie ? targetMovie.title : 'None'}</span>
-                        </div>
-                        <div class="absolute top-2 right-2 flex gap-1">
-                            <button onclick="editBanner('${banner.id}')" class="text-zinc-500 hover:text-white p-1 text-xs"><i class="fa-solid fa-pencil"></i></button>
-                            <button onclick="deleteBanner('${banner.id}')" class="text-zinc-500 hover:text-red-500 p-1 text-xs"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Banners Form triggers
-        function openBannerForm(bannerId = '') {
-            document.getElementById('banner-form').reset();
-            const modal = document.getElementById('banner-modal');
-            const titleEl = document.getElementById('banner-modal-title');
-            
-            if (bannerId) {
-                titleEl.innerText = "Edit Spotlight Banner";
-                const b = db.banners.find(b => b.id === bannerId);
-                if (b) {
-                    document.getElementById('form-banner-id').value = b.id;
-                    document.getElementById('form-banner-title').value = b.title;
-                    document.getElementById('form-banner-subtitle').value = b.subtitle;
-                    document.getElementById('form-banner-image').value = b.image;
-                    document.getElementById('form-banner-movie').value = b.movieId || '';
-                }
-            } else {
-                titleEl.innerText = "Add Spotlight Banner";
-                document.getElementById('form-banner-id').value = '';
-            }
-            modal.classList.remove('hidden');
-        }
-
-        function closeBannerForm() {
-            document.getElementById('banner-modal').classList.add('hidden');
-        }
-
-        function saveBanner(e) {
-            e.preventDefault();
-            const id = document.getElementById('form-banner-id').value || 'b' + Date.now();
-            const isEditing = document.getElementById('form-banner-id').value ? true : false;
-
-            const bannerObj = {
-                id,
-                title: document.getElementById('form-banner-title').value,
-                subtitle: document.getElementById('form-banner-subtitle').value,
-                image: document.getElementById('form-banner-image').value,
-                movieId: document.getElementById('form-banner-movie').value || null
-            };
-
-            if (isEditing) {
-                const idx = db.banners.findIndex(b => b.id === id);
-                if (idx > -1) db.banners[idx] = bannerObj;
-            } else {
-                db.banners.push(bannerObj);
-            }
-
-            closeBannerForm();
-            syncUiFromData();
-        }
-
-        function deleteBanner(id) {
-            db.banners = db.banners.filter(b => b.id !== id);
-            syncUiFromData();
-        }
-
-        // Movie Database Renderers
-        function renderMoviesList() {
-            const container = document.getElementById('admin-movies-grid');
-            if (db.movies.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-12 text-sm text-zinc-500"><i class="fa-regular fa-folder-open text-3xl block mb-2 text-zinc-700"></i> No registered catalog elements found. Use the forms to create some.</div>`;
-                return;
-            }
-
-            container.innerHTML = db.movies.map(movie => {
-                return `
-                    <div class="bg-zinc-950 border border-zinc-850 p-3 rounded-xl flex gap-3.5 relative">
-                        <div class="w-14 aspect-[2/3] bg-zinc-900 border border-zinc-850 rounded-lg overflow-hidden flex-shrink-0">
-                            <img src="${movie.image}" alt="" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1 space-y-1">
-                            <span class="inline-block bg-zinc-900 text-brand-400 border border-zinc-850 text-[9px] font-extrabold px-1.5 py-0.2 rounded uppercase">${movie.genre}</span>
-                            <h4 class="text-xs font-bold text-white line-clamp-1 leading-tight">${movie.title}</h4>
-                            <p class="text-[10px] text-zinc-500 font-medium">${movie.releaseYear} • ${movie.runtime || 'N/A'}</p>
-                            <p class="text-[10px] text-zinc-400 font-semibold leading-tight line-clamp-1 mt-1"><i class="fa-solid fa-star text-brand-500 mr-0.5"></i> ${movie.rating}</p>
-                        </div>
-                        <div class="absolute top-2 right-2 flex gap-1">
-                            <button onclick="editMovie('${movie.id}')" class="text-zinc-500 hover:text-white p-1 text-xs" title="Edit"><i class="fa-solid fa-pencil"></i></button>
-                            <button onclick="deleteMovie('${movie.id}')" class="text-zinc-500 hover:text-red-500 p-1 text-xs" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Movies Modal handlers
-        function openMovieForm(movieId = '') {
-            document.getElementById('movie-form').reset();
-            const modal = document.getElementById('movie-modal');
-            const titleEl = document.getElementById('movie-modal-title');
-            
-            // Re-populate choices in case new genres were created
-            populateFormDropdowns();
-
-            if (movieId) {
-                titleEl.innerText = "Edit Movie Entry Details";
-                const m = db.movies.find(x => x.id === movieId);
-                if (m) {
-                    document.getElementById('form-movie-id').value = m.id;
-                    document.getElementById('form-movie-title').value = m.title;
-                    document.getElementById('form-movie-genre').value = m.genre;
-                    document.getElementById('form-movie-rating').value = m.rating;
-                    document.getElementById('form-movie-year').value = m.releaseYear;
-                    document.getElementById('form-movie-runtime').value = m.runtime || '';
-                    document.getElementById('form-movie-image').value = m.image;
-                    document.getElementById('form-movie-backdrop').value = m.backdrop || '';
-                    document.getElementById('form-movie-download').value = m.downloadUrl;
-                    document.getElementById('form-movie-cast').value = m.cast || '';
-                    document.getElementById('form-movie-synopsis').value = m.synopsis || '';
-                }
-            } else {
-                titleEl.innerText = "Register New Movie Entry";
-                document.getElementById('form-movie-id').value = '';
-            }
-            modal.classList.remove('hidden');
-        }
-
-        function closeMovieForm() {
-            document.getElementById('movie-modal').classList.add('hidden');
-        }
-
-        function saveMovie(e) {
-            e.preventDefault();
-            const id = document.getElementById('form-movie-id').value || 'm' + Date.now();
-            const isEditing = document.getElementById('form-movie-id').value ? true : false;
-
-            const movieObj = {
-                id,
-                title: document.getElementById('form-movie-title').value,
-                genre: document.getElementById('form-movie-genre').value,
-                rating: document.getElementById('form-movie-rating').value,
-                releaseYear: document.getElementById('form-movie-year').value,
-                runtime: document.getElementById('form-movie-runtime').value,
-                image: document.getElementById('form-movie-image').value,
-                backdrop: document.getElementById('form-movie-backdrop').value,
-                downloadUrl: document.getElementById('form-movie-download').value,
-                cast: document.getElementById('form-movie-cast').value,
-                synopsis: document.getElementById('form-movie-synopsis').value
-            };
-
-            if (isEditing) {
-                const idx = db.movies.findIndex(x => x.id === id);
-                if (idx > -1) db.movies[idx] = movieObj;
-            } else {
-                db.movies.push(movieObj);
-            }
-
-            closeMovieForm();
-            syncUiFromData();
-        }
-
-        function deleteMovie(id) {
-            if (confirm("Confirm removal of this movie registration from the catalog database?")) {
-                db.movies = db.movies.filter(x => x.id !== id);
-                // Clean references in banners too
-                db.banners.forEach(b => {
-                    if (b.movieId === id) b.movieId = null;
-                });
-                syncUiFromData();
-            }
-        }
-
-        // File Operations (Pure JAMstack integration helpers)
-        function triggerImport() {
-            document.getElementById('json-file-input').click();
-        }
-
-        function processImportFile(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const parsed = JSON.parse(evt.target.result);
-                    if (parsed && typeof parsed === 'object') {
-                        db = {
-                            settings: { ...db.settings, ...(parsed.settings || {}) },
-                            genres: parsed.genres || db.genres,
-                            banners: parsed.banners || db.banners,
-                            movies: parsed.movies || db.movies
-                        };
-                        syncUiFromData();
-                        alert("Database configuration elements merged successfully.");
+                if (activeAdminTab === 'movies') {
+                    entryData.category = document.getElementById('m-category').value;
+                    
+                    if (currentEditingId) {
+                        // EXPLICIT EDIT OPERATION (Guarantees matching id updates successfully)
+                        const idx = dbState.movies.findIndex(m => String(m.id) === String(currentEditingId));
+                        if (idx !== -1) {
+                            dbState.movies[idx] = entryData;
+                        }
                     } else {
-                        throw new Error("Invalid structure format.");
+                        // CREATE OPERATION
+                        dbState.movies.push(entryData);
                     }
-                } catch(error) {
-                    alert("Error parsing document. Verify your schema is a valid movies.json format.");
+                } else {
+                    if (currentEditingId) {
+                        // EXPLICIT EDIT BANNER OPERATION
+                        const idx = dbState.banners.findIndex(b => String(b.id) === String(currentEditingId));
+                        if (idx !== -1) {
+                            dbState.banners[idx] = entryData;
+                        }
+                    } else {
+                        // CREATE BANNER OPERATION
+                        dbState.banners.push(entryData);
+                    }
                 }
-            };
-            reader.readAsText(file);
+
+                resetMasterForm();
+                syncDynamicDashboardView();
+            });
+
+            document.getElementById('form-reset-btn').addEventListener('click', resetMasterForm);
         }
 
-        function exportJson() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 4));
-            const dlAnchorElem = document.createElement('a');
-            dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", "movies.json");
-            dlAnchorElem.click();
+        function resetMasterForm() {
+            currentEditingId = null;
+            selectedFormGenres = [];
+            document.getElementById('master-form').reset();
+            document.getElementById('form-reset-btn').classList.add('hidden');
+            
+            if (activeAdminTab === 'movies') {
+                document.getElementById('form-heading').textContent = "Register New Movie";
+                document.getElementById('category-select-wrapper').classList.remove('hidden');
+            } else {
+                document.getElementById('form-heading').textContent = "Register New Banner";
+                document.getElementById('category-select-wrapper').classList.add('hidden');
+            }
+            document.getElementById('form-submit-btn').textContent = "Save Catalog Entry";
+
+            renderGenreSwitches();
+            populateCategorySelectors();
         }
 
-        // Run Verification on system load
-        window.addEventListener('DOMContentLoaded', checkSession);
+        // Sync and refresh catalog list layouts
+        function syncDynamicDashboardView() {
+            document.getElementById('stat-movies-count').textContent = dbState.movies.length;
+            document.getElementById('stat-banners-count').textContent = dbState.banners.length;
+
+            const allGenres = new Set();
+            dbState.movies.forEach(m => m.genres?.forEach(g => allGenres.add(g)));
+            document.getElementById('stat-genres-count').textContent = allGenres.size;
+
+            const label = document.getElementById('list-panel-heading');
+            const countLabel = document.getElementById('record-count-label');
+            
+            if (activeAdminTab === 'movies') {
+                label.textContent = "Dynamic Catalog Records";
+                countLabel.textContent = `${dbState.movies.length} Active Items`;
+                renderRecordsGrid(dbState.movies, 'movie');
+            } else {
+                label.textContent = "Hero Slider Banners";
+                countLabel.textContent = `${dbState.banners.length} Banners`;
+                renderRecordsGrid(dbState.banners, 'banner');
+            }
+        }
+
+        function renderRecordsGrid(dataset, type) {
+            const container = document.getElementById('records-grid-container');
+            container.innerHTML = '';
+
+            if (dataset.length === 0) {
+                container.innerHTML = `
+                    <div class="glass-card py-12 px-4 rounded-xl border border-zinc-900 text-center space-y-2">
+                        <i class="fa-solid fa-folder-open text-3xl text-zinc-700"></i>
+                        <p class="text-sm text-zinc-400">No active entries found.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            dataset.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "glass-card p-3 rounded-xl border border-zinc-800/60 flex items-center justify-between space-x-3";
+                const badgesHtml = item.genres ? item.genres.map(g => `<span class="bg-zinc-900 border border-zinc-800 text-zinc-400 text-[9px] font-bold px-1.5 py-0.5 rounded">${g}</span>`).join(' ') : '';
+
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3 min-w-0 flex-1">
+                        <img src="${item.poster}" alt="${item.title}" class="w-10 h-14 rounded-lg object-cover bg-zinc-900 border border-zinc-800/80 shrink-0">
+                        <div class="min-w-0 flex-1 space-y-0.5">
+                            <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
+                            <div class="flex items-center space-x-1.5 text-[9px] text-zinc-500 font-semibold">
+                                <span>${item.year}</span>
+                                <span>•</span>
+                                <span>${item.runtime}</span>
+                                <span>•</span>
+                                <span class="text-brand font-bold"><i class="fa-solid fa-star text-[8px]"></i> ${item.rating}</span>
+                            </div>
+                            <div class="flex flex-wrap gap-1 pt-0.5">${badgesHtml}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 shrink-0">
+                        <button onclick="triggerEditRecord('${type}', '${item.id}')" class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors">
+                            <i class="fa-solid fa-pencil"></i>
+                        </button>
+                        <button onclick="triggerDeleteModal('${type}', '${item.id}')" class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-500 hover:text-brand flex items-center justify-center text-xs transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Pre-populate Master Form inputs for Editing
+        window.triggerEditRecord = function(type, id) {
+            const item = type === 'movie' 
+                ? dbState.movies.find(m => String(m.id) === String(id)) 
+                : dbState.banners.find(b => String(b.id) === String(id));
+            
+            if (!item) return;
+
+            currentEditingId = item.id;
+            selectedFormGenres = [...(item.genres || [])];
+
+            document.getElementById('m-title').value = item.title;
+            document.getElementById('m-year').value = item.year;
+            document.getElementById('m-runtime').value = item.runtime;
+            document.getElementById('m-rating').value = item.rating;
+            document.getElementById('m-overview').value = item.overview;
+            document.getElementById('m-poster').value = item.poster;
+            document.getElementById('m-backdrop').value = item.backdrop;
+            document.getElementById('m-download').value = item.downloadUrl;
+
+            document.getElementById('form-reset-btn').classList.remove('hidden');
+            document.getElementById('form-heading').textContent = `Editing: ${item.title}`;
+            document.getElementById('form-submit-btn').textContent = "Apply Changes";
+
+            if (type === 'movie') {
+                document.getElementById('m-category').value = item.category || dbState.categories[0];
+                document.getElementById('category-select-wrapper').classList.remove('hidden');
+            } else {
+                document.getElementById('category-select-wrapper').classList.add('hidden');
+            }
+
+            renderGenreSwitches();
+        }
+
+        // Clear selection target modals
+        window.triggerDeleteModal = function(type, id) {
+            pendingDeleteTarget = { type, id };
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        }
+
+        document.getElementById('modal-cancel').addEventListener('click', () => {
+            pendingDeleteTarget = null;
+            document.getElementById('confirm-modal').classList.add('hidden');
+        });
+
+        document.getElementById('modal-confirm').addEventListener('click', () => {
+            if (pendingDeleteTarget) {
+                const { type, id } = pendingDeleteTarget;
+                if (type === 'movie') {
+                    dbState.movies = dbState.movies.filter(m => String(m.id) !== String(id));
+                } else {
+                    dbState.banners = dbState.banners.filter(b => String(b.id) !== String(id));
+                }
+                
+                if (String(currentEditingId) === String(id)) {
+                    resetMasterForm();
+                }
+
+                pendingDeleteTarget = null;
+                document.getElementById('confirm-modal').classList.add('hidden');
+                syncDynamicDashboardView();
+            }
+        });
+
+        // Dynamic File I/O setup
+        function setupDataHandlers() {
+            document.getElementById('io-export-btn').addEventListener('click', () => {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dbState, null, 4));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", "movies.json");
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+            });
+
+            const triggerBtn = document.getElementById('io-trigger-btn');
+            const fileInput = document.getElementById('io-file-input');
+            const fileStatus = document.getElementById('io-file-status');
+
+            triggerBtn.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                fileStatus.textContent = file.name;
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const parsedData = JSON.parse(event.target.result);
+                        if (parsedData.movies && parsedData.banners && parsedData.categories) {
+                            dbState = parsedData;
+                            
+                            const customPool = new Set(dynamicGenres);
+                            dbState.movies.forEach(m => m.genres?.forEach(g => customPool.add(g)));
+                            dynamicGenres = Array.from(customPool);
+
+                            resetMasterForm();
+                            syncDynamicDashboardView();
+                            alert("Database Configuration Loaded Successfully!");
+                        } else {
+                            throw new Error("Invalid schema parameters");
+                        }
+                    } catch (err) {
+                        alert("File parsing failed: Check json schema structure.");
+                    }
+                };
+                reader.readAsText(file);
+            });
+        }
     </script>
 </body>
-</html>
+ </html>
