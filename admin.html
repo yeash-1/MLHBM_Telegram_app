@@ -1,0 +1,673 @@
+ <!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLHBM - Console Management</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #09090b;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-zinc-100 min-h-screen pb-12 antialiased">
+
+    <!-- LOGIN WRAPPER OVERLAY -->
+    <div id="login-modal" class="fixed inset-0 z-50 bg-zinc-950 flex items-center justify-center p-4">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+            <div class="text-center space-y-1">
+                <div class="w-12 h-12 rounded-xl bg-brand-600 flex items-center justify-center mx-auto mb-2">
+                    <i class="fa-solid fa-lock-open text-white text-lg"></i>
+                </div>
+                <h2 class="text-lg font-bold text-white">Console Access Required</h2>
+                <p class="text-xs text-zinc-500">Provide passcode to modify content assets.</p>
+            </div>
+            <div class="space-y-3">
+                <input type="password" id="passcode-input" placeholder="Enter administrative key" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-center text-zinc-100 focus:outline-none focus:border-brand-500">
+                <button onclick="attemptLogin()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm py-3 rounded-xl transition-colors">
+                    Authenticate
+                </button>
+            </div>
+            <p id="login-error" class="text-xs text-red-500 text-center hidden"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Invalid passcode key.</p>
+        </div>
+    </div>
+
+    <!-- MAIN ADMIN INTERFACE -->
+    <div id="admin-panel" class="hidden">
+        
+        <!-- Header -->
+        <header class="bg-zinc-900 border-b border-zinc-800/80 sticky top-0 z-20 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center">
+                    <i class="fa-solid fa-screwdriver-wrench text-white"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-base tracking-tight">Console Engine</h1>
+                    <p class="text-[10px] text-zinc-500 font-semibold tracking-wider uppercase">Content Delivery System</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="triggerImport()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-xs px-3.5 py-2 rounded-lg transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-file-import"></i> Import movies.json
+                </button>
+                <button onclick="exportJson()" class="bg-gradient-to-r from-brand-700 to-brand-600 hover:from-brand-600 hover:to-brand-500 text-white font-bold text-xs px-4 py-2 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-brand-950/20">
+                    <i class="fa-solid fa-circle-down"></i> Export JSON
+                </button>
+                <button onclick="terminateSession()" class="text-zinc-500 hover:text-zinc-300" title="Sign out">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Body Wrapper -->
+        <main class="max-w-6xl mx-auto px-6 py-8 space-y-8">
+            
+            <!-- Dashboard Metrics -->
+            <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-zinc-900 border border-zinc-800/60 p-4.5 rounded-xl flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-lg bg-zinc-800/80 flex items-center justify-center text-brand-500 text-lg">
+                        <i class="fa-solid fa-film"></i>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Total Movies</span>
+                        <span id="metric-movies" class="text-xl font-black text-white">0</span>
+                    </div>
+                </div>
+                <div class="bg-zinc-900 border border-zinc-800/60 p-4.5 rounded-xl flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-lg bg-zinc-800/80 flex items-center justify-center text-brand-500 text-lg">
+                        <i class="fa-solid fa-tags"></i>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Genres</span>
+                        <span id="metric-genres" class="text-xl font-black text-white">0</span>
+                    </div>
+                </div>
+                <div class="bg-zinc-900 border border-zinc-800/60 p-4.5 rounded-xl flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-lg bg-zinc-800/80 flex items-center justify-center text-brand-500 text-lg">
+                        <i class="fa-solid fa-rectangle-ad"></i>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Active Banners</span>
+                        <span id="metric-banners" class="text-xl font-black text-white">0</span>
+                    </div>
+                </div>
+                <div class="bg-zinc-900 border border-zinc-800/60 p-4.5 rounded-xl flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-lg bg-zinc-800/80 flex items-center justify-center text-brand-500 text-lg">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Bot Integration</span>
+                        <span id="metric-bot-status" class="text-xs font-black text-green-500 uppercase">Configured</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Global Settings Section -->
+            <section class="bg-zinc-900 border border-zinc-800/60 rounded-2xl p-6 space-y-4">
+                <h3 class="text-base font-extrabold text-white flex items-center gap-2 border-b border-zinc-800 pb-3">
+                    <i class="fa-solid fa-sliders text-brand-500"></i> Settings Configuration
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-zinc-400 mb-1">Application Name</label>
+                        <input type="text" id="setting-app-name" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-zinc-400 mb-1">Telegram Bot Username (without @)</label>
+                        <input type="text" id="setting-bot-username" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-zinc-400 mb-1">Base Theme Color (Hex)</label>
+                        <input type="text" id="setting-theme-color" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-brand-500">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Genres Segment Manager -->
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Genre List & Add -->
+                <div class="bg-zinc-900 border border-zinc-800/60 rounded-2xl p-6 space-y-4">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center justify-between border-b border-zinc-800 pb-3">
+                        <span>Genres Taxonomy</span>
+                    </h3>
+                    <div class="flex gap-2">
+                        <input type="text" id="new-genre-input" placeholder="New genre..." class="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-zinc-200 focus:outline-none focus:border-brand-500">
+                        <button onclick="addGenre()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-3.5 py-2 rounded-lg">Add</button>
+                    </div>
+                    <div id="genres-list" class="flex flex-wrap gap-2 pt-2">
+                        <!-- Dynamic list pills with remove buttons -->
+                    </div>
+                </div>
+
+                <!-- Banner Manager segment -->
+                <div class="lg:col-span-2 bg-zinc-900 border border-zinc-800/60 rounded-2xl p-6 space-y-4">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider border-b border-zinc-800 pb-3 flex justify-between items-center">
+                        <span>Dynamic Hero Banners</span>
+                        <button onclick="openBannerForm()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold text-[10px] px-2.5 py-1 rounded">Add Banner</button>
+                    </h3>
+                    <div id="banners-list-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Dynamic Banners display -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Major Movie Database section -->
+            <section class="bg-zinc-900 border border-zinc-800/60 rounded-2xl p-6 space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-4">
+                    <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-clapperboard text-brand-500"></i> Movie Library Catalog
+                    </h3>
+                    <button onclick="openMovieForm()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-lg flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-plus"></i> Register New Movie
+                    </button>
+                </div>
+
+                <!-- Database Listing Grid -->
+                <div id="admin-movies-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Cards with individual edit and delete handles -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- DYNAMIC POPUP MODAL: MOVIE FORM -->
+    <div id="movie-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-zinc-900 border border-zinc-800 max-w-lg w-full rounded-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+                <h4 id="movie-modal-title" class="font-bold text-white text-base">Register Movie</h4>
+                <button onclick="closeMovieForm()" class="text-zinc-500 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="movie-form" onsubmit="saveMovie(event)" class="space-y-4">
+                <input type="hidden" id="form-movie-id">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Title</label>
+                        <input type="text" id="form-movie-title" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Genre</label>
+                        <select id="form-movie-genre" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                            <!-- Populated options -->
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Rating (e.g. 8.5)</label>
+                        <input type="text" id="form-movie-rating" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Release Year</label>
+                        <input type="text" id="form-movie-year" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Runtime</label>
+                        <input type="text" id="form-movie-runtime" placeholder="e.g. 120 min" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Poster Image Link</label>
+                        <input type="url" id="form-movie-image" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-zinc-400 mb-1">Backdrop Image Link</label>
+                        <input type="url" id="form-movie-backdrop" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Download Destination URL</label>
+                    <input type="url" id="form-movie-download" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Cast (comma separated)</label>
+                    <input type="text" id="form-movie-cast" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Synopsis</label>
+                    <textarea id="form-movie-synopsis" required rows="3" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500 resize-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 border-t border-zinc-800 pt-3">
+                    <button type="button" onclick="closeMovieForm()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-xs px-4 py-2 rounded-lg">Cancel</button>
+                    <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-lg">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DYNAMIC POPUP MODAL: BANNER FORM -->
+    <div id="banner-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-zinc-900 border border-zinc-800 max-w-sm w-full rounded-2xl shadow-2xl p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+                <h4 id="banner-modal-title" class="font-bold text-white text-base">Setup Spotlight Banner</h4>
+                <button onclick="closeBannerForm()" class="text-zinc-500 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="banner-form" onsubmit="saveBanner(event)" class="space-y-4">
+                <input type="hidden" id="form-banner-id">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Banner Title</label>
+                    <input type="text" id="form-banner-title" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Subtitle Description</label>
+                    <input type="text" id="form-banner-subtitle" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Banner Image Link</label>
+                    <input type="url" id="form-banner-image" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Connects to Movie Link ID</label>
+                    <select id="form-banner-movie" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-brand-500">
+                        <!-- Populated movies -->
+                    </select>
+                </div>
+                <div class="flex justify-end gap-2 border-t border-zinc-800 pt-3">
+                    <button type="button" onclick="closeBannerForm()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold text-xs px-4 py-2 rounded-lg">Cancel</button>
+                    <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-lg">Save Banner</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SYSTEM TEXT AREA/FILE IMPORTER -->
+    <input type="file" id="json-file-input" class="hidden" accept=".json" onchange="processImportFile(event)">
+
+    <!-- CORE ADMIN ENGINE -->
+    <script>
+        const STORAGE_KEY = 'mlhbm_admin_authed';
+        // Admin credentials matching standard instruction
+        const DEFAULT_PASSCODE = 'admin123';
+
+        // Internal Working Memory Database Template
+        let db = {
+            settings: {
+                appName: "MLHBM Premium Cinema",
+                themeColor: "#09090b",
+                telegramBotUsername: "MLHBMBot",
+                contactSupport: ""
+            },
+            genres: ["Trending", "Action", "Drama", "Sci-Fi", "Thriller"],
+            banners: [],
+            movies: []
+        };
+
+        // Authentication Gate Checks
+        function attemptLogin() {
+            const inputVal = document.getElementById('passcode-input').value;
+            const errEl = document.getElementById('login-error');
+            
+            if (inputVal === DEFAULT_PASSCODE) {
+                sessionStorage.setItem(STORAGE_KEY, 'true');
+                document.getElementById('login-modal').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                errEl.classList.add('hidden');
+                initDashboard();
+            } else {
+                errEl.classList.remove('hidden');
+            }
+        }
+
+        function checkSession() {
+            if (sessionStorage.getItem(STORAGE_KEY) === 'true') {
+                document.getElementById('login-modal').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                initDashboard();
+            }
+        }
+
+        function terminateSession() {
+            sessionStorage.removeItem(STORAGE_KEY);
+            window.location.reload();
+        }
+
+        // Dashboard Initializations
+        async function initDashboard() {
+            // Check for previous cached schema in localStorage first so states survive reloads
+            const cachedSchema = localStorage.getItem('mlhbm_current_schema');
+            if (cachedSchema) {
+                try {
+                    db = JSON.parse(cachedSchema);
+                } catch(e) {
+                    console.error("Local storage schema load failed. Reverting to empty configuration.");
+                }
+            }
+            syncUiFromData();
+        }
+
+        function syncUiFromData() {
+            // Metrics
+            document.getElementById('metric-movies').innerText = db.movies.length;
+            document.getElementById('metric-genres').innerText = db.genres.length;
+            document.getElementById('metric-banners').innerText = db.banners.length;
+
+            // Settings Fields
+            document.getElementById('setting-app-name').value = db.settings.appName;
+            document.getElementById('setting-bot-username').value = db.settings.telegramBotUsername;
+            document.getElementById('setting-theme-color').value = db.settings.themeColor;
+
+            // Save state to quick browser cache storage
+            localStorage.setItem('mlhbm_current_schema', JSON.stringify(db));
+
+            renderGenrePills();
+            renderBannersList();
+            renderMoviesList();
+            populateFormDropdowns();
+        }
+
+        // Generic Event Listeners: Watch settings inputs for updates
+        ['setting-app-name', 'setting-bot-username', 'setting-theme-color'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                db.settings.appName = document.getElementById('setting-app-name').value;
+                db.settings.telegramBotUsername = document.getElementById('setting-bot-username').value;
+                db.settings.themeColor = document.getElementById('setting-theme-color').value;
+                localStorage.setItem('mlhbm_current_schema', JSON.stringify(db));
+            });
+        });
+
+        // Genres Management Rules
+        function renderGenrePills() {
+            const container = document.getElementById('genres-list');
+            container.innerHTML = db.genres.map(genre => {
+                return `
+                    <span class="inline-flex items-center gap-1.5 bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs font-semibold px-3 py-1.5 rounded-xl">
+                        ${genre}
+                        <button onclick="removeGenre('${genre}')" class="text-zinc-500 hover:text-red-500"><i class="fa-solid fa-xmark"></i></button>
+                    </span>
+                `;
+            }).join('');
+        }
+
+        function addGenre() {
+            const input = document.getElementById('new-genre-input');
+            const val = input.value.trim();
+            if (val && !db.genres.includes(val)) {
+                db.genres.push(val);
+                input.value = '';
+                syncUiFromData();
+            }
+        }
+
+        function removeGenre(genre) {
+            db.genres = db.genres.filter(g => g !== genre);
+            syncUiFromData();
+        }
+
+        // Dropdown dynamic selectors builder
+        function populateFormDropdowns() {
+            const genreSelect = document.getElementById('form-movie-genre');
+            genreSelect.innerHTML = db.genres.map(g => `<option value="${g}">${g}</option>`).join('');
+
+            const bannerMovieSelect = document.getElementById('form-banner-movie');
+            bannerMovieSelect.innerHTML = `<option value="">No link target</option>` + db.movies.map(m => `<option value="${m.id}">${m.title}</option>`).join('');
+        }
+
+        // Banner Lists Renderers
+        function renderBannersList() {
+            const container = document.getElementById('banners-list-grid');
+            if (db.banners.length === 0) {
+                container.innerHTML = `<div class="col-span-2 text-center py-6 text-xs text-zinc-500">No Hero Banners declared.</div>`;
+                return;
+            }
+
+            container.innerHTML = db.banners.map(banner => {
+                const targetMovie = db.movies.find(m => m.id === banner.movieId);
+                return `
+                    <div class="bg-zinc-950 border border-zinc-850 p-3 rounded-xl flex gap-3.5 items-center relative">
+                        <div class="w-16 h-16 bg-zinc-900 border border-zinc-850 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="${banner.image}" alt="" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 space-y-1">
+                            <h4 class="text-xs font-bold text-white leading-tight">${banner.title}</h4>
+                            <p class="text-[10px] text-zinc-500 font-medium">${banner.subtitle}</p>
+                            <span class="inline-block text-[9px] bg-zinc-900 text-brand-400 border border-zinc-800 px-2 py-0.5 rounded font-extrabold">Link: ${targetMovie ? targetMovie.title : 'None'}</span>
+                        </div>
+                        <div class="absolute top-2 right-2 flex gap-1">
+                            <button onclick="editBanner('${banner.id}')" class="text-zinc-500 hover:text-white p-1 text-xs"><i class="fa-solid fa-pencil"></i></button>
+                            <button onclick="deleteBanner('${banner.id}')" class="text-zinc-500 hover:text-red-500 p-1 text-xs"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Banners Form triggers
+        function openBannerForm(bannerId = '') {
+            document.getElementById('banner-form').reset();
+            const modal = document.getElementById('banner-modal');
+            const titleEl = document.getElementById('banner-modal-title');
+            
+            if (bannerId) {
+                titleEl.innerText = "Edit Spotlight Banner";
+                const b = db.banners.find(b => b.id === bannerId);
+                if (b) {
+                    document.getElementById('form-banner-id').value = b.id;
+                    document.getElementById('form-banner-title').value = b.title;
+                    document.getElementById('form-banner-subtitle').value = b.subtitle;
+                    document.getElementById('form-banner-image').value = b.image;
+                    document.getElementById('form-banner-movie').value = b.movieId || '';
+                }
+            } else {
+                titleEl.innerText = "Add Spotlight Banner";
+                document.getElementById('form-banner-id').value = '';
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeBannerForm() {
+            document.getElementById('banner-modal').classList.add('hidden');
+        }
+
+        function saveBanner(e) {
+            e.preventDefault();
+            const id = document.getElementById('form-banner-id').value || 'b' + Date.now();
+            const isEditing = document.getElementById('form-banner-id').value ? true : false;
+
+            const bannerObj = {
+                id,
+                title: document.getElementById('form-banner-title').value,
+                subtitle: document.getElementById('form-banner-subtitle').value,
+                image: document.getElementById('form-banner-image').value,
+                movieId: document.getElementById('form-banner-movie').value || null
+            };
+
+            if (isEditing) {
+                const idx = db.banners.findIndex(b => b.id === id);
+                if (idx > -1) db.banners[idx] = bannerObj;
+            } else {
+                db.banners.push(bannerObj);
+            }
+
+            closeBannerForm();
+            syncUiFromData();
+        }
+
+        function deleteBanner(id) {
+            db.banners = db.banners.filter(b => b.id !== id);
+            syncUiFromData();
+        }
+
+        // Movie Database Renderers
+        function renderMoviesList() {
+            const container = document.getElementById('admin-movies-grid');
+            if (db.movies.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-sm text-zinc-500"><i class="fa-regular fa-folder-open text-3xl block mb-2 text-zinc-700"></i> No registered catalog elements found. Use the forms to create some.</div>`;
+                return;
+            }
+
+            container.innerHTML = db.movies.map(movie => {
+                return `
+                    <div class="bg-zinc-950 border border-zinc-850 p-3 rounded-xl flex gap-3.5 relative">
+                        <div class="w-14 aspect-[2/3] bg-zinc-900 border border-zinc-850 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="${movie.image}" alt="" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 space-y-1">
+                            <span class="inline-block bg-zinc-900 text-brand-400 border border-zinc-850 text-[9px] font-extrabold px-1.5 py-0.2 rounded uppercase">${movie.genre}</span>
+                            <h4 class="text-xs font-bold text-white line-clamp-1 leading-tight">${movie.title}</h4>
+                            <p class="text-[10px] text-zinc-500 font-medium">${movie.releaseYear} • ${movie.runtime || 'N/A'}</p>
+                            <p class="text-[10px] text-zinc-400 font-semibold leading-tight line-clamp-1 mt-1"><i class="fa-solid fa-star text-brand-500 mr-0.5"></i> ${movie.rating}</p>
+                        </div>
+                        <div class="absolute top-2 right-2 flex gap-1">
+                            <button onclick="editMovie('${movie.id}')" class="text-zinc-500 hover:text-white p-1 text-xs" title="Edit"><i class="fa-solid fa-pencil"></i></button>
+                            <button onclick="deleteMovie('${movie.id}')" class="text-zinc-500 hover:text-red-500 p-1 text-xs" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Movies Modal handlers
+        function openMovieForm(movieId = '') {
+            document.getElementById('movie-form').reset();
+            const modal = document.getElementById('movie-modal');
+            const titleEl = document.getElementById('movie-modal-title');
+            
+            // Re-populate choices in case new genres were created
+            populateFormDropdowns();
+
+            if (movieId) {
+                titleEl.innerText = "Edit Movie Entry Details";
+                const m = db.movies.find(x => x.id === movieId);
+                if (m) {
+                    document.getElementById('form-movie-id').value = m.id;
+                    document.getElementById('form-movie-title').value = m.title;
+                    document.getElementById('form-movie-genre').value = m.genre;
+                    document.getElementById('form-movie-rating').value = m.rating;
+                    document.getElementById('form-movie-year').value = m.releaseYear;
+                    document.getElementById('form-movie-runtime').value = m.runtime || '';
+                    document.getElementById('form-movie-image').value = m.image;
+                    document.getElementById('form-movie-backdrop').value = m.backdrop || '';
+                    document.getElementById('form-movie-download').value = m.downloadUrl;
+                    document.getElementById('form-movie-cast').value = m.cast || '';
+                    document.getElementById('form-movie-synopsis').value = m.synopsis || '';
+                }
+            } else {
+                titleEl.innerText = "Register New Movie Entry";
+                document.getElementById('form-movie-id').value = '';
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeMovieForm() {
+            document.getElementById('movie-modal').classList.add('hidden');
+        }
+
+        function saveMovie(e) {
+            e.preventDefault();
+            const id = document.getElementById('form-movie-id').value || 'm' + Date.now();
+            const isEditing = document.getElementById('form-movie-id').value ? true : false;
+
+            const movieObj = {
+                id,
+                title: document.getElementById('form-movie-title').value,
+                genre: document.getElementById('form-movie-genre').value,
+                rating: document.getElementById('form-movie-rating').value,
+                releaseYear: document.getElementById('form-movie-year').value,
+                runtime: document.getElementById('form-movie-runtime').value,
+                image: document.getElementById('form-movie-image').value,
+                backdrop: document.getElementById('form-movie-backdrop').value,
+                downloadUrl: document.getElementById('form-movie-download').value,
+                cast: document.getElementById('form-movie-cast').value,
+                synopsis: document.getElementById('form-movie-synopsis').value
+            };
+
+            if (isEditing) {
+                const idx = db.movies.findIndex(x => x.id === id);
+                if (idx > -1) db.movies[idx] = movieObj;
+            } else {
+                db.movies.push(movieObj);
+            }
+
+            closeMovieForm();
+            syncUiFromData();
+        }
+
+        function deleteMovie(id) {
+            if (confirm("Confirm removal of this movie registration from the catalog database?")) {
+                db.movies = db.movies.filter(x => x.id !== id);
+                // Clean references in banners too
+                db.banners.forEach(b => {
+                    if (b.movieId === id) b.movieId = null;
+                });
+                syncUiFromData();
+            }
+        }
+
+        // File Operations (Pure JAMstack integration helpers)
+        function triggerImport() {
+            document.getElementById('json-file-input').click();
+        }
+
+        function processImportFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const parsed = JSON.parse(evt.target.result);
+                    if (parsed && typeof parsed === 'object') {
+                        db = {
+                            settings: { ...db.settings, ...(parsed.settings || {}) },
+                            genres: parsed.genres || db.genres,
+                            banners: parsed.banners || db.banners,
+                            movies: parsed.movies || db.movies
+                        };
+                        syncUiFromData();
+                        alert("Database configuration elements merged successfully.");
+                    } else {
+                        throw new Error("Invalid structure format.");
+                    }
+                } catch(error) {
+                    alert("Error parsing document. Verify your schema is a valid movies.json format.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportJson() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 4));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", "movies.json");
+            dlAnchorElem.click();
+        }
+
+        // Run Verification on system load
+        window.addEventListener('DOMContentLoaded', checkSession);
+    </script>
+</body>
+</html>
