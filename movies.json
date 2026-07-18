@@ -1,4 +1,4 @@
- {
+{
     "settings": {
         "appName": "MLHBM Premium Cinema",
         "themeColor": "#09090b",
@@ -15,17 +15,17 @@
     "banners": [],
     "movies": [
         {
-            "id": "m1784370197020",
+            "id": "m1784370794357",
             "title": "House of the Dragon",
-            "genre": "Action",
+            "genre": "Trending",
             "rating": "8.4",
             "releaseYear": "2022",
-            "runtime": "",
-            "image": " https://ibb.co.com/S47S9SrP",
-            "backdrop": " https://ibb.co.com/S47S9SrP",
+            "runtime": "150min",
+            "image": "https://i.ibb.co.com/YFTgqgZ3/7-V0-Ebks0-Ggp-Kv-Q7-Qb-LAId-X5dos4.jpg",
+            "backdrop": "https://i.ibb.co.com/YFTgqgZ3/7-V0-Ebks0-Ggp-Kv-Q7-Qb-LAId-X5dos4.jpg",
             "downloadUrl": "https://t.me/ultimate_movie_provider_bot?start=NzI2MTUyNzg4OV8yNw",
             "cast": "Matt Smith, Emma D'Arcy, Olivia Cooke, James Norton, Steve Toussaint",
             "synopsis": "The Targaryen dynasty is at the absolute apex of its power, with more than 15 dragons under their yoke. Most empires crumble from such heights. In the case of the Targaryens, their slow fall begins when King Viserys breaks with a century of tradition by naming his daughter Rhaenyra heir to the Iron Throne. But when Viserys later fathers a son, the court is shocked when Rhaenyra retains her status as his heir, and seeds of division sow friction across the realm."
         }
     ]
- }
+}
