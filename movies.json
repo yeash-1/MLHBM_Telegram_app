@@ -1,31 +1,162 @@
-{
+ {
     "settings": {
-        "appName": "MLHBM Premium Cinema",
-        "themeColor": "#09090b",
-        "telegramBotUsername": "MLHBMBot",
-        "contactSupport": ""
+        "appName": "MLHBM",
+        "primaryColor": "#E50914"
     },
-    "genres": [
-        "Trending",
-        "Action",
-        "Drama",
-        "Sci-Fi",
-        "Thriller"
+    "categories": [
+        "Trending Now",
+        "Top Rated Movies",
+        "Top Rated Series"
     ],
-    "banners": [],
+    "banners": [
+        {
+            "id": "banner-1",
+            "title": "Silo",
+            "year": "2023",
+            "rating": "8.2",
+            "overview": "In a ruined and toxic future, thousands live in a giant silo deep underground. After its sheriff breaks a cardinal rule and residents die mysteriously, engineer Juliette starts to uncover shocking secrets.",
+            "backdrop": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1200",
+            "poster": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=600",
+            "runtime": "10 Episodes",
+            "genres": [
+                "Sci-Fi",
+                "Drama",
+                "Thriller"
+            ],
+            "downloadUrl": "https://t.me/your_telegram_bot?start=silo"
+        },
+        {
+            "id": "banner-2",
+            "title": "The Odyssey",
+            "year": "2026",
+            "rating": "6.9",
+            "overview": "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
+            "backdrop": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=1200",
+            "poster": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=600",
+            "runtime": "2h 53m",
+            "genres": [
+                "Adventure",
+                "Action",
+                "Fantasy"
+            ],
+            "downloadUrl": "https://t.me/your_telegram_bot?start=odyssey"
+        }
+    ],
     "movies": [
         {
-            "id": "m1784370794357",
-            "title": "House of the Dragon",
-            "genre": "Trending",
-            "rating": "8.4",
-            "releaseYear": "2022",
-            "runtime": "150min",
-            "image": "https://i.ibb.co.com/YFTgqgZ3/7-V0-Ebks0-Ggp-Kv-Q7-Qb-LAId-X5dos4.jpg",
-            "backdrop": "https://i.ibb.co.com/YFTgqgZ3/7-V0-Ebks0-Ggp-Kv-Q7-Qb-LAId-X5dos4.jpg",
-            "downloadUrl": "https://t.me/ultimate_movie_provider_bot?start=NzI2MTUyNzg4OV8yNw",
-            "cast": "Matt Smith, Emma D'Arcy, Olivia Cooke, James Norton, Steve Toussaint",
-            "synopsis": "The Targaryen dynasty is at the absolute apex of its power, with more than 15 dragons under their yoke. Most empires crumble from such heights. In the case of the Targaryens, their slow fall begins when King Viserys breaks with a century of tradition by naming his daughter Rhaenyra heir to the Iron Throne. But when Viserys later fathers a son, the court is shocked when Rhaenyra retains her status as his heir, and seeds of division sow friction across the realm."
+            "id": "movie-1",
+            "title": "The Odyssey",
+            "category": "Trending Now",
+            "year": "2026",
+            "rating": "6.9",
+            "overview": "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
+            "poster": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=600",
+            "backdrop": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=1200",
+            "runtime": "2h 53m",
+            "genres": [
+                "Adventure",
+                "Action",
+                "Fantasy"
+            ],
+            "downloadUrl": "https://t.me/your_telegram_bot?start=odyssey"
+        },
+        {
+            "id": "movie-2",
+            "title": "Backrooms",
+            "category": "Trending Now",
+            "year": "2026",
+            "rating": "7.0",
+            "overview": "An atmospheric exploration into the liminal terror of anomalous, yellow-walled spaces. A rescue team must map out an endless, repeating layout while evading unidentified entity signatures.",
+            "poster": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600",
+            "backdrop": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200",
+            "runtime": "1h 44m",
+            "genres": [
+                "Horror",
+                "Sci-Fi",
+                "Thriller"
+            ],
+            "downloadUrl": "https://t.me/your_telegram_bot?start=backrooms"
+        },
+        {
+            "id": "movie-3",
+            "title": "Obsession",
+            "category": "Trending Now",
+            "year": "2026",
+            "rating": "8.2",
+            "overview": "A psychological thriller detailing the breakdown of a renowned cryptographer who is lured into decoding ancient texts of unknown origin, gradually revealing secrets best kept forgotten.",
+            "poster": "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=600",
+            "backdrop": "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=1200",
+            "runtime": "2h 10m",
+            "genres": [
+                "Drama",
+                "Thriller"
+            ],
+            "downloadUrl": "https://t.me/your_telegram_bot?start=obsession"
+        },
+        {
+            "id": "movie-4",
+            "title": "Accidental Love",
+            "category": "Top Rated Movies",
+            "year": "2026",
+            "rating": "9.1",
+            "overview": "Two polar opposite rival investigators are forced together when their respective cases intersect. Soon they learn that their professional collision is anything but accidental.",
+            "poster": "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&q=80&w=600",
+            "backdrop": "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&q=80&w=1200",
+            "runtime": "2h 15m",
+            "genres": [
+                "Romance",
+                "Comedy"
+            ],
+            "downloadUrl": "https://t.me/your_telegram_bot?start=accident"
+        },
+        {
+            "id": "movie-5",
+            "title": "Swapped",
+            "category": "Top Rated Movies",
+            "year": "2026",
+            "rating": "8.9",
+            "overview": "When a world-renowned fantasy designer trades lives with a simple village artisan, chaotic high-stakes events force both to re-evaluate what truly matters.",
+            "poster": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=600",
+            "backdrop": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=1200",
+            "runtime": "1h 56m",
+            "genres": [
+                "Animation",
+                "Comedy",
+                "Fantasy"
+            ],
+            "downloadUrl": "https://t.me/your_telegram_bot?start=swapped"
+        },
+        {
+            "id": "movie-6",
+            "title": "Teach You a Lesson",
+            "category": "Top Rated Series",
+            "year": "2026",
+            "rating": "9.5",
+            "overview": "An brilliant but unorthodox professor takes a personal interest in systemic school fraud, orchestrating complex, psychological traps to hold corrupt board administrators accountable.",
+            "poster": "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=600",
+            "backdrop": "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=1200",
+            "runtime": "12 Episodes",
+            "genres": [
+                "Drama",
+                "Thriller"
+            ],
+            "downloadUrl": "https://t.me/your_telegram_bot?start=teach"
+        },
+        {
+            "id": "movie-7",
+            "title": "Dutton Ranch",
+            "category": "Top Rated Series",
+            "year": "2026",
+            "rating": "9.3",
+            "overview": "A grit-infused drama exploring the legal maneuvers, family sacrifices, and high-tension standoffs of managing a historic mountain valley boundary reservation.",
+            "poster": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=600",
+            "backdrop": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1200",
+            "runtime": "8 Episodes",
+            "genres": [
+                "Action",
+                "Drama"
+            ],
+            "downloadUrl": "https://t.me/your_telegram_bot?start=dutton"
         }
     ]
-}
+ }
