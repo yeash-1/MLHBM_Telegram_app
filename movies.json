@@ -3,85 +3,29 @@
         "appName": "MLHBM Premium Cinema",
         "themeColor": "#09090b",
         "telegramBotUsername": "MLHBMBot",
-        "contactSupport": "https://t.me/your_support_user"
+        "contactSupport": ""
     },
     "genres": [
         "Trending",
         "Action",
         "Drama",
         "Sci-Fi",
-        "Thriller",
-        "Horror",
-        "Adventure"
+        "Thriller"
     ],
-    "banners": [
-        {
-            "id": "b1",
-            "title": "Dune: Part Two",
-            "subtitle": "The Legendary Saga Continues",
-            "image": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1080&auto=format&fit=crop",
-            "movieId": "m1"
-        },
-        {
-            "id": "b2",
-            "title": "Interstellar",
-            "subtitle": "Experience Quantum Realism",
-            "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1080&auto=format&fit=crop",
-            "movieId": "m2"
-        }
-    ],
+    "banners": [],
     "movies": [
         {
-            "id": "m1",
-            "title": "Dune: Part Two",
-            "genre": "Sci-Fi",
-            "rating": "8.9",
-            "releaseYear": "2024",
-            "runtime": "166 min",
-            "image": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=500&auto=format&fit=crop",
-            "backdrop": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1080&auto=format&fit=crop",
-            "cast": "Timothée Chalamet, Zendaya, Rebecca Ferguson, Florence Pugh",
-            "synopsis": "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.",
-            "downloadUrl": "https://example.com/download/dune2"
-        },
-        {
-            "id": "m2",
-            "title": "Interstellar",
-            "genre": "Sci-Fi",
-            "rating": "8.7",
-            "releaseYear": "2014",
-            "runtime": "169 min",
-            "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=500&auto=format&fit=crop",
-            "backdrop": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1080&auto=format&fit=crop",
-            "cast": "Matthew McConaughey, Anne Hathaway, Jessica Chastain",
-            "synopsis": "When Earth becomes uninhabitable, a team of explorers travels through a wormhole in space in an attempt to ensure humanity's survival.",
-            "downloadUrl": "https://example.com/download/interstellar"
-        },
-        {
-            "id": "m3",
-            "title": "John Wick: Chapter 4",
+            "id": "m1784370197020",
+            "title": "House of the Dragon",
             "genre": "Action",
-            "rating": "8.2",
-            "releaseYear": "2023",
-            "runtime": "169 min",
-            "image": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=500&auto=format&fit=crop",
-            "backdrop": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1080&auto=format&fit=crop",
-            "cast": "Keanu Reeves, Donnie Yen, Bill Skarsgård",
-            "synopsis": "John Wick uncovers a path to defeating The High Table. But before he can earn his freedom, Wick must face off against a new enemy.",
-            "downloadUrl": "https://example.com/download/johnwick4"
-        },
-        {
-            "id": "m4",
-            "title": "The Dark Knight",
-            "genre": "Action",
-            "rating": "9.0",
-            "releaseYear": "2008",
-            "runtime": "152 min",
-            "image": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=500&auto=format&fit=crop",
-            "backdrop": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1080&auto=format&fit=crop",
-            "cast": "Christian Bale, Heath Ledger, Aaron Eckhart",
-            "synopsis": "When the menace known as the Joker wreaks havoc and chaos on Gotham, Batman must accept one of the greatest psychological tests of his ability to fight injustice.",
-            "downloadUrl": "https://example.com/download/darkknight"
+            "rating": "8.4",
+            "releaseYear": "2022",
+            "runtime": "",
+            "image": " https://ibb.co.com/S47S9SrP",
+            "backdrop": " https://ibb.co.com/S47S9SrP",
+            "downloadUrl": "https://t.me/ultimate_movie_provider_bot?start=NzI2MTUyNzg4OV8yNw",
+            "cast": "Matt Smith, Emma D'Arcy, Olivia Cooke, James Norton, Steve Toussaint",
+            "synopsis": "The Targaryen dynasty is at the absolute apex of its power, with more than 15 dragons under their yoke. Most empires crumble from such heights. In the case of the Targaryens, their slow fall begins when King Viserys breaks with a century of tradition by naming his daughter Rhaenyra heir to the Iron Throne. But when Viserys later fathers a son, the court is shocked when Rhaenyra retains her status as his heir, and seeds of division sow friction across the realm."
         }
     ]
-}
+ }
