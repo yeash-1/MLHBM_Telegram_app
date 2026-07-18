@@ -1,972 +1,1000 @@
  <!DOCTYPE html>
-<html lang="en" class="dark selection:bg-red-600/30">
+<html lang="en" class="h-full select-none">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MLHBM Premium Cinema</title>
-    <!-- Tailwind CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MLHBM</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
                         brand: {
-                            50: '#fff5f5',
-                            100: '#ffe3e3',
-                            500: '#ef4444',
-                            600: '#dc2626',
-                            700: '#b91c1c',
-                            800: '#991b1b',
-                            900: '#7f1d1d',
-                            950: '#450a0a',
+                            DEFAULT: '#E50914',
+                            hover: '#B80710',
+                            dark: '#1F0103',
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        sans: ['Outfit', 'Inter', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
-    <!-- Google Fonts & FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
-        /* Disable long-press context menu and tap highlights */
-        * {
-            -webkit-tap-highlight-color: transparent;
+        /* Custom security styles */
+        body {
             -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            scrollbar-width: none; /* Firefox */
         }
-        /* Custom scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
+        body::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
         }
-        ::-webkit-scrollbar-track {
-            background: #09090b;
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #27272a;
-            border-radius: 9999px;
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #dc2626;
+        /* Custom glassmorphism classes */
+        .glass-panel {
+            background: rgba(24, 24, 27, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(63, 63, 70, 0.4);
         }
-        /* Ensure viewport size control on older browsers */
-        html, body {
-            overflow-x: hidden;
-            background-color: #09090b;
+        .glass-card {
+            background: rgba(39, 39, 42, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(63, 63, 70, 0.3);
+        }
+        /* Page transitions */
+        .view-section {
+            transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
         }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen pb-24 font-sans select-none antialiased">
+<body class="bg-zinc-950 text-zinc-100 font-sans h-full flex flex-col overflow-hidden">
 
-    <!-- Toast Notification Overlay -->
-    <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 transform scale-95 opacity-0 pointer-events-none transition-all duration-300">
-        <div class="bg-zinc-900/90 backdrop-blur-md border border-zinc-800 text-zinc-100 px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 text-sm">
-            <span id="toast-icon" class="text-brand-500"><i class="fas fa-info-circle"></i></span>
-            <span id="toast-message">Notification</span>
+    <!-- Global Header -->
+    <header class="glass-panel sticky top-0 z-40 flex items-center justify-between px-4 py-3 border-b border-zinc-900">
+        <div class="flex items-center space-x-2">
+            <span class="text-brand font-extrabold text-xl tracking-wider">MLHBM</span>
         </div>
-    </div>
-
-    <!-- Main Navigation Top Bar -->
-    <header class="sticky top-0 z-40 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900/50 px-4 py-3.5 flex items-center justify-between safe-top">
-        <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-700 to-brand-500 flex items-center justify-center shadow-lg shadow-brand-900/20">
-                <span class="text-white font-extrabold text-sm tracking-tighter">M</span>
-            </div>
-            <div>
-                <h1 class="font-extrabold text-base tracking-tight text-white leading-none">MLHBM</h1>
-                <p class="text-[10px] text-zinc-500 font-medium tracking-wider uppercase">Premium Cinema</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-3">
-            <button onclick="switchView('search')" class="text-zinc-400 hover:text-white transition-colors p-1" aria-label="Search">
-                <i class="fa-solid fa-magnifying-glass text-lg"></i>
+        <div class="flex items-center space-x-3">
+            <button id="notiBtn" class="w-10 h-10 rounded-full flex items-center justify-center text-zinc-400 hover:text-white transition-colors">
+                <i class="fa-regular fa-bell text-lg"></i>
             </button>
-            <div id="user-avatar-container" class="w-8 h-8 rounded-full border border-zinc-800 bg-zinc-900 overflow-hidden flex items-center justify-center">
-                <span id="user-avatar-placeholder" class="text-xs font-semibold text-zinc-400">?</span>
-                <img id="user-avatar" src="" alt="Avatar" class="w-full h-full object-cover hidden">
+            <div class="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300">
+                <i class="fa-regular fa-user text-sm"></i>
             </div>
         </div>
     </header>
 
-    <!-- MAIN APP WRAPPER -->
-    <main class="max-w-md mx-auto px-4 pt-4 pb-12">
+    <!-- Main Viewport Context -->
+    <main class="flex-1 overflow-y-auto no-scrollbar pb-24 relative">
         
-        <!-- ================= HOME VIEW ================= -->
-        <section id="view-home" class="space-y-6">
-            <!-- Hero Banner Slider Container -->
-            <div id="hero-carousel" class="relative rounded-2xl overflow-hidden aspect-[16/9] bg-zinc-900 border border-zinc-800/60 shadow-xl">
-                <!-- Slide markup injected programmatically -->
-                <div class="absolute inset-0 flex items-center justify-center text-zinc-500">
-                    <i class="fa-solid fa-circle-notch animate-spin text-2xl"></i>
+        <!-- View: Home -->
+        <section id="view-home" class="view-section space-y-6">
+            <!-- Hero Carousel -->
+            <div class="relative w-full aspect-[16/10] overflow-hidden">
+                <div id="hero-container" class="w-full h-full relative transition-all duration-500">
+                    <!-- Dynamic Hero Inject -->
+                </div>
+                <!-- Banner gradient overlays -->
+                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent pointer-events-none"></div>
+                <div class="absolute inset-x-0 bottom-0 p-4 flex flex-col justify-end space-y-2 pointer-events-auto">
+                    <div class="flex items-center space-x-2">
+                        <span id="hero-rating" class="bg-zinc-900/90 text-brand font-bold text-xs px-2 py-0.5 rounded border border-zinc-800"></span>
+                        <span id="hero-year" class="text-zinc-300 text-xs font-semibold"></span>
+                        <span class="bg-brand/10 text-brand text-[10px] font-bold px-1.5 py-0.5 rounded border border-brand/20">TV</span>
+                    </div>
+                    <h1 id="hero-title" class="text-2xl font-bold tracking-tight text-white leading-tight"></h1>
+                    <p id="hero-desc" class="text-zinc-400 text-xs line-clamp-2 max-w-lg leading-relaxed"></p>
+                    
+                    <!-- Slider Action Buttons -->
+                    <div class="flex items-center space-x-3 pt-2">
+                        <button id="hero-info-btn" class="flex-1 bg-zinc-900/90 border border-zinc-800 text-white font-medium text-sm py-2 px-4 rounded-lg flex items-center justify-center space-x-2 active:scale-95 transition-transform backdrop-blur-sm">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Info</span>
+                        </button>
+                        <button id="hero-save-btn" class="w-12 bg-zinc-900/90 border border-zinc-800 text-white py-2 rounded-lg flex items-center justify-center active:scale-95 transition-transform backdrop-blur-sm">
+                            <i class="fa-regular fa-bookmark text-base"></i>
+                        </button>
+                    </div>
+
+                    <!-- Slide Indicators -->
+                    <div id="carousel-indicators" class="flex items-center justify-center space-x-1.5 pt-3">
+                        <!-- Dynamic indicators -->
+                    </div>
                 </div>
             </div>
 
-            <!-- Genre Quick Pill Filters -->
-            <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-sm font-bold tracking-tight text-zinc-300 uppercase">Browse Categories</h3>
-                    <button onclick="switchView('genres')" class="text-xs text-brand-500 font-semibold hover:underline">See All</button>
-                </div>
-                <div id="home-genre-pills" class="flex gap-2 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4">
-                    <!-- Dynamic Pills -->
-                </div>
-            </div>
-
-            <!-- Dynamic Genre Shelves Container -->
-            <div id="genre-shelves" class="space-y-6">
-                <!-- Programmatic Movie Rows dynamic categories -->
+            <!-- Custom Rows (Dynamic Categorized Lists) -->
+            <div id="home-categories" class="px-4 space-y-6">
+                <!-- Dynamic standard category blocks injected dynamically -->
             </div>
         </section>
 
-        <!-- ================= SEARCH VIEW ================= -->
-        <section id="view-search" class="space-y-6 hidden">
-            <div class="space-y-3">
-                <h2 class="text-xl font-extrabold text-white">Find Masterpieces</h2>
-                <div class="relative">
-                    <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search by title, actor, or genre..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-3 pl-11 pr-4 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-brand-500/50 transition-colors">
-                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-                    <button onclick="clearSearch()" id="search-clear-btn" class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white hidden">
-                        <i class="fa-solid fa-circle-xmark"></i>
+        <!-- View: Search -->
+        <section id="view-search" class="view-section hidden p-4 space-y-4">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+                <input type="text" id="search-input" placeholder="Search movies, TV shows..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-3 pl-10 pr-10 text-zinc-100 placeholder-zinc-500 text-sm focus:outline-none focus:border-brand/50 transition-colors">
+                <button id="search-clear" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white hidden">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-between text-xs text-zinc-400 font-medium px-1">
+                <span id="search-results-count">Type to begin searching</span>
+            </div>
+
+            <!-- Grid Layout -->
+            <div id="search-results-grid" class="grid grid-cols-2 gap-3 pb-8">
+                <!-- Search Result Items -->
+            </div>
+        </section>
+
+        <!-- View: Browse (Genres) -->
+        <section id="view-browse" class="view-section hidden p-4 space-y-4">
+            <div class="flex flex-col">
+                <h2 class="text-xl font-bold tracking-tight text-white">Categories</h2>
+                <p class="text-xs text-zinc-500">Explore movies by dynamic genres</p>
+            </div>
+
+            <!-- Categories Grid Structure matching screenshots -->
+            <div id="browse-genres-grid" class="grid grid-cols-2 gap-3 pb-8">
+                <!-- Injected dynamically -->
+            </div>
+
+            <!-- Filtered Genre Catalog Drawer -->
+            <div id="genre-filtered-view" class="fixed inset-0 bg-zinc-950 z-50 overflow-y-auto no-scrollbar hidden flex flex-col">
+                <header class="glass-panel sticky top-0 z-10 flex items-center justify-between px-4 py-3 border-b border-zinc-900">
+                    <button id="genre-close-btn" class="flex items-center space-x-1 text-zinc-400 hover:text-white">
+                        <i class="fa-solid fa-chevron-left text-lg"></i>
+                        <span class="text-sm font-medium">Browse</span>
                     </button>
+                    <h3 id="genre-title-header" class="text-sm font-bold tracking-wider text-white uppercase">Category</h3>
+                    <div class="w-8"></div> <!-- Spacer -->
+                </header>
+                <div class="flex-1 p-4">
+                    <div id="genre-filtered-grid" class="grid grid-cols-2 gap-3 pb-8">
+                        <!-- Dynamic items -->
+                    </div>
                 </div>
-            </div>
-
-            <div id="search-results-info" class="text-sm text-zinc-500 hidden"></div>
-
-            <div id="search-grid" class="grid grid-cols-2 gap-3.5">
-                <!-- Cards appear here dynamically -->
             </div>
         </section>
 
-        <!-- ================= GENRES VIEW ================= -->
-        <section id="view-genres" class="space-y-6 hidden">
-            <div class="space-y-2">
-                <h2 class="text-xl font-extrabold text-white">Genres</h2>
-                <p class="text-xs text-zinc-500">Filter premium cinematic catalogs by taxonomy.</p>
+        <!-- View: Watchlist -->
+        <section id="view-watchlist" class="view-section hidden p-4 space-y-4">
+            <div class="flex flex-col">
+                <h2 class="text-xl font-bold tracking-tight text-white">My Watchlist</h2>
+                <p class="text-xs text-zinc-500">Saved items synced to local profile</p>
             </div>
 
-            <!-- Dynamic Pill Selector -->
-            <div id="genres-selector-container" class="flex flex-wrap gap-2">
-                <!-- Genre Pills -->
-            </div>
-
-            <div id="genre-grid" class="grid grid-cols-2 gap-3.5">
-                <!-- Movie lists filtered by category -->
-            </div>
-        </section>
-
-        <!-- ================= MOVIE DETAILS VIEW ================= -->
-        <section id="view-details" class="hidden -mx-4 -mt-4 pb-6">
-            <div id="movie-detail-content">
-                <!-- Dynamically built movie detail elements -->
-            </div>
-        </section>
-
-        <!-- ================= PROFILE / WATCHLIST VIEW ================= -->
-        <section id="view-profile" class="space-y-6 hidden">
-            <!-- Glassy Premium Identity Card -->
-            <div class="bg-zinc-900/60 backdrop-blur-md border border-zinc-800/50 rounded-2xl p-5 flex items-center gap-4">
-                <div class="w-16 h-16 rounded-full border-2 border-brand-500 bg-zinc-900 overflow-hidden flex items-center justify-center shadow-lg shadow-brand-900/10">
-                    <span id="profile-avatar-placeholder" class="text-xl font-bold text-zinc-300">?</span>
-                    <img id="profile-avatar" src="" alt="Avatar" class="w-full h-full object-cover hidden">
+            <!-- Watchlist Items -->
+            <div id="watchlist-empty-state" class="flex flex-col items-center justify-center py-20 text-center space-y-3">
+                <div class="w-16 h-16 rounded-full bg-zinc-900/80 border border-zinc-850 flex items-center justify-center text-zinc-600">
+                    <i class="fa-regular fa-bookmark text-2xl"></i>
                 </div>
-                <div>
-                    <h3 id="profile-name" class="font-bold text-lg text-white">Anonymous Cinephile</h3>
-                    <p id="profile-id" class="text-xs text-zinc-500 font-mono">Telegram ID: Undetected</p>
-                    <span id="profile-rank" class="inline-block mt-2 bg-brand-950 border border-brand-900 text-brand-400 text-[10px] font-extrabold tracking-wider uppercase px-2 py-0.5 rounded-full">Elite Curator</span>
+                <div class="space-y-1">
+                    <p class="text-sm font-medium text-zinc-300">Your Watchlist is empty</p>
+                    <p class="text-xs text-zinc-500 max-w-xs">Save movies and series using the bookmark controls to view them later.</p>
                 </div>
             </div>
 
-            <!-- Saved List (Synced with LocalStorage per User ID) -->
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <h3 class="font-extrabold text-base text-white flex items-center gap-2">
-                        <i class="fa-solid fa-bookmark text-brand-500"></i> My Personal Watchlist
-                    </h3>
-                    <span id="watchlist-count" class="text-xs bg-zinc-900 border border-zinc-800 px-2 py-0.5 rounded-full text-zinc-400 font-semibold">0 Title(s)</span>
-                </div>
-
-                <div id="watchlist-grid" class="grid grid-cols-2 gap-3.5">
-                    <!-- Saved list cards -->
-                </div>
+            <div id="watchlist-grid" class="grid grid-cols-2 gap-3 pb-8 hidden">
+                <!-- Filtered items dynamically -->
             </div>
         </section>
 
     </main>
 
-    <!-- PREMIUM GLASSY BOTTOM NAVIGATION BAR -->
-    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/80 backdrop-blur-lg border-t border-zinc-900/80 px-4 py-2 flex justify-around items-center max-w-md mx-auto pb-safe">
-        <button onclick="switchView('home')" id="nav-btn-home" class="flex flex-col items-center gap-1 py-1 text-brand-500 transition-colors">
-            <i class="fa-solid fa-compact-disc text-xl"></i>
-            <span class="text-[10px] font-bold tracking-tight">Cinema</span>
-        </button>
-        <button onclick="switchView('search')" id="nav-btn-search" class="flex flex-col items-center gap-1 py-1 text-zinc-500 hover:text-zinc-300 transition-colors">
-            <i class="fa-solid fa-magnifying-glass text-xl"></i>
-            <span class="text-[10px] font-bold tracking-tight">Search</span>
-        </button>
-        <button onclick="switchView('genres')" id="nav-btn-genres" class="flex flex-col items-center gap-1 py-1 text-zinc-500 hover:text-zinc-300 transition-colors">
-            <i class="fa-solid fa-tags text-xl"></i>
-            <span class="text-[10px] font-bold tracking-tight">Genres</span>
-        </button>
-        <button onclick="switchView('profile')" id="nav-btn-profile" class="flex flex-col items-center gap-1 py-1 text-zinc-500 hover:text-zinc-300 transition-colors">
-            <i class="fa-solid fa-circle-user text-xl"></i>
-            <span class="text-[10px] font-bold tracking-tight">Watchlist</span>
-        </button>
+    <!-- Global Movie Detail Overlay/Sheet Context -->
+    <div id="movie-detail-overlay" class="fixed inset-0 bg-zinc-950 z-50 flex flex-col transform translate-y-full transition-transform duration-300 overflow-y-auto no-scrollbar hidden">
+        <div class="relative w-full aspect-[16/10] bg-zinc-900">
+            <img id="detail-backdrop" src="" alt="" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent"></div>
+            <button id="detail-back-top-btn" class="absolute top-4 left-4 w-10 h-10 rounded-full bg-zinc-900/80 backdrop-blur-md border border-zinc-800 text-white flex items-center justify-center active:scale-95 transition-transform">
+                <i class="fa-solid fa-chevron-left text-sm"></i>
+            </button>
+        </div>
+
+        <div class="flex-1 px-4 py-6 space-y-6 flex flex-col justify-between -mt-8 relative z-10">
+            <div class="space-y-5">
+                <!-- Metadata Info Block -->
+                <div class="space-y-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span id="detail-year" class="text-zinc-400 text-xs font-semibold"></span>
+                        <span class="text-zinc-600 text-xs">•</span>
+                        <span id="detail-runtime" class="text-zinc-400 text-xs font-semibold"></span>
+                        <span class="text-zinc-600 text-xs">•</span>
+                        <div class="flex items-center space-x-1">
+                            <i class="fa-solid fa-star text-brand text-xs"></i>
+                            <span id="detail-rating" class="text-white text-xs font-bold"></span>
+                        </div>
+                    </div>
+                    <h2 id="detail-title" class="text-2xl font-bold tracking-tight text-white leading-tight"></h2>
+                    
+                    <!-- Dynamic Badges -->
+                    <div id="detail-genres-container" class="flex flex-wrap gap-1.5 pt-1">
+                        <!-- Dynamic genre labels dynamically structured -->
+                    </div>
+                </div>
+
+                <!-- Primary Action Interfaces -->
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <a id="detail-download-btn" href="#" target="_blank" class="bg-brand hover:bg-brand-hover text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 active:scale-95 transition-transform shadow-lg shadow-brand/10">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Download</span>
+                    </a>
+                    <button id="detail-share-btn" class="bg-zinc-900 border border-zinc-800 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center space-x-2 active:scale-95 transition-transform hover:bg-zinc-850">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                        <span>Share</span>
+                    </button>
+                </div>
+
+                <!-- Description Block -->
+                <div class="space-y-2">
+                    <h4 class="text-xs uppercase tracking-wider text-zinc-500 font-bold">Overview</h4>
+                    <p id="detail-overview" class="text-zinc-300 text-sm leading-relaxed text-justify"></p>
+                </div>
+            </div>
+
+            <!-- Footer Sheet Actions -->
+            <div class="pt-6 border-t border-zinc-900 flex items-center space-x-3 mt-auto">
+                <button id="detail-close-btn" class="flex-1 bg-zinc-900 border border-zinc-800 text-zinc-300 py-3 rounded-xl text-sm font-semibold active:scale-95 transition-transform flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <button id="detail-watchlist-btn" class="flex-1 bg-zinc-900 border border-zinc-850 text-white py-3 rounded-xl text-sm font-semibold active:scale-95 transition-transform flex items-center justify-center space-x-2">
+                    <i class="fa-regular fa-bookmark"></i>
+                    <span id="detail-watchlist-txt">Add to List</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Navigation System -->
+    <nav class="glass-panel fixed bottom-0 inset-x-0 z-45 border-t border-zinc-900 px-3 pb-safe pt-2">
+        <div class="max-w-md mx-auto flex items-center justify-around h-12">
+            <button data-target="home" class="nav-item flex flex-col items-center justify-center space-y-1 text-brand active:scale-90 transition-transform">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] font-bold">Home</span>
+            </button>
+            <button data-target="search" class="nav-item flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300 active:scale-90 transition-transform">
+                <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                <span class="text-[10px] font-semibold">Search</span>
+            </button>
+            <button data-target="browse" class="nav-item flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300 active:scale-90 transition-transform">
+                <i class="fa-solid fa-compass text-lg"></i>
+                <span class="text-[10px] font-semibold">Browse</span>
+            </button>
+            <button data-target="watchlist" class="nav-item flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300 active:scale-90 transition-transform">
+                <i class="fa-solid fa-bookmark text-lg"></i>
+                <span class="text-[10px] font-semibold">Watchlist</span>
+            </button>
+        </div>
     </nav>
 
-    <!-- CORE BUSINESS LOGIC SCRIPT -->
+    <!-- Visual Dynamic Toast Notifications -->
+    <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 glass-panel border border-brand/20 px-4 py-2 rounded-xl flex items-center space-x-2 transform translate-y-10 opacity-0 transition-all pointer-events-none duration-350">
+        <i class="fa-solid fa-circle-check text-brand text-sm"></i>
+        <span id="toast-text" class="text-xs font-semibold text-zinc-200">Shared successfully</span>
+    </div>
+
+    <!-- JavaScript Application Handler -->
     <script>
-        // Default Fallback Database Structure
-        const DEFAULT_CATALOG = {
+        // Security implementation context
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('selectstart', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.keyCode === 123 || 
+                (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || 
+                (e.ctrlKey && e.keyCode === 85)) {
+                e.preventDefault();
+            }
+        });
+
+        // Application State Management
+        let appState = {
+            activeTab: 'home',
+            movies: [],
+            categories: [],
+            banners: [],
+            currentHeroIndex: 0,
+            watchlist: [],
+            userId: 'guest',
+            heroTimer: null
+        };
+
+        // Fallback production-ready offline dataset
+        const fallbackDatabase = {
             settings: {
-                appName: "MLHBM Premium Cinema",
-                themeColor: "#09090b",
-                telegramBotUsername: "MLHBMBot",
-                contactSupport: ""
+                appName: "MLHBM",
+                primaryColor: "#E50914"
             },
-            genres: ["Trending", "Action", "Drama", "Sci-Fi", "Thriller"],
+            categories: ["Trending Now", "Top Rated Movies", "Top Rated Series"],
             banners: [
                 {
-                    id: "b1",
-                    title: "Dune: Part Two",
-                    subtitle: "The Legendary Saga Continues",
-                    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1080&auto=format&fit=crop",
-                    movieId: "m1"
+                    id: "banner-1",
+                    title: "Silo",
+                    year: "2023",
+                    rating: "8.2",
+                    overview: "In a ruined and toxic future, thousands live in a giant silo deep underground. After its sheriff breaks a cardinal rule and residents die mysteriously, engineer Juliette starts to uncover shocking secrets.",
+                    backdrop: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1200",
+                    poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=600",
+                    runtime: "10 Episodes",
+                    genres: ["Sci-Fi", "Drama", "Thriller"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=silo"
                 },
                 {
-                    id: "b2",
-                    title: "Interstellar Journey",
-                    subtitle: "Experience Quantum Realism",
-                    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1080&auto=format&fit=crop",
-                    movieId: "m2"
+                    id: "banner-2",
+                    title: "The Odyssey",
+                    year: "2026",
+                    rating: "6.9",
+                    overview: "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
+                    backdrop: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=1200",
+                    poster: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=600",
+                    runtime: "2h 53m",
+                    genres: ["Adventure", "Action", "Fantasy"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=odyssey"
                 }
             ],
             movies: [
                 {
-                    id: "m1",
-                    title: "Dune: Part Two",
-                    genre: "Sci-Fi",
-                    rating: "8.9",
-                    releaseYear: "2024",
-                    runtime: "166 min",
-                    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=500&auto=format&fit=crop",
-                    backdrop: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1080&auto=format&fit=crop",
-                    cast: "Timothée Chalamet, Zendaya, Rebecca Ferguson",
-                    synopsis: "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.",
-                    downloadUrl: "https://example.com/download/dune2"
+                    id: "movie-1",
+                    title: "The Odyssey",
+                    category: "Trending Now",
+                    year: "2026",
+                    rating: "6.9",
+                    overview: "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
+                    poster: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "2h 53m",
+                    genres: ["Adventure", "Action", "Fantasy"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=odyssey"
                 },
                 {
-                    id: "m2",
-                    title: "Interstellar",
-                    genre: "Sci-Fi",
-                    rating: "8.7",
-                    releaseYear: "2014",
-                    runtime: "169 min",
-                    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=500&auto=format&fit=crop",
-                    backdrop: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1080&auto=format&fit=crop",
-                    cast: "Matthew McConaughey, Anne Hathaway, Jessica Chastain",
-                    synopsis: "When Earth becomes uninhabitable, a team of explorers travels through a wormhole in space in an attempt to ensure humanity's survival.",
-                    downloadUrl: "https://example.com/download/interstellar"
+                    id: "movie-2",
+                    title: "Backrooms",
+                    category: "Trending Now",
+                    year: "2026",
+                    rating: "7.0",
+                    overview: "An atmospheric exploration into the liminal terror of anomalous, yellow-walled spaces. A rescue team must map out an endless, repeating layout while evading unidentified entity signatures.",
+                    poster: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "1h 44m",
+                    genres: ["Horror", "Sci-Fi", "Thriller"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=backrooms"
                 },
                 {
-                    id: "m3",
-                    title: "John Wick: Chapter 4",
-                    genre: "Action",
+                    id: "movie-3",
+                    title: "Obsession",
+                    category: "Trending Now",
+                    year: "2026",
                     rating: "8.2",
-                    releaseYear: "2023",
-                    runtime: "169 min",
-                    image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=500&auto=format&fit=crop",
-                    backdrop: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1080&auto=format&fit=crop",
-                    cast: "Keanu Reeves, Donnie Yen, Bill Skarsgård",
-                    synopsis: "John Wick uncovers a path to defeating The High Table. But before he can earn his freedom, Wick must face off against a new enemy.",
-                    downloadUrl: "https://example.com/download/johnwick4"
+                    overview: "A psychological thriller detailing the breakdown of a renowned cryptographer who is lured into decoding ancient texts of unknown origin, gradually revealing secrets best kept forgotten.",
+                    poster: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "2h 10m",
+                    genres: ["Drama", "Thriller"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=obsession"
                 },
                 {
-                    id: "m4",
-                    title: "The Dark Knight",
-                    genre: "Action",
-                    rating: "9.0",
-                    releaseYear: "2008",
-                    runtime: "152 min",
-                    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=500&auto=format&fit=crop",
-                    backdrop: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1080&auto=format&fit=crop",
-                    cast: "Christian Bale, Heath Ledger, Aaron Eckhart",
-                    synopsis: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological tests of his ability.",
-                    downloadUrl: "https://example.com/download/darkknight"
+                    id: "movie-4",
+                    title: "Accidental Love",
+                    category: "Top Rated Movies",
+                    year: "2026",
+                    rating: "9.1",
+                    overview: "Two polar opposite rival investigators are forced together when their respective cases intersect. Soon they learn that their professional collision is anything but accidental.",
+                    poster: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "2h 15m",
+                    genres: ["Romance", "Comedy"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=accident"
+                },
+                {
+                    id: "movie-5",
+                    title: "Swapped",
+                    category: "Top Rated Movies",
+                    year: "2026",
+                    rating: "8.9",
+                    overview: "When a world-renowned fantasy designer trades lives with a simple village artisan, chaotic high-stakes events force both to re-evaluate what truly matters.",
+                    poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "1h 56m",
+                    genres: ["Animation", "Comedy", "Fantasy"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=swapped"
+                },
+                {
+                    id: "movie-6",
+                    title: "Teach You a Lesson",
+                    category: "Top Rated Series",
+                    year: "2026",
+                    rating: "9.5",
+                    overview: "An brilliant but unorthodox professor takes a personal interest in systemic school fraud, orchestrating complex, psychological traps to hold corrupt board administrators accountable.",
+                    poster: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "12 Episodes",
+                    genres: ["Drama", "Thriller"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=teach"
+                },
+                {
+                    id: "movie-7",
+                    title: "Dutton Ranch",
+                    category: "Top Rated Series",
+                    year: "2026",
+                    rating: "9.3",
+                    overview: "A grit-infused drama exploring the legal maneuvers, family sacrifices, and high-tension standoffs of managing a historic mountain valley boundary reservation.",
+                    poster: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "8 Episodes",
+                    genres: ["Action", "Drama"],
+                    downloadUrl: "https://t.me/your_telegram_bot?start=dutton"
                 }
             ]
         };
 
-        // Application State Management
-        const state = {
-            tg: null,
-            user: {
-                id: "unknown",
-                username: "Anonymous",
-                firstName: "Guest",
-                photoUrl: null
-            },
-            catalog: DEFAULT_CATALOG,
-            currentView: 'home',
-            previousView: 'home',
-            currentMovie: null,
-            searchQuery: '',
-            selectedGenre: 'All',
-            watchlist: []
-        };
-
-        // Initialize Telegram WebApp Integration
-        function initTelegram() {
-            if (window.Telegram && window.Telegram.WebApp) {
-                const tg = window.Telegram.WebApp;
-                state.tg = tg;
-                tg.ready();
-                tg.expand();
-                
-                // Customize TG layout
-                tg.setHeaderColor('#09090b');
-                tg.setBackgroundColor('#09090b');
-                
-                // Map User Profile Details
-                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                    const rawUser = tg.initDataUnsafe.user;
-                    state.user.id = rawUser.id || "unknown";
-                    state.user.username = rawUser.username || "Cinephile";
-                    state.user.firstName = rawUser.first_name || "Guest User";
-                    if (rawUser.photo_url) {
-                        state.user.photoUrl = rawUser.photo_url;
-                    }
-                }
-                
-                // Back Button Integration
-                tg.BackButton.onClick(() => {
-                    if (state.currentView === 'details') {
-                        switchView(state.previousView);
-                    } else {
-                        switchView('home');
-                    }
-                });
+        // Initialize Telegram SDK
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            tg.headerColor = '#09090b'; // matching bg-zinc-950
+            tg.backgroundColor = '#09090b';
+            if (tg.initDataUnsafe?.user?.id) {
+                appState.userId = String(tg.initDataUnsafe.user.id);
             }
-            updateProfileUI();
         }
 
-        // Fetch movies.json and populate components dynamically
-        async function fetchCatalog() {
+        // Event Listeners initialization
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+        async function initializeApp() {
+            setupNavigation();
+            setupSearch();
+            setupDetailsView();
+            await loadData();
+            loadWatchlist();
+            renderAllViews();
+        }
+
+        // Pull database dynamically with fallback state
+        async function loadData() {
             try {
                 const response = await fetch('movies.json');
-                if (!response.ok) {
-                    throw new Error('Failed to load JSON');
-                }
+                if (!response.ok) throw new Error('Network file access error');
                 const data = await response.json();
-                state.catalog = {
-                    settings: { ...DEFAULT_CATALOG.settings, ...(data.settings || {}) },
-                    genres: data.genres || DEFAULT_CATALOG.genres,
-                    banners: data.banners || DEFAULT_CATALOG.banners,
-                    movies: data.movies || DEFAULT_CATALOG.movies
-                };
+                appState.movies = data.movies || [];
+                appState.categories = data.categories || [];
+                appState.banners = data.banners || [];
             } catch (err) {
-                console.warn("Using default catalog values; movies.json not loaded yet or parse failed.", err);
-            } finally {
-                loadWatchlist();
-                renderAll();
+                console.warn('Syncing with internal standard database structure:', err);
+                appState.movies = fallbackDatabase.movies;
+                appState.categories = fallbackDatabase.categories;
+                appState.banners = fallbackDatabase.banners;
             }
         }
 
-        // Setup LocalStorage synchronizations per user
+        // Sync local storage profile
         function loadWatchlist() {
-            const key = `mlhbm_watchlist_${state.user.id}`;
-            const localData = localStorage.getItem(key);
-            if (localData) {
-                try {
-                    state.watchlist = JSON.parse(localData);
-                } catch (e) {
-                    state.watchlist = [];
-                }
-            } else {
-                state.watchlist = [];
-            }
+            const stored = localStorage.getItem(`mlhbm_watchlist_${appState.userId}`);
+            appState.watchlist = stored ? JSON.parse(stored) : [];
         }
 
         function saveWatchlist() {
-            const key = `mlhbm_watchlist_${state.user.id}`;
-            localStorage.setItem(key, JSON.stringify(state.watchlist));
-            document.getElementById('watchlist-count').innerText = `${state.watchlist.length} Title(s)`;
-            renderWatchlist();
+            localStorage.setItem(`mlhbm_watchlist_${appState.userId}`, JSON.stringify(appState.watchlist));
+            updateWatchlistView();
         }
 
-        function toggleWatchlist(movieId, event) {
-            if (event) event.stopPropagation();
-            const idx = state.watchlist.indexOf(movieId);
-            if (idx > -1) {
-                state.watchlist.splice(idx, 1);
-                showToast("Removed from Watchlist", "fa-solid fa-bookmark");
-            } else {
-                state.watchlist.push(movieId);
-                showToast("Added to Watchlist", "fa-solid fa-bookmark text-brand-500");
-            }
-            saveWatchlist();
+        // Navigation Engine
+        function setupNavigation() {
+            const navButtons = document.querySelectorAll('.nav-item');
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.getAttribute('data-target');
+                    switchTab(target);
+                });
+            });
+        }
+
+        function switchTab(tabId) {
+            appState.activeTab = tabId;
             
-            // Re-render UI segments containing variable icons
-            if (state.currentView === 'details' && state.currentMovie && state.currentMovie.id === movieId) {
-                renderMovieDetails(state.currentMovie);
-            } else {
-                renderAll();
-            }
-        }
-
-        // Client Side Navigation router
-        function switchView(viewName, data = null) {
-            state.previousView = state.currentView;
-            state.currentView = viewName;
-
-            // Hide all structural sections
-            ['view-home', 'view-search', 'view-genres', 'view-details', 'view-profile'].forEach(id => {
-                document.getElementById(id).classList.add('hidden');
+            // Toggle screen sections
+            document.querySelectorAll('.view-section').forEach(section => {
+                section.classList.add('hidden');
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(10px)';
             });
 
-            // Show active views
-            const targetId = `view-${viewName}`;
-            const element = document.getElementById(targetId);
-            if (element) {
-                element.classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+            const activeSection = document.getElementById(`view-${tabId}`);
+            if (activeSection) {
+                activeSection.classList.remove('hidden');
+                setTimeout(() => {
+                    activeSection.style.opacity = '1';
+                    activeSection.style.transform = 'translateY(0)';
+                }, 50);
             }
 
-            // Sync navigation highlight
-            ['home', 'search', 'genres', 'profile'].forEach(navId => {
-                const btn = document.getElementById(`nav-btn-${navId}`);
-                if (btn) {
-                    if (navId === viewName) {
-                        btn.className = "flex flex-col items-center gap-1 py-1 text-brand-500 transition-colors";
-                    } else {
-                        btn.className = "flex flex-col items-center gap-1 py-1 text-zinc-500 hover:text-zinc-300 transition-colors";
-                    }
-                }
-            });
-
-            // Specific route setups
-            if (viewName === 'details' && data) {
-                state.currentMovie = data;
-                renderMovieDetails(data);
-                if (state.tg) state.tg.BackButton.show();
-            } else {
-                if (state.tg && viewName === 'home') {
-                    state.tg.BackButton.hide();
-                } else if (state.tg) {
-                    state.tg.BackButton.show();
-                }
-            }
-
-            if (viewName === 'profile') {
-                renderWatchlist();
-            }
-        }
-
-        // Utility: Show custom UI notification
-        function showToast(message, iconClass = "fa-solid fa-info-circle") {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-icon').innerHTML = `<i class="${iconClass}"></i>`;
-            document.getElementById('toast-message').innerText = message;
-            
-            toast.className = "fixed top-4 left-1/2 -translate-x-1/2 z-50 transform scale-100 opacity-100 transition-all duration-300";
-            
-            setTimeout(() => {
-                toast.className = "fixed top-4 left-1/2 -translate-x-1/2 z-50 transform scale-95 opacity-0 pointer-events-none transition-all duration-300";
-            }, 2500);
-        }
-
-        // Security Controls Implementation
-        function runSecurityConstraints() {
-            // Prevent inspect and hotkeys
-            document.addEventListener('keydown', (e) => {
-                if (
-                    e.key === 'F12' || 
-                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || 
-                    (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))
-                ) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
-
-            // Prevent text-selection
-            document.addEventListener('selectstart', (e) => e.preventDefault());
-
-            // Prevent Copy and Cut
-            document.addEventListener('copy', (e) => e.preventDefault());
-            document.addEventListener('cut', (e) => e.preventDefault());
-
-            // Prevent Context Menu right clicks
-            document.addEventListener('contextmenu', (e) => e.preventDefault());
-
-            // Prevent touch zoom constraints (pinches)
-            document.addEventListener('touchstart', (e) => {
-                if (e.touches.length > 1) {
-                    e.preventDefault();
-                }
-            }, { passive: false });
-        }
-
-        // Render Operations for Dynamic Elements
-        function renderAll() {
-            renderBanners();
-            renderPills();
-            renderGenreShelves();
-            renderWatchlist();
-            renderGenreSelectionTab();
-        }
-
-        function updateProfileUI() {
-            // Header Mini Avatar
-            const headPlaceholder = document.getElementById('user-avatar-placeholder');
-            const headImg = document.getElementById('user-avatar');
-            // Full Profile Page Elements
-            const profPlaceholder = document.getElementById('profile-avatar-placeholder');
-            const profImg = document.getElementById('profile-avatar');
-            const nameEl = document.getElementById('profile-name');
-            const idEl = document.getElementById('profile-id');
-
-            nameEl.innerText = state.user.firstName + (state.user.username ? ` (@${state.user.username})` : '');
-            idEl.innerText = `Telegram ID: ${state.user.id}`;
-
-            const initials = state.user.firstName.charAt(0).toUpperCase();
-            headPlaceholder.innerText = initials;
-            profPlaceholder.innerText = initials;
-
-            if (state.user.photoUrl) {
-                headImg.src = state.user.photoUrl;
-                headImg.classList.remove('hidden');
-                headPlaceholder.classList.add('hidden');
-
-                profImg.src = state.user.photoUrl;
-                profImg.classList.remove('hidden');
-                profPlaceholder.classList.add('hidden');
-            }
-        }
-
-        function renderBanners() {
-            const container = document.getElementById('hero-carousel');
-            if (!state.catalog.banners || state.catalog.banners.length === 0) {
-                container.classList.add('hidden');
-                return;
-            }
-            container.classList.remove('hidden');
-
-            let index = 0;
-            const updateSlide = () => {
-                const banner = state.catalog.banners[index];
-                const targetMovie = state.catalog.movies.find(m => m.id === banner.movieId);
+            // Update Navigation Highlights
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                const icon = btn.querySelector('i');
+                const label = btn.querySelector('span');
+                const isTarget = btn.getAttribute('data-target') === tabId;
                 
-                container.innerHTML = `
-                    <div class="absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out scale-105" style="background-image: url('${banner.image}')"></div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
-                    <div class="absolute bottom-4 left-4 right-4">
-                        <span class="inline-block bg-brand-600 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-1.5 shadow-lg shadow-brand-900/30">Spotlight</span>
-                        <h2 class="text-xl font-extrabold tracking-tight text-white line-clamp-1">${banner.title}</h2>
-                        <p class="text-xs text-zinc-300 font-medium line-clamp-1 mb-2">${banner.subtitle}</p>
-                        ${targetMovie ? `
-                        <button onclick="viewMovieDetails('${targetMovie.id}')" class="bg-zinc-100 hover:bg-white text-zinc-950 text-xs font-bold py-1.5 px-3.5 rounded-lg inline-flex items-center gap-1.5 shadow-md active:scale-95 transition-transform">
-                            <i class="fa-solid fa-circle-info"></i> View Details
-                        </button>` : ''}
-                    </div>
-                `;
-            };
-
-            updateSlide();
-            // Rotate banners automatically
-            if (state.catalog.banners.length > 1) {
-                clearInterval(window.bannerInterval);
-                window.bannerInterval = setInterval(() => {
-                    index = (index + 1) % state.catalog.banners.length;
-                    updateSlide();
-                }, 8000);
-            }
-        }
-
-        function renderPills() {
-            const container = document.getElementById('home-genre-pills');
-            let markup = `<button onclick="setGenreFilter('All')" class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${state.selectedGenre === 'All' ? 'bg-brand-600 text-white' : 'bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800/60'}">All Cinema</button>`;
-            
-            state.catalog.genres.forEach(genre => {
-                const isActive = state.selectedGenre === genre;
-                markup += `
-                    <button onclick="setGenreFilter('${genre}')" class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${isActive ? 'bg-brand-600 text-white shadow-lg shadow-brand-900/10' : 'bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800/60'}">
-                        ${genre}
-                    </button>
-                `;
-            });
-            container.innerHTML = markup;
-        }
-
-        function setGenreFilter(genre) {
-            state.selectedGenre = genre;
-            renderPills();
-            switchView('genres');
-            renderGenreSelectionTab();
-        }
-
-        function renderGenreShelves() {
-            const container = document.getElementById('genre-shelves');
-            container.innerHTML = '';
-
-            const genresToRender = state.catalog.genres;
-            genresToRender.forEach(genre => {
-                const moviesInGenre = state.catalog.movies.filter(m => m.genre.toLowerCase() === genre.toLowerCase());
-                if (moviesInGenre.length === 0) return;
-
-                const shelf = document.createElement('div');
-                shelf.className = "space-y-3";
-                shelf.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-bold text-base text-zinc-100 flex items-center gap-1.5">
-                            <span class="w-1.5 h-4 bg-brand-600 rounded-full"></span>
-                            ${genre}
-                        </h3>
-                        <span class="text-xs text-zinc-500 font-medium">${moviesInGenre.length} Titles</span>
-                    </div>
-                    <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-thin -mx-4 px-4">
-                        ${moviesInGenre.map(movie => {
-                            const isSaved = state.watchlist.includes(movie.id);
-                            return `
-                            <div onclick="viewMovieDetails('${movie.id}')" class="flex-shrink-0 w-32 space-y-1.5 group cursor-pointer">
-                                <div class="relative aspect-[2/3] bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800/60 shadow-lg transition-transform active:scale-95 duration-200">
-                                    <img src="${movie.image}" alt="${movie.title}" class="w-full h-full object-cover">
-                                    <div class="absolute top-2 right-2 flex flex-col gap-1.5">
-                                        <button onclick="toggleWatchlist('${movie.id}', event)" class="w-7 h-7 rounded-full bg-zinc-950/75 backdrop-blur-md border border-zinc-800/50 flex items-center justify-center text-xs shadow-md transition-colors active:scale-90">
-                                            <i class="${isSaved ? 'fa-solid fa-bookmark text-brand-500' : 'fa-regular fa-bookmark text-zinc-300'}"></i>
-                                        </button>
-                                    </div>
-                                    <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded border border-zinc-800/50 flex items-center gap-1 text-[9px] font-extrabold text-brand-400">
-                                        <i class="fa-solid fa-star"></i> ${movie.rating}
-                                    </div>
-                                </div>
-                                <h4 class="font-semibold text-xs text-zinc-200 line-clamp-1 group-hover:text-white">${movie.title}</h4>
-                                <p class="text-[10px] text-zinc-500 font-medium">${movie.releaseYear}</p>
-                            </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `;
-                container.appendChild(shelf);
-            });
-        }
-
-        function renderGenreSelectionTab() {
-            const container = document.getElementById('genres-selector-container');
-            const grid = document.getElementById('genre-grid');
-
-            // Build dynamic pill selector list
-            let selectorMarkup = `<button onclick="updateGenreTab('All')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors border ${state.selectedGenre === 'All' ? 'bg-brand-600 border-brand-500 text-white' : 'bg-zinc-900 border-zinc-800/80 text-zinc-400'}">All</button>`;
-            state.catalog.genres.forEach(genre => {
-                const isActive = state.selectedGenre === genre;
-                selectorMarkup += `
-                    <button onclick="updateGenreTab('${genre}')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors border ${isActive ? 'bg-brand-600 border-brand-500 text-white' : 'bg-zinc-900 border-zinc-800/80 text-zinc-400'}">
-                        ${genre}
-                    </button>
-                `;
-            });
-            container.innerHTML = selectorMarkup;
-
-            // Filter movies
-            const filteredMovies = state.selectedGenre === 'All' 
-                ? state.catalog.movies 
-                : state.catalog.movies.filter(m => m.genre.toLowerCase() === state.selectedGenre.toLowerCase());
-
-            if (filteredMovies.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-2 text-center py-12 space-y-2">
-                        <i class="fa-solid fa-clapperboard text-4xl text-zinc-700"></i>
-                        <p class="text-sm text-zinc-500">No movies found in this genre.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            grid.innerHTML = filteredMovies.map(movie => {
-                const isSaved = state.watchlist.includes(movie.id);
-                return `
-                <div onclick="viewMovieDetails('${movie.id}')" class="bg-zinc-900/40 border border-zinc-900 hover:border-zinc-800/60 rounded-xl p-2.5 flex flex-col justify-between space-y-2 cursor-pointer shadow-sm">
-                    <div class="relative aspect-[2/3] bg-zinc-950 rounded-lg overflow-hidden border border-zinc-800/50">
-                        <img src="${movie.image}" alt="${movie.title}" class="w-full h-full object-cover">
-                        <button onclick="toggleWatchlist('${movie.id}', event)" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-zinc-950/75 backdrop-blur-md border border-zinc-800/50 flex items-center justify-center text-xs shadow-md">
-                            <i class="${isSaved ? 'fa-solid fa-bookmark text-brand-500' : 'fa-regular fa-bookmark text-zinc-300'}"></i>
-                        </button>
-                    </div>
-                    <div class="space-y-0.5">
-                        <div class="flex items-center justify-between text-[10px] text-zinc-500 font-medium">
-                            <span>${movie.releaseYear} • ${movie.genre}</span>
-                            <span class="text-brand-400 font-bold"><i class="fa-solid fa-star"></i> ${movie.rating}</span>
-                        </div>
-                        <h4 class="font-bold text-xs text-zinc-200 line-clamp-1">${movie.title}</h4>
-                    </div>
-                </div>
-                `;
-            }).join('');
-        }
-
-        function updateGenreTab(genre) {
-            state.selectedGenre = genre;
-            renderGenreSelectionTab();
-        }
-
-        // Search logic implementation
-        function handleSearch(val) {
-            state.searchQuery = val.trim().toLowerCase();
-            const clearBtn = document.getElementById('search-clear-btn');
-            const infoText = document.getElementById('search-results-info');
-            const grid = document.getElementById('search-grid');
-
-            if (state.searchQuery.length > 0) {
-                clearBtn.classList.remove('hidden');
-            } else {
-                clearBtn.classList.add('hidden');
-                infoText.classList.add('hidden');
-                grid.innerHTML = '';
-                return;
-            }
-
-            const results = state.catalog.movies.filter(movie => {
-                return (
-                    movie.title.toLowerCase().includes(state.searchQuery) ||
-                    movie.genre.toLowerCase().includes(state.searchQuery) ||
-                    (movie.cast && movie.cast.toLowerCase().includes(state.searchQuery))
-                );
+                if (isTarget) {
+                    btn.className = "nav-item flex flex-col items-center justify-center space-y-1 text-brand active:scale-90 transition-transform";
+                    icon.className = icon.className.replace('fa-regular', 'fa-solid');
+                    label.classList.add('font-bold');
+                } else {
+                    btn.className = "nav-item flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300 active:scale-90 transition-transform";
+                    icon.className = icon.className.replace('fa-solid', 'fa-regular');
+                    label.classList.remove('font-bold');
+                }
             });
 
-            infoText.classList.remove('hidden');
-            infoText.innerText = `Found ${results.length} results matching "${val}"`;
-
-            if (results.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-2 text-center py-12 space-y-2">
-                        <i class="fa-solid fa-circle-question text-4xl text-zinc-700"></i>
-                        <p class="text-sm text-zinc-500">No matching titles discovered.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            grid.innerHTML = results.map(movie => {
-                const isSaved = state.watchlist.includes(movie.id);
-                return `
-                <div onclick="viewMovieDetails('${movie.id}')" class="bg-zinc-900/40 border border-zinc-900 rounded-xl p-2.5 flex flex-col justify-between space-y-2 cursor-pointer">
-                    <div class="relative aspect-[2/3] bg-zinc-950 rounded-lg overflow-hidden border border-zinc-800/50">
-                        <img src="${movie.image}" alt="${movie.title}" class="w-full h-full object-cover">
-                        <button onclick="toggleWatchlist('${movie.id}', event)" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-zinc-950/75 backdrop-blur-md border border-zinc-800/50 flex items-center justify-center text-xs shadow-md">
-                            <i class="${isSaved ? 'fa-solid fa-bookmark text-brand-500' : 'fa-regular fa-bookmark text-zinc-300'}"></i>
-                        </button>
-                    </div>
-                    <div class="space-y-0.5">
-                        <div class="flex items-center justify-between text-[10px] text-zinc-500 font-medium">
-                            <span>${movie.releaseYear} • ${movie.genre}</span>
-                            <span class="text-brand-400 font-bold"><i class="fa-solid fa-star"></i> ${movie.rating}</span>
-                        </div>
-                        <h4 class="font-bold text-xs text-zinc-200 line-clamp-1">${movie.title}</h4>
-                    </div>
-                </div>
-                `;
-            }).join('');
-        }
-
-        function clearSearch() {
-            const input = document.getElementById('search-input');
-            input.value = '';
-            handleSearch('');
-            input.focus();
-        }
-
-        function viewMovieDetails(movieId) {
-            const movie = state.catalog.movies.find(m => m.id === movieId);
-            if (movie) {
-                switchView('details', movie);
+            if (tabId === 'watchlist') {
+                updateWatchlistView();
             }
         }
 
-        function renderMovieDetails(movie) {
-            const container = document.getElementById('movie-detail-content');
-            const isSaved = state.watchlist.includes(movie.id);
+        // Render Controller
+        function renderAllViews() {
+            renderHeroSlider();
+            renderHomeCategories();
+            renderBrowseGenres();
+            updateWatchlistView();
+        }
+
+        // Slider Component
+        function renderHeroSlider() {
+            const container = document.getElementById('hero-container');
+            const indicators = document.getElementById('carousel-indicators');
+            if (!appState.banners || appState.banners.length === 0) return;
+
+            // Render Hero Banner
+            updateHeroView(0);
+
+            // Create dot indicators
+            indicators.innerHTML = '';
+            appState.banners.forEach((_, idx) => {
+                const indicator = document.createElement('button');
+                indicator.className = `w-1.5 h-1.5 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-brand w-3' : 'bg-zinc-600'}`;
+                indicator.addEventListener('click', () => {
+                    clearInterval(appState.heroTimer);
+                    updateHeroView(idx);
+                    startHeroRotation();
+                });
+                indicators.appendChild(indicator);
+            });
+
+            startHeroRotation();
+        }
+
+        function updateHeroView(index) {
+            appState.currentHeroIndex = index;
+            const banner = appState.banners[index];
+            const container = document.getElementById('hero-container');
 
             container.innerHTML = `
-                <!-- Backdrop Banner Hero -->
-                <div class="relative aspect-[16/9] w-full bg-zinc-900">
-                    <img src="${movie.backdrop || movie.image}" alt="${movie.title}" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/30 to-transparent"></div>
-                    <button onclick="switchView('${state.previousView}')" class="absolute top-4 left-4 w-9 h-9 rounded-full bg-zinc-950/75 backdrop-blur-md border border-zinc-800/50 flex items-center justify-center text-zinc-100 shadow-xl">
-                        <i class="fa-solid fa-arrow-left"></i>
-                    </button>
-                    <button onclick="toggleWatchlist('${movie.id}', event)" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-zinc-950/75 backdrop-blur-md border border-zinc-800/50 flex items-center justify-center text-zinc-100 shadow-xl">
-                        <i class="${isSaved ? 'fa-solid fa-bookmark text-brand-500' : 'fa-regular fa-bookmark'}"></i>
-                    </button>
-                </div>
-
-                <!-- Detail Content Metadata container -->
-                <div class="px-4 -mt-6 relative z-10 space-y-5">
-                    <div class="flex gap-4 items-end">
-                        <div class="w-24 aspect-[2/3] rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900 shadow-2xl flex-shrink-0">
-                            <img src="${movie.image}" alt="${movie.title}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="space-y-1.5 pb-1">
-                            <h2 class="text-xl font-extrabold text-white leading-tight">${movie.title}</h2>
-                            <div class="flex flex-wrap items-center gap-1.5 text-xs text-zinc-400">
-                                <span class="bg-zinc-900/80 px-2 py-0.5 rounded border border-zinc-800/50 text-[10px] font-extrabold text-brand-400 uppercase tracking-wide">${movie.genre}</span>
-                                <span>•</span>
-                                <span>${movie.releaseYear}</span>
-                                <span>•</span>
-                                <span>${movie.runtime}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Scores & Highlights -->
-                    <div class="grid grid-cols-3 gap-3">
-                        <div class="bg-zinc-900/60 border border-zinc-800/50 backdrop-blur-md rounded-xl p-2.5 text-center">
-                            <span class="block text-[9px] font-bold text-zinc-500 uppercase tracking-wider mb-0.5">Rating</span>
-                            <span class="text-sm font-extrabold text-brand-400"><i class="fa-solid fa-star"></i> ${movie.rating}/10</span>
-                        </div>
-                        <div class="col-span-2 bg-zinc-900/60 border border-zinc-800/50 backdrop-blur-md rounded-xl p-2.5 flex items-center justify-center gap-2">
-                            <span class="text-xs font-semibold text-zinc-300">Status: <span class="text-green-500">Ready</span></span>
-                        </div>
-                    </div>
-
-                    <!-- CTA Actions Area: Strict Dynamic Button Specifications -->
-                    <div class="flex gap-3">
-                        <button onclick="triggerSecureDownload('${movie.downloadUrl}')" class="flex-1 bg-gradient-to-r from-brand-700 to-brand-600 hover:from-brand-600 hover:to-brand-500 text-white font-extrabold text-sm py-3 px-6 rounded-xl flex items-center justify-center gap-2.5 shadow-xl shadow-brand-950/40 active:scale-[0.98] transition-transform">
-                            <i class="fa-solid fa-circle-down text-lg"></i> Download Now
-                        </button>
-                        <button onclick="triggerSecureShare('${movie.id}')" class="bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-800 font-bold text-sm py-3 px-4.5 rounded-xl flex items-center justify-center gap-2.5 active:scale-[0.98] transition-transform" aria-label="Share">
-                            <i class="fa-solid fa-share-nodes text-lg"></i> Share
-                        </button>
-                    </div>
-
-                    <!-- Synopsis -->
-                    <div class="space-y-2">
-                        <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Synopsis</h3>
-                        <p class="text-sm text-zinc-300 leading-relaxed font-light">${movie.synopsis}</p>
-                    </div>
-
-                    <!-- Cast & Crew -->
-                    ${movie.cast ? `
-                    <div class="space-y-2 border-t border-zinc-900/60 pt-4">
-                        <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Starring Cast</h3>
-                        <p class="text-xs text-zinc-400 leading-relaxed font-medium"><i class="fa-solid fa-user-friends text-brand-500 mr-1.5"></i> ${movie.cast}</p>
-                    </div>
-                    ` : ''}
-
-                </div>
+                <img src="${banner.backdrop}" alt="${banner.title}" class="w-full h-full object-cover select-none pointer-events-none absolute inset-0 transition-opacity duration-500 opacity-0" id="hero-img">
             `;
-        }
-
-        // Action Executions
-        function triggerSecureDownload(url) {
-            if (!url || url.startsWith("https://example.com")) {
-                showToast("Download setup dynamically.", "fa-solid fa-circle-info");
-                return;
-            }
-            if (state.tg) {
-                state.tg.openLink(url);
-            } else {
-                window.open(url, '_blank');
-            }
-        }
-
-        function triggerSecureShare(movieId) {
-            const movie = state.catalog.movies.find(m => m.id === movieId);
-            if (!movie) return;
-
-            const botUsername = state.catalog.settings.telegramBotUsername || "MLHBMBot";
-            // Custom deep link path inside Telegram bot parameters
-            const referralLink = `https://t.me/${botUsername}?startapp=movie_${movie.id}`;
-            const messageText = `Check out "${movie.title}" (${movie.releaseYear}) on MLHBM Cinema! Download link is ready inside.`;
             
-            // Standard official deep linking pattern
-            const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(messageText)}`;
+            // Fade-in effect
+            const img = document.getElementById('hero-img');
+            setTimeout(() => img.classList.remove('opacity-0'), 50);
+
+            // Update Metadata labels
+            document.getElementById('hero-title').textContent = banner.title;
+            document.getElementById('hero-rating').innerHTML = `<i class="fa-solid fa-star text-brand text-[10px]"></i> ${banner.rating}`;
+            document.getElementById('hero-year').textContent = banner.year;
+            document.getElementById('hero-desc').textContent = banner.overview;
+
+            // Attach dynamic info button logic
+            document.getElementById('hero-info-btn').onclick = () => showMovieDetails(banner);
             
-            // Execute copy to clipboard instantly
-            navigator.clipboard.writeText(referralLink).then(() => {
-                showToast("Telegram Share Link Copied!", "fa-solid fa-circle-check text-green-500");
-                // Open share prompt directly inside TG environment if active
-                setTimeout(() => {
-                    if (state.tg) {
-                        state.tg.openTelegramLink(shareUrl);
-                    } else {
-                        window.open(shareUrl, '_blank');
-                    }
-                }, 800);
-            }).catch(() => {
-                // Secondary backup opening method if access profile restrictions apply
-                if (state.tg) {
-                    state.tg.openTelegramLink(shareUrl);
+            // Setup dynamic bookmark toggle inside hero
+            const saveBtn = document.getElementById('hero-save-btn');
+            const isSaved = appState.watchlist.includes(banner.id);
+            saveBtn.innerHTML = isSaved ? `<i class="fa-solid fa-bookmark text-brand text-base"></i>` : `<i class="fa-regular fa-bookmark text-base"></i>`;
+            saveBtn.onclick = () => {
+                toggleWatchlist(banner.id);
+                updateHeroView(index);
+            };
+
+            // Update dot sizes
+            const dots = document.getElementById('carousel-indicators').children;
+            Array.from(dots).forEach((dot, idx) => {
+                if (idx === index) {
+                    dot.className = "w-1.5 h-1.5 rounded-full transition-all duration-300 bg-brand w-3";
                 } else {
-                    window.open(shareUrl, '_blank');
+                    dot.className = "w-1.5 h-1.5 rounded-full transition-all duration-300 bg-zinc-600";
                 }
             });
         }
 
-        function renderWatchlist() {
-            const container = document.getElementById('watchlist-grid');
-            if (state.watchlist.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-2 text-center py-12 space-y-2">
-                        <i class="fa-regular fa-folder-open text-4xl text-zinc-700"></i>
-                        <p class="text-sm text-zinc-500">Your Watchlist is empty.</p>
-                        <button onclick="switchView('home')" class="mt-2 text-xs bg-zinc-900 border border-zinc-800 px-3.5 py-1.5 rounded-lg font-bold text-zinc-300">Discover Movies</button>
+        function startHeroRotation() {
+            if (appState.banners.length <= 1) return;
+            clearInterval(appState.heroTimer);
+            appState.heroTimer = setInterval(() => {
+                let nextIdx = (appState.currentHeroIndex + 1) % appState.banners.length;
+                updateHeroView(nextIdx);
+            }, 5500);
+        }
+
+        // Categorized list block render matches design
+        function renderHomeCategories() {
+            const section = document.getElementById('home-categories');
+            section.innerHTML = '';
+
+            appState.categories.forEach(categoryName => {
+                const matchedMovies = appState.movies.filter(m => m.category === categoryName);
+                if (matchedMovies.length === 0) return;
+
+                const catBlock = document.createElement('div');
+                catBlock.className = "space-y-3";
+                
+                // Block Header block
+                catBlock.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <div class="w-1 h-4 bg-brand rounded-full"></div>
+                        <h3 class="text-base font-bold text-white tracking-tight">${categoryName}</h3>
                     </div>
                 `;
-                return;
-            }
 
-            const savedMovies = state.catalog.movies.filter(m => state.watchlist.includes(m.id));
-            container.innerHTML = savedMovies.map(movie => {
-                return `
-                <div onclick="viewMovieDetails('${movie.id}')" class="bg-zinc-900/40 border border-zinc-900 rounded-xl p-2.5 flex flex-col justify-between space-y-2 cursor-pointer">
-                    <div class="relative aspect-[2/3] bg-zinc-950 rounded-lg overflow-hidden border border-zinc-800/50">
-                        <img src="${movie.image}" alt="${movie.title}" class="w-full h-full object-cover">
-                        <button onclick="toggleWatchlist('${movie.id}', event)" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-zinc-950/75 backdrop-blur-md border border-zinc-800/50 flex items-center justify-center text-xs shadow-md">
-                            <i class="fa-solid fa-bookmark text-brand-500"></i>
-                        </button>
-                    </div>
-                    <div class="space-y-0.5">
-                        <div class="flex items-center justify-between text-[10px] text-zinc-500 font-medium">
-                            <span>${movie.releaseYear} • ${movie.genre}</span>
-                            <span class="text-brand-400 font-bold"><i class="fa-solid fa-star"></i> ${movie.rating}</span>
+                // Horizontal Carousel Row Context
+                const carousel = document.createElement('div');
+                carousel.className = "flex overflow-x-auto space-x-3.5 pb-2 no-scrollbar scroll-smooth snap-x";
+                
+                matchedMovies.forEach(movie => {
+                    const item = document.createElement('div');
+                    item.className = "w-[125px] flex-shrink-0 snap-start space-y-2 group active:scale-95 transition-transform";
+                    item.addEventListener('click', () => showMovieDetails(movie));
+
+                    item.innerHTML = `
+                        <div class="relative aspect-[2/3] w-full rounded-xl overflow-hidden glass-card">
+                            <img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover pointer-events-none select-none">
+                            <div class="absolute top-1.5 left-1.5 glass-panel border border-zinc-800/60 rounded px-1.5 py-0.5 flex items-center space-x-0.5">
+                                <i class="fa-solid fa-star text-brand text-[9px]"></i>
+                                <span class="text-white font-extrabold text-[9px]">${movie.rating}</span>
+                            </div>
                         </div>
-                        <h4 class="font-bold text-xs text-zinc-200 line-clamp-1">${movie.title}</h4>
-                    </div>
-                </div>
-                `;
-            }).join('');
+                        <div class="space-y-0.5 px-1">
+                            <h4 class="text-xs font-bold text-zinc-100 truncate group-hover:text-brand transition-colors">${movie.title}</h4>
+                            <p class="text-[10px] text-zinc-500 font-semibold">${movie.year}</p>
+                        </div>
+                    `;
+                    carousel.appendChild(item);
+                });
+
+                catBlock.appendChild(carousel);
+                section.appendChild(catBlock);
+            });
         }
 
-        // Deep Linking verification checks on execution init
-        function processDeepLinking() {
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
-                const startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
-                if (startParam && startParam.startsWith('movie_')) {
-                    const extractedMovieId = startParam.replace('movie_', '');
-                    const matchingMovie = state.catalog.movies.find(m => m.id === extractedMovieId);
-                    if (matchingMovie) {
-                        switchView('details', matchingMovie);
-                    }
+        // Browse Categories view matches original card layouts grid (Image 2)
+        function renderBrowseGenres() {
+            const grid = document.getElementById('browse-genres-grid');
+            grid.innerHTML = '';
+
+            // Unique genre structures extracted from complete database context
+            const genresSet = new Set();
+            appState.movies.forEach(m => m.genres?.forEach(g => genresSet.add(g)));
+            const genres = Array.from(genresSet);
+
+            // Dynamic layout mapping with beautiful linear design patterns
+            const presetGradients = [
+                'from-red-950/80 to-zinc-950/90',
+                'from-zinc-900/80 to-zinc-950/90',
+                'from-zinc-850/80 to-zinc-950/90',
+                'from-brand-dark/80 to-zinc-950/90'
+            ];
+
+            genres.forEach((genre, idx) => {
+                const card = document.createElement('div');
+                card.className = "relative aspect-[16/10] rounded-xl overflow-hidden glass-card group cursor-pointer active:scale-95 transition-transform flex flex-col justify-between p-3 border border-zinc-800/40";
+                
+                // Get one fallback backdrop image from the current matched movies
+                const matchedMovie = appState.movies.find(m => m.genres?.includes(genre));
+                const bgImage = matchedMovie ? matchedMovie.poster : '';
+
+                card.innerHTML = `
+                    <div class="absolute inset-0 bg-cover bg-center opacity-20 group-hover:opacity-30 transition-opacity" style="background-image: url('${bgImage}')"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br ${presetGradients[idx % presetGradients.length]} mix-blend-multiply"></div>
+                    
+                    <span class="text-xs bg-brand/10 text-brand font-bold px-2 py-0.5 rounded border border-brand/20 self-start z-10 uppercase tracking-wider">${genre}</span>
+                    <div class="flex items-center justify-between z-10 pt-4">
+                        <h4 class="text-base font-extrabold text-white tracking-tight">${genre}</h4>
+                        <div class="w-7 h-7 rounded-full bg-zinc-900/95 border border-zinc-800/80 flex items-center justify-center text-zinc-400 group-hover:text-brand transition-colors">
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </div>
+                    </div>
+                `;
+
+                card.addEventListener('click', () => openGenreDrawer(genre));
+                grid.appendChild(card);
+            });
+        }
+
+        // Genre Drawer controller
+        function openGenreDrawer(genre) {
+            const drawer = document.getElementById('genre-filtered-view');
+            const grid = document.getElementById('genre-filtered-grid');
+            const titleHeader = document.getElementById('genre-title-header');
+
+            titleHeader.textContent = genre;
+            grid.innerHTML = '';
+
+            const matched = appState.movies.filter(m => m.genres?.includes(genre));
+            matched.forEach(movie => {
+                const item = document.createElement('div');
+                item.className = "space-y-2 group active:scale-95 transition-transform";
+                item.addEventListener('click', () => showMovieDetails(movie));
+
+                item.innerHTML = `
+                    <div class="relative aspect-[2/3] w-full rounded-xl overflow-hidden glass-card">
+                        <img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover pointer-events-none select-none">
+                        <div class="absolute top-1.5 left-1.5 glass-panel border border-zinc-800/60 rounded px-1.5 py-0.5 flex items-center space-x-0.5">
+                            <i class="fa-solid fa-star text-brand text-[9px]"></i>
+                            <span class="text-white font-extrabold text-[9px]">${movie.rating}</span>
+                        </div>
+                    </div>
+                    <div class="space-y-0.5 px-1">
+                        <h4 class="text-xs font-bold text-zinc-100 truncate group-hover:text-brand transition-colors">${movie.title}</h4>
+                        <p class="text-[10px] text-zinc-500 font-semibold">${movie.year}</p>
+                    </div>
+                `;
+                grid.appendChild(item);
+            });
+
+            drawer.classList.remove('hidden');
+            setTimeout(() => {
+                drawer.style.transform = 'translateY(0)';
+            }, 50);
+
+            // Drawer controls
+            document.getElementById('genre-close-btn').onclick = () => {
+                drawer.classList.add('hidden');
+            };
+        }
+
+        // Live Search implementation context
+        function setupSearch() {
+            const input = document.getElementById('search-input');
+            const clearBtn = document.getElementById('search-clear');
+            const countLabel = document.getElementById('search-results-count');
+            const grid = document.getElementById('search-results-grid');
+
+            input.addEventListener('input', () => {
+                const query = input.value.trim().toLowerCase();
+                
+                if (query.length > 0) {
+                    clearBtn.classList.remove('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                    countLabel.textContent = "Type to begin searching";
+                    grid.innerHTML = '';
+                    return;
                 }
+
+                // Filtering algorithms matches titles and description
+                const matched = appState.movies.filter(m => 
+                    m.title.toLowerCase().includes(query) || 
+                    m.overview.toLowerCase().includes(query) ||
+                    m.genres?.some(g => g.toLowerCase().includes(query))
+                );
+
+                countLabel.textContent = `${matched.length} ${matched.length === 1 ? 'result' : 'results'} found`;
+                grid.innerHTML = '';
+
+                matched.forEach(movie => {
+                    const item = document.createElement('div');
+                    item.className = "space-y-2 group active:scale-95 transition-transform";
+                    item.addEventListener('click', () => showMovieDetails(movie));
+
+                    item.innerHTML = `
+                        <div class="relative aspect-[2/3] w-full rounded-xl overflow-hidden glass-card">
+                            <img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover pointer-events-none select-none">
+                            <div class="absolute top-1.5 left-1.5 glass-panel border border-zinc-800/60 rounded px-1.5 py-0.5 flex items-center space-x-0.5">
+                                <i class="fa-solid fa-star text-brand text-[9px]"></i>
+                                <span class="text-white font-extrabold text-[9px]">${movie.rating}</span>
+                            </div>
+                        </div>
+                        <div class="space-y-0.5 px-1">
+                            <h4 class="text-xs font-bold text-zinc-100 truncate group-hover:text-brand transition-colors">${movie.title}</h4>
+                            <p class="text-[10px] text-zinc-500 font-semibold">${movie.year}</p>
+                        </div>
+                    `;
+                    grid.appendChild(item);
+                });
+            });
+
+            clearBtn.addEventListener('click', () => {
+                input.value = '';
+                clearBtn.classList.add('hidden');
+                countLabel.textContent = "Type to begin searching";
+                grid.innerHTML = '';
+                input.focus();
+            });
+        }
+
+        // Watchlist update handlers
+        function updateWatchlistView() {
+            const emptyState = document.getElementById('watchlist-empty-state');
+            const grid = document.getElementById('watchlist-grid');
+
+            const savedMovies = appState.movies.filter(m => appState.watchlist.includes(m.id));
+
+            if (savedMovies.length === 0) {
+                emptyState.classList.remove('hidden');
+                grid.classList.add('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                grid.classList.remove('hidden');
+                grid.innerHTML = '';
+
+                savedMovies.forEach(movie => {
+                    const item = document.createElement('div');
+                    item.className = "space-y-2 group active:scale-95 transition-transform";
+                    item.addEventListener('click', () => showMovieDetails(movie));
+
+                    item.innerHTML = `
+                        <div class="relative aspect-[2/3] w-full rounded-xl overflow-hidden glass-card">
+                            <img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover pointer-events-none select-none">
+                            <div class="absolute top-1.5 left-1.5 glass-panel border border-zinc-800/60 rounded px-1.5 py-0.5 flex items-center space-x-0.5">
+                                <i class="fa-solid fa-star text-brand text-[9px]"></i>
+                                <span class="text-white font-extrabold text-[9px]">${movie.rating}</span>
+                            </div>
+                        </div>
+                        <div class="space-y-0.5 px-1">
+                            <h4 class="text-xs font-bold text-zinc-100 truncate group-hover:text-brand transition-colors">${movie.title}</h4>
+                            <p class="text-[10px] text-zinc-500 font-semibold">${movie.year}</p>
+                        </div>
+                    `;
+                    grid.appendChild(item);
+                });
             }
         }
 
-        // Run client routines
-        window.addEventListener('DOMContentLoaded', async () => {
-            initTelegram();
-            runSecurityConstraints();
-            await fetchCatalog();
-            processDeepLinking();
-        });
+        function toggleWatchlist(movieId) {
+            const idx = appState.watchlist.indexOf(movieId);
+            if (idx === -1) {
+                appState.watchlist.push(movieId);
+                showToast("Added to Watchlist");
+            } else {
+                appState.watchlist.splice(idx, 1);
+                showToast("Removed from Watchlist");
+            }
+            saveWatchlist();
+        }
+
+        // Movie Detail Modal engine with transition sheets
+        function setupDetailsView() {
+            const overlay = document.getElementById('movie-detail-overlay');
+            const closeBtn = document.getElementById('detail-close-btn');
+            const backTopBtn = document.getElementById('detail-back-top-btn');
+
+            const hideDetails = () => {
+                overlay.style.transform = 'translateY(100%)';
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                }, 300);
+            };
+
+            closeBtn.addEventListener('click', hideDetails);
+            backTopBtn.addEventListener('click', hideDetails);
+        }
+
+        function showMovieDetails(movie) {
+            const overlay = document.getElementById('movie-detail-overlay');
+            
+            // Render basic parameters
+            document.getElementById('detail-backdrop').src = movie.backdrop;
+            document.getElementById('detail-title').textContent = movie.title;
+            document.getElementById('detail-year').textContent = movie.year;
+            document.getElementById('detail-runtime').textContent = movie.runtime;
+            document.getElementById('detail-rating').textContent = movie.rating;
+            document.getElementById('detail-overview').textContent = movie.overview;
+
+            // Direct actions integration
+            const downloadBtn = document.getElementById('detail-download-btn');
+            downloadBtn.href = movie.downloadUrl;
+
+            // Handle multiple tag values dynamically matches requirements
+            const genresContainer = document.getElementById('detail-genres-container');
+            genresContainer.innerHTML = '';
+            if (movie.genres && Array.isArray(movie.genres)) {
+                movie.genres.forEach(g => {
+                    const pill = document.createElement('span');
+                    pill.className = "bg-brand/10 text-brand text-[10px] font-bold px-2 py-0.5 rounded border border-brand/20 uppercase tracking-wide";
+                    pill.textContent = g;
+                    genresContainer.appendChild(pill);
+                });
+            }
+
+            // Sync dynamic watchlist interactions
+            updateWatchlistBtnUI(movie.id);
+
+            const watchlistBtn = document.getElementById('detail-watchlist-btn');
+            watchlistBtn.onclick = () => {
+                toggleWatchlist(movie.id);
+                updateWatchlistBtnUI(movie.id);
+            };
+
+            // Programmatic dynamic share link configuration
+            const shareBtn = document.getElementById('detail-share-btn');
+            shareBtn.onclick = () => {
+                let botUsername = "your_telegram_bot"; // Change this parameter as required
+                let shareLink = `https://t.me/${botUsername}/app?startapp=id_${movie.id}`;
+                
+                navigator.clipboard.writeText(shareLink).then(() => {
+                    showToast("Share link copied to clipboard");
+                }).catch(() => {
+                    showToast("Failed to copy link");
+                });
+            };
+
+            // Overlay display transitions animation
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.style.transform = 'translateY(0)';
+            }, 50);
+        }
+
+        function updateWatchlistBtnUI(movieId) {
+            const watchlistBtn = document.getElementById('detail-watchlist-btn');
+            const label = document.getElementById('detail-watchlist-txt');
+            const icon = watchlistBtn.querySelector('i');
+            const isSaved = appState.watchlist.includes(movieId);
+
+            if (isSaved) {
+                watchlistBtn.className = "flex-1 bg-brand text-white py-3 rounded-xl text-sm font-semibold active:scale-95 transition-transform flex items-center justify-center space-x-2";
+                icon.className = "fa-solid fa-bookmark";
+                label.textContent = "Saved";
+            } else {
+                watchlistBtn.className = "flex-1 bg-zinc-900 border border-zinc-850 text-white py-3 rounded-xl text-sm font-semibold active:scale-95 transition-transform flex items-center justify-center space-x-2";
+                icon.className = "fa-regular fa-bookmark";
+                label.textContent = "Add to List";
+            }
+        }
+
+        // Action Toast System
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const text = document.getElementById('toast-text');
+
+            text.textContent = message;
+            toast.classList.remove('opacity-0', 'translate-y-10');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10');
+            }, 2500);
+        }
     </script>
 </body>
-</html>
+             </html>
