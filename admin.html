@@ -96,6 +96,8 @@
                 <h1 class="text-lg font-bold tracking-wider text-white">MLH<span class="text-brand">BM</span> Console</h1>
             </div>
             
+            <div class="flex items-center space-x-3">
+                <span id="global-counter" class="text-[10px] font-bold bg-zinc-900 border border-zinc-850 text-zinc-400 px-2 py-0.5 rounded-full"></span>
                 <!-- Top Header Logout Icon -->
                 <button onclick="logoutAdmin()" class="w-8 h-8 rounded-lg bg-zinc-900/90 border border-zinc-800/80 hover:border-brand/40 text-zinc-400 hover:text-brand flex items-center justify-center transition-all">
                     <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -455,7 +457,7 @@
         // Passcode Lock Submissions
         function authSubmit() {
             const val = document.getElementById('passcode-input').value.trim();
-            if (val === 'rifat6143') {
+            if (val === 'mlhbm6143') {
                 document.getElementById('auth-gate').classList.add('hidden');
                 document.getElementById('admin-workspace').classList.remove('hidden');
                 initWorkspace();
