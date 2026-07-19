@@ -97,7 +97,6 @@
             </div>
             
             <div class="flex items-center space-x-3">
-                <span id="global-counter" class="text-[10px] font-bold bg-zinc-900 border border-zinc-850 text-zinc-400 px-2 py-0.5 rounded-full">0 Assets</span>
                 <!-- Top Header Logout Icon -->
                 <button onclick="logoutAdmin()" class="w-8 h-8 rounded-lg bg-zinc-900/90 border border-zinc-800/80 hover:border-brand/40 text-zinc-400 hover:text-brand flex items-center justify-center transition-all">
                     <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -110,7 +109,7 @@
         <!-- VIEWS SCROLL CONTENT -->
         <main class="flex-1 overflow-y-auto relative pb-28" style="-webkit-overflow-scrolling: touch;">
 
-            <!-- VIEW 1: HOME (MANAGE) -->
+            <!-- VIEW 1: HOME (MANAGE & DASHBOARD) -->
             <section id="view-home" class="view-panel p-4 space-y-5">
                 
                 <!-- HOME DASHBOARD STATS -->
@@ -199,7 +198,7 @@
                         </div>
                         <div class="space-y-1">
                             <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Runtime</label>
-                            <input type="text" id="asset-runtime" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 text-xs text-white focus:outline-none" placeholder="e.g. 169 min">
+                            <input type="text" id="asset-runtime" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 text-xs text-white focus:outline-none" placeholder="e.g. 2h:54m:40s">
                         </div>
                     </div>
 
@@ -381,11 +380,11 @@
             <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mb-2"></div>
             <h4 class="text-xs font-bold tracking-widest text-zinc-400 uppercase text-center">Select Media Type</h4>
             <div class="space-y-2">
-                <button onclick="selectTypeOption('movie', 'Movie')" class="w-full p-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-between transition-colors">
+                <button onclick="selectTypeOption('movie', 'Movie')" class="w-full p-4 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 flex items-center justify-between transition-colors">
                     <span class="text-xs font-bold text-white">Movie</span>
                     <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="type-movie-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
-                <button onclick="selectTypeOption('series', 'TV Series')" class="w-full p-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-between transition-colors">
+                <button onclick="selectTypeOption('series', 'TV Series')" class="w-full p-4 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 flex items-center justify-between transition-colors">
                     <span class="text-xs font-bold text-white">TV Series</span>
                     <span class="w-4 h-4 rounded-full border border-zinc-800 p-0.5 flex items-center justify-center" id="type-series-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
@@ -399,19 +398,19 @@
             <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mb-2"></div>
             <h4 class="text-xs font-bold tracking-widest text-zinc-400 uppercase text-center">Select Display Category</h4>
             <div class="space-y-2">
-                <button onclick="selectCategoryOption('Trending Now')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-between transition-colors">
+                <button onclick="selectCategoryOption('Trending Now')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 flex items-center justify-between transition-colors">
                     <span class="text-xs font-bold text-white">Trending Now</span>
-                    <span class="w-4 h-4 rounded-full border border-zinc-800 p-0.5 flex items-center justify-center" id="cat-Trending-Now-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
+                    <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="cat-Trending-Now-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
-                <button onclick="selectCategoryOption('Popular Movies')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-between transition-colors">
+                <button onclick="selectCategoryOption('Popular Movies')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 flex items-center justify-between transition-colors">
                     <span class="text-xs font-bold text-white">Popular Movies</span>
                     <span class="w-4 h-4 rounded-full border border-zinc-800 p-0.5 flex items-center justify-center" id="cat-Popular-Movies-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
-                <button onclick="selectCategoryOption('Popular Series')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-between transition-colors">
+                <button onclick="selectCategoryOption('Popular Series')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 flex items-center justify-between transition-colors">
                     <span class="text-xs font-bold text-white">Popular Series</span>
                     <span class="w-4 h-4 rounded-full border border-zinc-800 p-0.5 flex items-center justify-center" id="cat-Popular-Series-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
-                <button onclick="selectCategoryOption('None')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-between transition-colors">
+                <button onclick="selectCategoryOption('None')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 flex items-center justify-between transition-colors">
                     <span class="text-xs font-bold text-white">None</span>
                     <span class="w-4 h-4 rounded-full border border-zinc-800 p-0.5 flex items-center justify-center" id="cat-None-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
@@ -444,6 +443,7 @@
 
         let localCatalog = [];
         let globalUsers = []; 
+        let globalViews = {}; 
         let genresList = ["Action", "Sci-Fi", "Drama", "Comedy", "Horror", "Romance", "Thriller", "Adventure", "Biography", "History", "Crime"];
         let currentHomeTab = 'movie'; 
         let currentDeleteId = null;
@@ -454,10 +454,45 @@
             category: 'Trending Now'
         };
 
+        // --- DEFENSIVE MEMORY SESSION STORAGE WRAPPER (FIX FOR TELEGRAM WEBVIEW) ---
+        const safeSessionStorage = {
+            setItem: function(key, value) {
+                try {
+                    sessionStorage.setItem(key, value);
+                } catch (e) {
+                    console.warn("sessionStorage writes restricted in this sandbox.");
+                }
+            },
+            getItem: function(key) {
+                try {
+                    return sessionStorage.getItem(key);
+                } catch (e) {
+                    return null;
+                }
+            },
+            removeItem: function(key) {
+                try {
+                    sessionStorage.removeItem(key);
+                } catch (e) {
+                    console.warn("sessionStorage removals restricted.");
+                }
+            }
+        };
+
+        // Persistent Session Handlers on load using the Safe Session Storage wrapper
+        document.addEventListener('DOMContentLoaded', () => {
+            if (safeSessionStorage.getItem('mlhbm_admin_authenticated') === 'true') {
+                document.getElementById('auth-gate').classList.add('hidden');
+                document.getElementById('admin-workspace').classList.remove('hidden');
+                initWorkspace();
+            }
+        });
+
         // Passcode Lock Submissions
         function authSubmit() {
             const val = document.getElementById('passcode-input').value.trim();
             if (val === 'mlhbm6143') {
+                safeSessionStorage.setItem('mlhbm_admin_authenticated', 'true'); // Save session state safely
                 document.getElementById('auth-gate').classList.add('hidden');
                 document.getElementById('admin-workspace').classList.remove('hidden');
                 initWorkspace();
@@ -473,35 +508,25 @@
 
         // Top Header Admin Logout handler
         function logoutAdmin() {
+            safeSessionStorage.removeItem('mlhbm_admin_authenticated'); // Clear tab session safely
             document.getElementById('passcode-input').value = '';
             document.getElementById('admin-workspace').classList.add('hidden');
             document.getElementById('auth-gate').classList.remove('hidden');
             showToast("Admin logged out successfully.");
         }
 
-        // Initialize Admin Console Workspace
-        function initWorkspace() {
-            const storedCatalog = localStorage.getItem('mlhbm_admin_catalog');
-            if (storedCatalog) {
-                localCatalog = JSON.parse(storedCatalog);
-            } else {
-                localCatalog = [];
-            }
-
+        async function initWorkspace() {
             const storedGenres = localStorage.getItem('mlhbm_admin_genres');
             if (storedGenres) {
                 genresList = JSON.parse(storedGenres);
             }
 
             renderGenresChecklist();
-            renderCatalogList();
-            renderSliderLists();
-            updateGlobalCounter();
-            updateDashboardStats();
+            await refreshData();
             fetchRegisteredUsers(); 
         }
 
-        // Global Navigation Engine
+        // Global Navigation Tab Switching logic
         function switchView(viewName) {
             document.querySelectorAll('.view-panel').forEach(panel => {
                 panel.classList.add('hidden');
@@ -528,10 +553,11 @@
         }
 
         function updateGlobalCounter() {
-            document.getElementById('global-counter').innerText = `${localCatalog.length} Assets`;
+            const el = document.getElementById('global-counter');
+            if (el) el.innerText = `${localCatalog.length} Assets`;
         }
 
-        // Home View Dashboard Counter Logic
+        // Home View Dashboard Counter Logic (Updated)
         function updateDashboardStats() {
             const moviesCount = localCatalog.filter(i => i.type === 'movie').length;
             const seriesCount = localCatalog.filter(i => i.type === 'series').length;
@@ -540,6 +566,42 @@
             document.getElementById('stat-movies').innerText = moviesCount;
             document.getElementById('stat-series').innerText = seriesCount;
             document.getElementById('stat-members').innerText = membersCount;
+        }
+
+        // --- FETCH DYNAMIC CATALOG FROM FIREBASE CLOUD ---
+        async function fetchCatalogFromCloud() {
+            try {
+                const response = await fetch(`${CLOUD_DB_URL}/catalog.json`);
+                if (!response.ok) throw new Error();
+                const data = await response.json();
+                
+                localCatalog = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+            } catch (err) {
+                console.error("Cloud Catalog loading failed:", err);
+                localCatalog = [];
+            }
+        }
+
+        // --- FETCH REMOTE VIEWS COUNT DATA SECURELY ---
+        async function fetchViewsFromCloud() {
+            try {
+                const response = await fetch(`${CLOUD_DB_URL}/views.json`);
+                if (response.ok) {
+                    globalViews = await response.json() || {};
+                }
+            } catch (err) {
+                console.error("Views count fetching failed:", err);
+            }
+        }
+
+        // Refresh Data Wrapper
+        async function refreshData() {
+            await fetchCatalogFromCloud();
+            await fetchViewsFromCloud();
+            renderCatalogList();
+            renderSliderLists();
+            updateDashboardStats();
+            updateGlobalCounter();
         }
 
         // --- HOMEPAGE CATALOG LIST ---
@@ -573,26 +635,32 @@
                 return;
             }
 
-            list.innerHTML = filtered.map(item => `
-                <div class="p-3 bg-zinc-900/60 border border-zinc-900 rounded-lg flex items-center justify-between">
-                    <div class="flex items-center space-x-3 overflow-hidden">
-                        <img class="w-10 h-14 rounded object-cover bg-zinc-800 border border-zinc-800/50 flex-shrink-0" src="${item.posterUrl}" alt="">
-                        <div class="overflow-hidden">
-                            <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
-                            <div class="flex items-center space-x-2 text-[9px] mt-1 font-semibold uppercase">
-                                <span class="text-zinc-500">${item.year}</span>
-                                <span class="text-zinc-700">•</span>
-                                <span class="text-brand">${item.category || 'None'}</span>
-                                ${item.pinnedToSlider ? `<span class="px-1 py-0.2 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[8px]">SLIDER</span>` : ''}
+            list.innerHTML = filtered.map(item => {
+                const viewCount = globalViews[item.id] || 0;
+                return `
+                    <div class="p-3 bg-zinc-900/60 border border-zinc-900 rounded-lg flex items-center justify-between">
+                        <div class="flex items-center space-x-3 overflow-hidden">
+                            <img class="w-10 h-14 rounded object-cover bg-zinc-800 border border-zinc-800/50 flex-shrink-0" src="${item.posterUrl}" alt="">
+                            <div class="overflow-hidden">
+                                <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
+                                <div class="flex items-center space-x-2 text-[9px] mt-1 font-semibold uppercase">
+                                    <span class="text-zinc-500">${item.year}</span>
+                                    <span class="text-zinc-700">•</span>
+                                    <span class="text-brand flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                        ${viewCount} views
+                                    </span>
+                                    ${item.pinnedToSlider ? `<span class="px-1 py-0.2 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[8px]">SLIDER</span>` : ''}
+                                </div>
                             </div>
                         </div>
+                        <div class="flex space-x-1 flex-shrink-0 ml-4">
+                            <button onclick="editRecord('${item.id}')" class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-750 text-[10px] font-bold text-zinc-300 rounded border border-zinc-700/50">Edit</button>
+                            <button onclick="triggerDelete('${item.id}')" class="px-2.5 py-1.5 bg-brand/10 hover:bg-brand/20 text-[10px] font-bold text-brand rounded border border-brand/20">Delete</button>
+                        </div>
                     </div>
-                    <div class="flex space-x-1 flex-shrink-0 ml-4">
-                        <button onclick="editRecord('${item.id}')" class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-750 text-[10px] font-bold text-zinc-300 rounded border border-zinc-700/50">Edit</button>
-                        <button onclick="triggerDelete('${item.id}')" class="px-2.5 py-1.5 bg-brand/10 hover:bg-brand/20 text-[10px] font-bold text-brand rounded border border-brand/20">Delete</button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // --- USER TRACKING DATABASE SYSTEM ---
@@ -697,7 +765,8 @@
             showToast("New custom genre tag added!");
         }
 
-        function saveRecord() {
+        // Saving directly to Cloud Firebase catalog folder (PUT asynchronous)
+        async function saveRecord() {
             const title = document.getElementById('asset-title').value.trim();
             const type = document.getElementById('asset-type').value;
             const category = document.getElementById('asset-category').value;
@@ -721,10 +790,10 @@
                 genres.push(cb.value);
             });
 
-            const id = document.getElementById('edit-id').value;
+            const id = document.getElementById('edit-id').value || 'rec_' + Date.now();
 
             const record = {
-                id: id || 'rec_' + Date.now(),
+                id,
                 title,
                 type,
                 category,
@@ -745,20 +814,22 @@
                 record.seasons = seasonsList;
             }
 
-            if (id) {
-                const idx = localCatalog.findIndex(i => i.id === id);
-                if (idx > -1) localCatalog[idx] = record;
-                showToast("Asset updated successfully!");
-            } else {
-                localCatalog.push(record);
-                showToast("Asset uploaded successfully!");
-            }
+            try {
+                showToast("Saving to cloud database...");
+                const response = await fetch(`${CLOUD_DB_URL}/catalog/${id}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(record)
+                });
+                if (!response.ok) throw new Error();
 
-            localStorage.setItem('mlhbm_admin_catalog', JSON.stringify(localCatalog));
-            resetFormState();
-            updateGlobalCounter();
-            updateDashboardStats();
-            switchView('home');
+                showToast("Asset saved live on cloud!");
+                resetFormState();
+                await refreshData();
+                switchView('home');
+            } catch (err) {
+                showToast("Failed to save asset on cloud database.");
+            }
         }
 
         function editRecord(id) {
@@ -861,13 +932,24 @@
             }
         }
 
-        function toggleSliderPin(id, isPin) {
+        async function toggleSliderPin(id, isPin) {
             const idx = localCatalog.findIndex(i => i.id === id);
             if (idx > -1) {
-                localCatalog[idx].pinnedToSlider = isPin;
-                localStorage.setItem('mlhbm_admin_catalog', JSON.stringify(localCatalog));
-                renderSliderLists();
-                showToast(isPin ? "Pinned to slider banner!" : "Unpinned from slider.");
+                try {
+                    showToast("Updating slider state...");
+                    const response = await fetch(`${CLOUD_DB_URL}/catalog/${id}/pinnedToSlider.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(isPin)
+                    });
+                    if (!response.ok) throw new Error();
+
+                    localCatalog[idx].pinnedToSlider = isPin;
+                    renderSliderLists();
+                    showToast(isPin ? "Pinned to slider banner!" : "Unpinned from slider.");
+                } catch (err) {
+                    showToast("Failed to update slider status on cloud.");
+                }
             }
         }
 
@@ -887,29 +969,39 @@
             }
         }
 
-        function handleFileImport(event) {
+        async function handleFileImport(event) {
             const file = event.target.files[0];
             if (!file) return;
 
             document.getElementById('file-name-label').innerText = file.name;
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     const parsed = JSON.parse(e.target.result);
                     if (Array.isArray(parsed)) {
-                        localCatalog = parsed;
-                        localStorage.setItem('mlhbm_admin_catalog', JSON.stringify(localCatalog));
-                        updateGlobalCounter();
-                        renderCatalogList();
-                        renderSliderLists();
-                        updateDashboardStats();
-                        showToast("JSON file imported successfully!");
+                        showToast("Uploading database to cloud...");
+                        
+                        // Convert JSON array list to Key-Value pair for Firebase PUT integration
+                        const catalogObject = {};
+                        parsed.forEach(item => {
+                            catalogObject[item.id] = item;
+                        });
+
+                        const response = await fetch(`${CLOUD_DB_URL}/catalog.json`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(catalogObject)
+                        });
+                        if (!response.ok) throw new Error();
+
+                        showToast("JSON database file imported successfully!");
+                        await refreshData();
                     } else {
-                        showToast("JSON content must be a structured list array.");
+                        showToast("JSON content must be structured as array list.");
                     }
                 } catch (err) {
-                    showToast("Error reading selected JSON compiled syntax.");
+                    showToast("Error parsing database JSON.");
                 }
             };
             reader.readAsText(file);
@@ -923,16 +1015,26 @@
                 .then(() => showToast("Raw string copied!"));
         }
 
-        function importCatalogJSON() {
+        async function importCatalogJSON() {
             const raw = document.getElementById('json-io').value;
             try {
                 const parsed = JSON.parse(raw);
                 if (Array.isArray(parsed)) {
-                    localCatalog = parsed;
-                    localStorage.setItem('mlhbm_admin_catalog', JSON.stringify(localCatalog));
-                    updateGlobalCounter();
-                    updateDashboardStats();
-                    showToast("Raw text imported successfully!");
+                    showToast("Syncing with cloud...");
+                    const catalogObject = {};
+                    parsed.forEach(item => {
+                        catalogObject[item.id] = item;
+                    });
+
+                    const response = await fetch(`${CLOUD_DB_URL}/catalog.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(catalogObject)
+                    });
+                    if (!response.ok) throw new Error();
+
+                    showToast("Text imported successfully!");
+                    await refreshData();
                 } else {
                     showToast("Import must be a JSON array.");
                 }
@@ -953,15 +1055,21 @@
             currentDeleteId = null;
         }
 
-        function executeDelete() {
+        async function executeDelete() {
             if (currentDeleteId) {
-                localCatalog = localCatalog.filter(i => i.id !== currentDeleteId);
-                localStorage.setItem('mlhbm_admin_catalog', JSON.stringify(localCatalog));
-                renderCatalogList();
-                updateGlobalCounter();
-                updateDashboardStats();
-                showToast("Record deleted.");
-                closeConfirmModal();
+                try {
+                    showToast("Deleting from cloud...");
+                    const response = await fetch(`${CLOUD_DB_URL}/catalog/${currentDeleteId}.json`, {
+                        method: 'DELETE'
+                    });
+                    if (!response.ok) throw new Error();
+
+                    showToast("Record deleted successfully.");
+                    closeConfirmModal();
+                    await refreshData();
+                } catch (err) {
+                    showToast("Failed to delete record from cloud.");
+                }
             }
         }
 
