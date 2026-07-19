@@ -141,7 +141,10 @@
             <section id="view-upload" class="view-panel hidden p-4 space-y-4">
                 <div class="flex items-center justify-between border-b border-zinc-900 pb-2">
                     <h2 id="uploader-header" class="text-xs font-bold uppercase tracking-widest text-zinc-500">Upload New Asset</h2>
-                    <button id="cancel-edit-btn" onclick="resetFormState()" class="hidden text-[10px] font-bold text-brand hover:underline">Cancel Edit</button>
+                    <div class="flex items-center space-x-3">
+                        <button id="clear-form-btn" onclick="resetFormState()" class="text-[10px] font-bold text-zinc-400 hover:text-brand transition-colors">Clear</button>
+                        <button id="cancel-edit-btn" onclick="resetFormState()" class="hidden text-[10px] font-bold text-brand hover:underline">Cancel Edit</button>
+                    </div>
                 </div>
 
                 <div class="space-y-4">
@@ -1028,8 +1031,25 @@
 
             document.getElementById('uploader-header').innerText = "Edit Asset Record";
             document.getElementById('cancel-edit-btn').classList.remove('hidden');
+            document.getElementById('clear-form-btn').classList.add('hidden'); // Hide clear during edit
 
             switchView('upload');
+        }
+
+        // --- NEW GENRE CREATION ---
+        function createNewGenreTag() {
+            const input = document.getElementById('new-genre-input');
+            const val = input.value.trim();
+            if (!val) return;
+            if (genresList.includes(val)) {
+                showToast("Genre already exists.");
+                return;
+            }
+            genresList.push(val);
+            localStorage.setItem('mlhbm_admin_genres', JSON.stringify(genresList));
+            renderGenresChecklist();
+            input.value = '';
+            showToast("New genre tag created!");
         }
 
         function resetFormState() {
@@ -1053,10 +1073,20 @@
             });
 
             seasonsList = [];
-            document.getElementById('seasons-builder-container').innerHTML = '';
+            const builderContainer = document.getElementById('seasons-builder-container');
+            if (builderContainer) builderContainer.innerHTML = '';
 
             document.getElementById('uploader-header').innerText = "Upload New Asset";
             document.getElementById('cancel-edit-btn').classList.add('hidden');
+            document.getElementById('clear-form-btn').classList.remove('hidden');
+
+            // Hide TMDB search results & reset query
+            const resultsBox = document.getElementById('tmdb-results');
+            if (resultsBox) resultsBox.classList.add('hidden');
+            const searchInput = document.getElementById('tmdb-search-input');
+            if (searchInput) searchInput.value = '';
+
+            showToast("Form cleared successfully.");
         }
 
         // --- SLIDER TAB LOGIC ---
@@ -1516,6 +1546,7 @@
         window.exportDatabaseFile = exportDatabaseFile;
         window.copyCatalogJSON = copyCatalogJSON;
         window.importCatalogJSON = importCatalogJSON;
+        window.createNewGenreTag = createNewGenreTag;
 
         function showToast(message) {
             const container = document.getElementById('toast-container');
@@ -1532,4 +1563,4 @@
         }
     </script>
 </body>
-                         </html>
+ </html>
