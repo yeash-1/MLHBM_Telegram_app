@@ -13,8 +13,14 @@
                     colors: {
                         brand: {
                             red: '#E50914',
-                            redHover: '#B20710'
+                            redHover: '#B20710',
+                            zincDark: '#09090b',
+                            zincCard: '#121214'
                         }
+                    },
+                    boxShadow: {
+                        'brand-glow': '0 0 10px rgba(229, 9, 20, 0.3)',
+                        'glass': 'inset 0 1px 1px rgba(255, 255, 255, 0.05)'
                     }
                 }
             }
@@ -28,13 +34,13 @@
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #09090b; /* bg-zinc-950 */
+            background-color: #09090b;
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
             user-select: none;
             -webkit-user-select: none;
         }
-        /* Custom Scrollbar Hiding */
+        /* Hide Scrollbars */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -42,180 +48,180 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        /* Glassmorphic Utilities */
+        /* Custom Glassmorphism styles */
         .glass-panel {
-            background: rgba(24, 24, 27, 0.8); /* zinc-900/80 */
+            background: rgba(18, 18, 20, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(63, 63, 70, 0.25);
+        }
+        .glass-header {
+            background: rgba(9, 9, 11, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(63, 63, 70, 0.4); /* zinc-800/40 */
         }
     </style>
 </head>
 <body class="h-full text-zinc-100 flex flex-col justify-between">
 
-    <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-40 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 px-4 py-3 flex items-center justify-between">
+    <!-- Premium Header -->
+    <header class="fixed top-0 left-0 right-0 z-40 glass-header border-b border-zinc-900/50 px-4 py-2 flex items-center justify-between h-[45px]">
         <div class="flex items-center gap-2">
-            <span class="text-brand-red font-black tracking-wider text-xl">[MLHBM]</span>
+            <span class="text-brand-red font-extrabold tracking-widest text-base shadow-sm">[MLHBM]</span>
         </div>
-        <button id="profileBtn" class="w-8 h-8 rounded-full overflow-hidden border border-zinc-800 focus:outline-none transition-transform active:scale-95">
-            <!-- Fallback Icon / Initials will display here dynamically -->
-            <div id="profileAvatarFallback" class="w-full h-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-300">
+        <button id="profileBtn" class="w-6.5 h-6.5 rounded-full overflow-hidden border border-zinc-800/80 focus:outline-none transition-transform active:scale-90">
+            <div id="profileAvatarFallback" class="w-full h-full bg-zinc-800 flex items-center justify-center text-[9px] font-bold text-zinc-300">
                 U
             </div>
             <img id="profileAvatarImg" class="w-full h-full object-cover hidden" alt="Avatar">
         </button>
     </header>
 
-    <!-- Main Content Containers -->
-    <main class="flex-1 overflow-y-auto pt-[61px] pb-[76px]">
+    <!-- Main Views Container -->
+    <main class="flex-1 overflow-y-auto pt-[45px] pb-[45px]">
         
         <!-- View: Home -->
-        <div id="view-home" class="view-panel space-y-6">
+        <div id="view-home" class="view-panel space-y-5">
             <!-- Hero Slider -->
-            <div class="relative w-full aspect-[16/10] sm:aspect-[16/9] bg-zinc-900 overflow-hidden" id="heroSliderContainer">
+            <div class="relative w-full aspect-[16/10] sm:aspect-[16/9] bg-zinc-950 overflow-hidden" id="heroSliderContainer">
                 <div id="heroWrapper" class="w-full h-full flex transition-transform duration-500 ease-out">
-                    <!-- Slides loaded dynamically -->
+                    <!-- Slides parsed dynamically -->
                 </div>
-                <!-- Gradient overlays -->
-                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent pointer-events-none"></div>
-                <div class="absolute inset-x-0 bottom-0 p-4 pt-12 bg-gradient-to-t from-zinc-950 to-transparent flex flex-col justify-end">
+                <!-- Premium Vignette overlays -->
+                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/15 to-transparent pointer-events-none"></div>
+                <div class="absolute inset-x-0 bottom-0 p-4 pt-16 bg-gradient-to-t from-zinc-950 to-transparent flex flex-col justify-end">
                     <div id="sliderMeta" class="space-y-1">
-                        <!-- Dynamic metadata populated on slide change -->
+                        <!-- Dynamic metadata loaded by controller -->
                     </div>
                 </div>
-                <!-- Navigation dots -->
-                <div class="absolute bottom-4 right-4 flex gap-1.5 z-10" id="sliderDots">
-                    <!-- Dots loaded dynamically -->
+                <!-- Navigation Dots -->
+                <div class="absolute bottom-4 right-4 flex gap-1 z-10" id="sliderDots">
+                    <!-- Dots parsed dynamically -->
                 </div>
             </div>
 
-            <!-- Category Rows Dynamic Container -->
-            <div id="homeCategories" class="px-4 space-y-6 pb-6">
-                <!-- Rows loaded dynamically -->
+            <!-- Category Rows -->
+            <div id="homeCategories" class="px-4 space-y-5 pb-4">
+                <!-- Rows load dynamically -->
             </div>
         </div>
 
         <!-- View: Search -->
         <div id="view-search" class="view-panel hidden px-4 py-4 space-y-4">
             <div class="relative">
-                <input type="text" id="searchInput" placeholder="Search movies, series, genres..." 
-                    class="w-full h-11 bg-zinc-900/90 border border-zinc-800 rounded-lg px-4 pl-10 text-sm text-zinc-200 focus:outline-none focus:border-brand-red transition-all">
-                <span class="absolute left-3.5 top-3.5 text-zinc-500">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" id="searchInput" placeholder="Search title, genre, year..." 
+                    class="w-full h-10 bg-zinc-900/80 border border-zinc-800/40 rounded-lg px-4 pl-9 text-xs text-zinc-200 focus:outline-none focus:border-brand-red/80 focus:ring-1 focus:ring-brand-red/30 transition-all">
+                <span class="absolute left-3 top-3 text-zinc-500">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </span>
-                <button id="clearSearchBtn" class="absolute right-3.5 top-3.5 text-zinc-500 hidden">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <button id="clearSearchBtn" class="absolute right-3 top-3 text-zinc-500 hidden">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
             
-            <!-- Search Results -->
-            <div id="searchResultsCount" class="text-xs text-zinc-500 hidden"></div>
-            <div id="searchResultsGrid" class="grid grid-cols-3 gap-2">
-                <!-- Results rendered here -->
-            </div>
+            <div id="searchResultsCount" class="text-[10px] uppercase font-bold tracking-wider text-zinc-500 hidden"></div>
+            <div id="searchResultsGrid" class="grid grid-cols-3 gap-2"></div>
         </div>
 
         <!-- View: Browse -->
-        <div id="view-browse" class="view-panel hidden px-4 py-4 space-y-6">
-            <!-- Browse Switch -->
-            <div class="flex bg-zinc-900 p-1 rounded-lg border border-zinc-800">
-                <button id="browseTypeMovie" class="flex-1 py-1.5 text-sm font-semibold rounded-md transition-all bg-brand-red text-white shadow-lg">Movies</button>
-                <button id="browseTypeSeries" class="flex-1 py-1.5 text-sm font-semibold text-zinc-400 rounded-md transition-all">TV Shows</button>
+        <div id="view-browse" class="view-panel hidden px-4 py-4 space-y-4">
+            <!-- Sleek Toggle Switch -->
+            <div class="flex bg-zinc-900/90 p-1 rounded-lg border border-zinc-800/30">
+                <button id="browseTypeMovie" class="flex-1 py-1 text-xs font-bold rounded-md transition-all bg-brand-red text-white shadow-brand-glow">Movies</button>
+                <button id="browseTypeSeries" class="flex-1 py-1 text-xs font-bold text-zinc-400 rounded-md transition-all">TV Shows</button>
             </div>
 
-            <!-- Browse Genre Grid Collage -->
             <div class="space-y-3">
-                <h3 class="text-sm font-bold text-zinc-400 tracking-wider uppercase">Browse by Genre</h3>
-                <div id="genreGrid" class="grid grid-cols-2 gap-3">
-                    <!-- Genre cards with collage look -->
+                <h3 class="text-[10px] font-bold text-zinc-500 tracking-wider uppercase">Browse by Genre</h3>
+                <div id="genreGrid" class="grid grid-cols-2 gap-2.5">
+                    <!-- Genre collage cards -->
                 </div>
             </div>
         </div>
 
         <!-- View: Watchlist -->
         <div id="view-watchlist" class="view-panel hidden px-4 py-4 space-y-4">
-            <h2 class="text-lg font-bold">My Watchlist</h2>
-            <div id="watchlistGrid" class="grid grid-cols-3 gap-2">
-                <!-- Saved items render here -->
-            </div>
+            <h2 class="text-sm font-bold tracking-wider uppercase text-zinc-400">My Watchlist</h2>
+            <div id="watchlistGrid" class="grid grid-cols-3 gap-2"></div>
             <div id="watchlistEmptyState" class="hidden flex flex-col items-center justify-center py-20 text-center space-y-3">
-                <div class="text-zinc-700">
-                    <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                <div class="text-zinc-800">
+                    <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
                 </div>
-                <p class="text-sm text-zinc-500">Your watchlist is currently empty</p>
+                <p class="text-xs text-zinc-500 tracking-wide">Your watchlist is currently empty</p>
             </div>
         </div>
 
     </main>
 
-    <!-- Bottom Navigation Bar (Exactly 4 Tabs - No Music / More) -->
-    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-zinc-900/90 backdrop-blur-md border-t border-zinc-800/60 px-2 py-2 flex items-center justify-around">
-        <button data-target="home" class="nav-tab flex flex-col items-center gap-1 py-1 text-brand-red">
-            <svg class="w-5.5 h-5.5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span class="text-[10px] font-medium tracking-wide">Home</span>
+    <!-- Ultra-Slim Premium Bottom Navigation Bar (Lock height to 45px, thin delicate stroke icons) -->
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-lg border-t border-zinc-900/50 px-2 py-1 flex items-center justify-around h-[45px]">
+        <button data-target="home" class="nav-tab flex-1 flex flex-col items-center justify-center text-brand-red transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span class="text-[7px] font-bold tracking-widest uppercase mt-0.5">Home</span>
+            <div class="w-0.75 h-0.75 rounded-full bg-brand-red mt-0.5 opacity-100 transition-opacity" id="indicator-home"></div>
         </button>
-        <button data-target="search" class="nav-tab flex flex-col items-center gap-1 py-1 text-zinc-500 hover:text-zinc-300">
-            <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <span class="text-[10px] font-medium tracking-wide">Search</span>
+        <button data-target="search" class="nav-tab flex-1 flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-350 transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span class="text-[7px] font-bold tracking-widest uppercase mt-0.5">Search</span>
+            <div class="w-0.75 h-0.75 rounded-full bg-brand-red mt-0.5 opacity-0 transition-opacity" id="indicator-search"></div>
         </button>
-        <button data-target="browse" class="nav-tab flex flex-col items-center gap-1 py-1 text-zinc-500 hover:text-zinc-300">
-            <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
-            <span class="text-[10px] font-medium tracking-wide">Browse</span>
+        <button data-target="browse" class="nav-tab flex-1 flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-355 transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
+            <span class="text-[7px] font-bold tracking-widest uppercase mt-0.5">Browse</span>
+            <div class="w-0.75 h-0.75 rounded-full bg-brand-red mt-0.5 opacity-0 transition-opacity" id="indicator-browse"></div>
         </button>
-        <button data-target="watchlist" class="nav-tab flex flex-col items-center gap-1 py-1 text-zinc-500 hover:text-zinc-300">
-            <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
-            <span class="text-[10px] font-medium tracking-wide">Watchlist</span>
+        <button data-target="watchlist" class="nav-tab flex-1 flex flex-col items-center justify-center text-zinc-500 hover:text-zinc-360 transition-all">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+            <span class="text-[7px] font-bold tracking-widest uppercase mt-0.5">Saved</span>
+            <div class="w-0.75 h-0.75 rounded-full bg-brand-red mt-0.5 opacity-0 transition-opacity" id="indicator-watchlist"></div>
         </button>
     </nav>
 
-    <!-- Details Overlay Modal -->
-    <div id="detailsModal" class="fixed inset-0 z-50 bg-zinc-950/95 overflow-y-auto hidden">
-        <!-- Inside details dynamic wrapper -->
-        <div id="detailsModalContent" class="min-h-full pb-10">
-            <!-- Modal elements rendering dynamically -->
+    <!-- Details Modal Overlay ( frosted-glass look with premium backdrop blur) -->
+    <div id="detailsModal" class="fixed inset-0 z-50 bg-zinc-950/75 backdrop-blur-xl overflow-y-auto hidden">
+        <div id="detailsModalContent" class="min-h-full pb-8">
+            <!-- Populated dynamically -->
         </div>
     </div>
 
     <!-- User Profile Modal -->
     <div id="profileModal" class="fixed inset-0 z-50 bg-zinc-950/80 backdrop-blur-md items-center justify-center p-4 hidden flex">
-        <div class="glass-panel w-full max-w-sm rounded-2xl p-6 space-y-6 relative">
-            <button id="closeProfileBtn" class="absolute top-4 right-4 text-zinc-400 hover:text-white">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <div class="glass-panel w-full max-w-sm rounded-xl p-5 space-y-5 relative shadow-2xl">
+            <button id="closeProfileBtn" class="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            <h3 class="text-base font-bold tracking-wider uppercase text-zinc-400">Telegram Account Profile</h3>
-            <div class="flex items-center gap-4">
-                <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-zinc-700 bg-zinc-800 flex items-center justify-center text-xl font-bold text-zinc-300" id="profileModalAvatarContainer">
+            <h3 class="text-[10px] font-extrabold tracking-widest uppercase text-zinc-500">Telegram Account Profile</h3>
+            <div class="flex items-center gap-3.5">
+                <div class="w-14 h-14 rounded-full overflow-hidden border border-zinc-700/60 bg-zinc-800 flex items-center justify-center text-lg font-bold text-zinc-300" id="profileModalAvatarContainer">
                     <span id="profileModalInitials">U</span>
                     <img id="profileModalAvatarImg" class="w-full h-full object-cover hidden" alt="Profile">
                 </div>
                 <div>
-                    <h4 id="profileModalName" class="font-bold text-lg text-white">Guest User</h4>
-                    <p id="profileModalUsername" class="text-sm text-zinc-500">@guest</p>
+                    <h4 id="profileModalName" class="font-bold text-base text-white">Guest User</h4>
+                    <p id="profileModalUsername" class="text-xs text-zinc-500">@guest</p>
                 </div>
             </div>
-            <div class="space-y-2 border-t border-zinc-800 pt-4 text-sm text-zinc-400">
+            <div class="space-y-2 border-t border-zinc-800/60 pt-4 text-xs text-zinc-400">
                 <div class="flex justify-between">
                     <span>Telegram ID:</span>
                     <span id="profileModalId" class="font-mono text-zinc-300">Not Connected</span>
                 </div>
                 <div class="flex justify-between">
-                    <span>Watchlist Items:</span>
+                    <span>Watchlist Count:</span>
                     <span id="profileModalWatchlistCount" class="font-bold text-brand-red">0</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Share Toast Alert -->
-    <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 border border-zinc-800 text-zinc-200 text-xs py-2.5 px-4 rounded-full shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2">
-        <svg class="w-4 h-4 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-        <span id="toastMessage">Copied to Clipboard</span>
+    <!-- Toast Notifications -->
+    <div id="toast" class="fixed bottom-14 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 border border-zinc-800 text-zinc-200 text-[9px] uppercase font-bold tracking-widest py-1.5 px-3 rounded shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-1.5">
+        <svg class="w-3 h-3 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+        <span id="toastMessage">Done</span>
     </div>
 
-    <!-- Script Block containing logical engine -->
     <script>
-        // Security protections: Prevent copy, right-click, selection, dev tools shortcuts
+        // Custom interactive security triggers
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', e => {
             if (e.key === 'F12' || 
@@ -226,9 +232,8 @@
                 e.preventDefault();
             }
         });
-        document.addEventListener('gesturestart', e => e.preventDefault()); // iOS double-tap/pinch block
+        document.addEventListener('gesturestart', e => e.preventDefault());
 
-        // Global state storage
         const state = {
             tgUser: null,
             userId: 'guest',
@@ -238,10 +243,10 @@
             slideTimer: null,
             touchStartX: 0,
             touchEndX: 0,
-            activeBrowseType: 'movie' // 'movie' or 'series'
+            activeBrowseType: 'movie'
         };
 
-        // Initialize Telegram interface variables safely
+        // Initialize TG API safely
         let tgInstance = null;
         if (window.Telegram && window.Telegram.WebApp) {
             tgInstance = window.Telegram.WebApp;
@@ -253,13 +258,11 @@
             }
         }
 
-        // Load local storage saved watchlist matching key index
         function loadWatchlist() {
             try {
                 const stored = localStorage.getItem(`watchlist_${state.userId}`);
                 state.watchlist = stored ? JSON.parse(stored) : [];
             } catch (e) {
-                console.warn("Storage read failure:", e);
                 state.watchlist = [];
             }
         }
@@ -267,12 +270,10 @@
         function saveWatchlist() {
             try {
                 localStorage.setItem(`watchlist_${state.userId}`, JSON.stringify(state.watchlist));
-            } catch (e) {
-                console.warn("Storage write failure:", e);
-            }
+            } catch (e) {}
         }
 
-        // Mock Fallback Data (In case movies.json does not exist locally or loading errors)
+        // Mock Datasets with precise categorizations
         const mockFallbackData = [
             {
                 id: "item_01",
@@ -374,32 +375,9 @@
                         ]
                     }
                 ]
-            },
-            {
-                id: "item_07",
-                title: "Dutton Ranch",
-                year: "2026",
-                type: "series",
-                rating: "9.3",
-                runtime: "48m",
-                category: "Top Rated Series",
-                genres: ["Drama", "Action"],
-                description: "The generation of ranch owners fighting local expansion developers, corporate acquisitions, and reservation border disputes.",
-                backdrop: "https://images.unsplash.com/photo-1500964757637-c85e8a162699?auto=format&fit=crop&q=80&w=1200",
-                poster: "https://images.unsplash.com/photo-1500964757637-c85e8a162699?auto=format&fit=crop&q=80&w=500",
-                status: "Returning Series",
-                seasons: [
-                    {
-                        season_number: 1,
-                        episodes: [
-                            { episode_number: 1, title: "Sacred Grounds", duration: "49m", thumbnail: "https://images.unsplash.com/photo-1500964757637-c85e8a162699?auto=format&fit=crop&q=80&w=300", download_url: "https://t.me/yourchannel/8" }
-                        ]
-                    }
-                ]
             }
         ];
 
-        // Fetch movies database
         async function fetchMoviesData() {
             try {
                 const response = await fetch('movies.json');
@@ -409,15 +387,12 @@
                     state.moviesData = mockFallbackData;
                 }
             } catch (err) {
-                console.warn("Loading fallback dataset due to:", err);
                 state.moviesData = mockFallbackData;
             }
         }
 
-        // Display user account details if verified
         function renderProfileInfo() {
             if (state.tgUser) {
-                // Render small top-right avatar
                 if (state.tgUser.photo_url) {
                     document.getElementById('profileAvatarImg').src = state.tgUser.photo_url;
                     document.getElementById('profileAvatarImg').classList.remove('hidden');
@@ -432,22 +407,18 @@
                     document.getElementById('profileModalInitials').innerText = initials;
                 }
                 
-                // Set name, username, ID in modal
                 const displayName = [state.tgUser.first_name, state.tgUser.last_name].filter(Boolean).join(' ');
                 document.getElementById('profileModalName').innerText = displayName || 'User';
                 document.getElementById('profileModalUsername').innerText = state.tgUser.username ? `@${state.tgUser.username}` : '';
                 document.getElementById('profileModalId').innerText = state.tgUser.id;
             } else {
-                // Ensure correct fallbacks are applied for general browsers
                 document.getElementById('profileAvatarFallback').innerText = 'G';
                 document.getElementById('profileModalInitials').innerText = 'G';
             }
             document.getElementById('profileModalWatchlistCount').innerText = state.watchlist.length;
         }
 
-        // Render the Hero Slider structure
         function renderHeroSlider() {
-            // Take up to 5 items that contain a backdrop for the slider
             const sliderItems = state.moviesData.filter(m => m.backdrop).slice(0, 5);
             const wrapper = document.getElementById('heroWrapper');
             const dotsContainer = document.getElementById('sliderDots');
@@ -463,23 +434,18 @@
             }
 
             sliderItems.forEach((item, index) => {
-                // Slide markup
                 const slide = document.createElement('div');
                 slide.className = 'w-full h-full flex-shrink-0 relative';
                 slide.style.width = '100vw';
-                slide.innerHTML = `
-                    <img class="w-full h-full object-cover" src="${item.backdrop}" alt="${item.title}">
-                `;
+                slide.innerHTML = `<img class="w-full h-full object-cover" src="${item.backdrop}" alt="${item.title}">`;
                 wrapper.appendChild(slide);
 
-                // Nav dot dot
                 const dot = document.createElement('button');
-                dot.className = `w-1.5 h-1.5 rounded-full transition-all duration-300 ${index === 0 ? 'bg-brand-red w-3.5' : 'bg-zinc-600'}`;
+                dot.className = `w-1 h-1 rounded-full transition-all duration-300 ${index === 0 ? 'bg-brand-red w-3' : 'bg-zinc-600'}`;
                 dot.setAttribute('data-index', index);
                 dotsContainer.appendChild(dot);
             });
 
-            // Dot event binding
             dotsContainer.querySelectorAll('button').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -502,13 +468,12 @@
             const wrapper = document.getElementById('heroWrapper');
             wrapper.style.transform = `translateX(-${index * 100}vw)`;
             
-            // Adjust active indicator dots
             const dots = document.getElementById('sliderDots').querySelectorAll('button');
             dots.forEach((dot, idx) => {
                 if (idx === index) {
-                    dot.className = 'w-1.5 h-1.5 rounded-full transition-all duration-300 bg-brand-red w-3.5';
+                    dot.className = 'w-1 h-1 rounded-full transition-all duration-300 bg-brand-red w-3';
                 } else {
-                    dot.className = 'w-1.5 h-1.5 rounded-full transition-all duration-300 bg-zinc-600';
+                    dot.className = 'w-1 h-1 rounded-full transition-all duration-300 bg-zinc-600';
                 }
             });
 
@@ -520,20 +485,20 @@
             const inWatchlist = state.watchlist.includes(item.id);
             
             metaContainer.innerHTML = `
-                <div class="flex items-center gap-2 flex-wrap">
-                    <span class="text-xs bg-zinc-900 border border-zinc-800 text-brand-red font-bold px-2 py-0.5 rounded-full">★ ${item.rating}</span>
-                    <span class="text-xs text-zinc-300 font-semibold">${item.year}</span>
-                    <span class="text-xs text-zinc-400 border border-zinc-800 px-1.5 py-0.5 rounded uppercase tracking-wider">${item.type}</span>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="text-[9px] bg-zinc-900 border border-zinc-800/80 text-brand-red font-bold px-1.5 py-0.5 rounded-full">★ ${item.rating}</span>
+                    <span class="text-[10px] text-zinc-300 font-semibold">${item.year}</span>
+                    <span class="text-[9px] text-zinc-400 border border-zinc-850 px-1 py-0.5 rounded uppercase font-semibold tracking-widest">${item.type}</span>
                 </div>
-                <h1 class="text-2xl font-black text-white leading-tight">${item.title}</h1>
-                <p class="text-xs text-zinc-400 line-clamp-2 max-w-md">${item.description}</p>
-                <div class="flex items-center gap-2 pt-2">
-                    <button onclick="openDetails('${item.id}')" class="h-8 px-4 flex items-center justify-center gap-1 bg-zinc-900/60 backdrop-blur border border-zinc-800/80 rounded-md text-xs font-bold text-zinc-200 active:scale-95 transition-transform">
-                        <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <h1 class="text-xl font-extrabold text-white leading-tight">${item.title}</h1>
+                <p class="text-[10px] text-zinc-400 line-clamp-2 max-w-sm leading-relaxed">${item.description}</p>
+                <div class="flex items-center gap-2 pt-1.5">
+                    <button onclick="openDetails('${item.id}')" class="h-7 px-3.5 flex items-center justify-center gap-1 bg-zinc-900/50 backdrop-blur-md border border-zinc-800/50 rounded text-[10px] font-bold text-zinc-200 active:scale-95 transition-transform">
+                        <svg class="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Info
                     </button>
-                    <button onclick="toggleWatchlist('${item.id}', event)" class="w-8 h-8 flex items-center justify-center bg-zinc-900/60 backdrop-blur border border-zinc-800/80 rounded-md text-zinc-200 active:scale-95 transition-transform" aria-label="Bookmark">
-                        <svg class="w-4 h-4 ${inWatchlist ? 'fill-brand-red stroke-brand-red' : 'stroke-zinc-400 fill-none'}" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                    <button onclick="toggleWatchlist('${item.id}', event)" class="w-7 h-7 flex items-center justify-center bg-zinc-900/50 backdrop-blur-md border border-zinc-800/50 rounded text-zinc-200 active:scale-95 transition-transform">
+                        <svg class="w-3.5 h-3.5 ${inWatchlist ? 'fill-brand-red stroke-brand-red' : 'stroke-zinc-400 fill-none'}" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
                     </button>
                 </div>
             `;
@@ -546,37 +511,31 @@
             }, 6000);
         }
 
-        // Bind Drag and Swipe Event Listeners to Hero Slider
         const sliderContainer = document.getElementById('heroSliderContainer');
         sliderContainer.addEventListener('touchstart', e => {
             state.touchStartX = e.changedTouches[0].screenX;
-            clearInterval(state.slideTimer); // Stop autoplay during swipe interaction
+            clearInterval(state.slideTimer);
         });
         
         sliderContainer.addEventListener('touchend', e => {
             state.touchEndX = e.changedTouches[0].screenX;
             handleSwipe();
-            startSliderAutoplay(); // Resume standard autoplay
+            startSliderAutoplay();
         });
 
         function handleSwipe() {
             const swipeThreshold = 50;
             const diffX = state.touchStartX - state.touchEndX;
             if (Math.abs(diffX) > swipeThreshold) {
-                if (diffX > 0) {
-                    goToSlide(state.activeSlide + 1); // Swipe left, load next slide
-                } else {
-                    goToSlide(state.activeSlide - 1); // Swipe right, load previous slide
-                }
+                if (diffX > 0) goToSlide(state.activeSlide + 1);
+                else goToSlide(state.activeSlide - 1);
             }
         }
 
-        // Render Dynamic Categories Rows on Home
         function renderHomeCategories() {
             const container = document.getElementById('homeCategories');
             container.innerHTML = '';
 
-            // Extract unique categories (except 'None')
             const categories = [...new Set(state.moviesData.map(m => m.category))]
                 .filter(c => c && c.toLowerCase() !== 'none');
 
@@ -585,23 +544,23 @@
                 if (items.length === 0) return;
 
                 const row = document.createElement('div');
-                row.className = 'space-y-3';
+                row.className = 'space-y-2';
                 row.innerHTML = `
                     <div class="flex items-center justify-between">
-                        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-400">${cat}</h2>
+                        <h2 class="text-[9px] font-extrabold uppercase tracking-widest text-zinc-500">${cat}</h2>
                     </div>
-                    <div class="flex gap-3 overflow-x-auto no-scrollbar py-1">
+                    <div class="flex gap-2.5 overflow-x-auto no-scrollbar py-0.5">
                         ${items.map(item => `
-                            <div onclick="openDetails('${item.id}')" class="flex-none w-28 space-y-1.5 active:scale-95 transition-transform cursor-pointer">
-                                <div class="relative aspect-[2/3] bg-zinc-900 rounded-lg overflow-hidden border border-zinc-800/40">
-                                    <img class="w-full h-full object-cover lazy-poster" src="${item.poster}" alt="${item.title}">
-                                    <div class="absolute top-1.5 left-1.5 bg-zinc-950/80 border border-zinc-800/40 text-[9px] font-bold text-brand-red px-1.5 py-0.5 rounded-full backdrop-blur-sm flex items-center gap-0.5 shadow-lg">
+                            <div onclick="openDetails('${item.id}')" class="flex-none w-[90px] space-y-1 active:scale-95 transition-transform cursor-pointer">
+                                <div class="relative aspect-[2/3] bg-zinc-900 rounded-md overflow-hidden border border-zinc-800/20">
+                                    <img class="w-full h-full object-cover" src="${item.poster}" alt="${item.title}">
+                                    <div class="absolute top-1 left-1 bg-zinc-950/90 border border-zinc-800/30 text-[8px] font-extrabold text-brand-red px-1 rounded backdrop-blur-sm shadow-md">
                                         ★ ${item.rating}
                                     </div>
                                 </div>
                                 <div class="px-0.5">
-                                    <p class="text-xs font-bold text-zinc-200 line-clamp-1">${item.title}</p>
-                                    <p class="text-[10px] text-zinc-500 font-semibold">${item.year}</p>
+                                    <p class="text-[10px] font-bold text-zinc-200 line-clamp-1 leading-normal">${item.title}</p>
+                                    <p class="text-[9px] text-zinc-500 font-bold mt-0.5">${item.year}</p>
                                 </div>
                             </div>
                         `).join('')}
@@ -611,35 +570,31 @@
             });
         }
 
-        // Navigation Switching Engine
         document.querySelectorAll('.nav-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 const target = tab.getAttribute('data-target');
                 
-                // Swap CSS highlighted state
                 document.querySelectorAll('.nav-tab').forEach(t => {
                     t.classList.remove('text-brand-red');
-                    t.classList.add('text-zinc-500', 'hover:text-zinc-300');
+                    t.classList.add('text-zinc-500', 'hover:text-zinc-350');
+                    const indic = document.getElementById(`indicator-${t.getAttribute('data-target')}`);
+                    if (indic) indic.className = "w-0.75 h-0.75 rounded-full bg-brand-red mt-0.5 opacity-0 transition-opacity";
                 });
-                tab.classList.remove('text-zinc-500', 'hover:text-zinc-300');
+                tab.classList.remove('text-zinc-500', 'hover:text-zinc-350');
                 tab.classList.add('text-brand-red');
+                const activeIndic = document.getElementById(`indicator-${target}`);
+                if (activeIndic) activeIndic.className = "w-0.75 h-0.75 rounded-full bg-brand-red mt-0.5 opacity-100 transition-opacity";
 
-                // Toggle visibility structures
                 document.querySelectorAll('.view-panel').forEach(view => {
                     view.classList.add('hidden');
                 });
                 document.getElementById(`view-${target}`).classList.remove('hidden');
 
-                // Additional setup actions on load
-                if (target === 'watchlist') {
-                    renderWatchlist();
-                } else if (target === 'browse') {
-                    renderGenreGrid();
-                }
+                if (target === 'watchlist') renderWatchlist();
+                else if (target === 'browse') renderGenreGrid();
             });
         });
 
-        // Watchlist view generator
         function renderWatchlist() {
             const grid = document.getElementById('watchlistGrid');
             const emptyState = document.getElementById('watchlistEmptyState');
@@ -656,18 +611,18 @@
 
                 list.forEach(item => {
                     const card = document.createElement('div');
-                    card.className = 'space-y-1.5 active:scale-95 transition-transform cursor-pointer';
+                    card.className = 'space-y-1 active:scale-95 transition-transform cursor-pointer';
                     card.onclick = () => openDetails(item.id);
                     card.innerHTML = `
-                        <div class="relative aspect-[2/3] bg-zinc-900 rounded-lg overflow-hidden border border-zinc-800/40">
+                        <div class="relative aspect-[2/3] bg-zinc-900 rounded-md overflow-hidden border border-zinc-800/20">
                             <img class="w-full h-full object-cover" src="${item.poster}" alt="${item.title}">
-                            <div class="absolute top-1.5 left-1.5 bg-zinc-950/80 border border-zinc-800/40 text-[9px] font-bold text-brand-red px-1.5 py-0.5 rounded-full backdrop-blur-sm shadow-lg">
+                            <div class="absolute top-1 left-1 bg-zinc-950/90 border border-zinc-800/30 text-[8px] font-extrabold text-brand-red px-1 rounded backdrop-blur-sm">
                                 ★ ${item.rating}
                             </div>
                         </div>
                         <div class="px-0.5">
-                            <p class="text-xs font-bold text-zinc-200 line-clamp-1">${item.title}</p>
-                            <p class="text-[10px] text-zinc-500 font-semibold">${item.year}</p>
+                            <p class="text-[10px] font-bold text-zinc-200 line-clamp-1">${item.title}</p>
+                            <p class="text-[9px] text-zinc-500 font-bold mt-0.5">${item.year}</p>
                         </div>
                     `;
                     grid.appendChild(card);
@@ -675,7 +630,6 @@
             }
         }
 
-        // Generic Toast Alert Notification
         function showToast(message) {
             const toast = document.getElementById('toast');
             document.getElementById('toastMessage').innerText = message;
@@ -683,23 +637,21 @@
             
             setTimeout(() => {
                 toast.className = toast.className.replace('opacity-100 scale-100', 'opacity-0 pointer-events-none');
-            }, 3000);
+            }, 2500);
         }
 
-        // Toggle bookmarks matching storage state
         function toggleWatchlist(id, event) {
             if (event) event.stopPropagation();
             const index = state.watchlist.indexOf(id);
             if (index > -1) {
                 state.watchlist.splice(index, 1);
-                showToast("Removed from Watchlist");
+                showToast("REMOVED FROM WATCHLIST");
             } else {
                 state.watchlist.push(id);
-                showToast("Added to Watchlist");
+                showToast("ADDED TO WATCHLIST");
             }
             saveWatchlist();
             
-            // Refresh visual display
             const activeSlideData = state.moviesData.filter(m => m.backdrop).slice(0, 5)[state.activeSlide];
             if (activeSlideData && activeSlideData.id === id) {
                 updateSliderMeta(activeSlideData);
@@ -707,18 +659,17 @@
             renderProfileInfo();
         }
 
-        // Browse collage logic
         document.getElementById('browseTypeMovie').addEventListener('click', () => {
             state.activeBrowseType = 'movie';
-            document.getElementById('browseTypeMovie').className = 'flex-1 py-1.5 text-sm font-semibold rounded-md transition-all bg-brand-red text-white shadow-lg';
-            document.getElementById('browseTypeSeries').className = 'flex-1 py-1.5 text-sm font-semibold text-zinc-400 rounded-md transition-all';
+            document.getElementById('browseTypeMovie').className = 'flex-1 py-1 text-xs font-bold rounded-md transition-all bg-brand-red text-white shadow-brand-glow';
+            document.getElementById('browseTypeSeries').className = 'flex-1 py-1 text-xs font-bold text-zinc-400 rounded-md transition-all';
             renderGenreGrid();
         });
 
         document.getElementById('browseTypeSeries').addEventListener('click', () => {
             state.activeBrowseType = 'series';
-            document.getElementById('browseTypeSeries').className = 'flex-1 py-1.5 text-sm font-semibold rounded-md transition-all bg-brand-red text-white shadow-lg';
-            document.getElementById('browseTypeMovie').className = 'flex-1 py-1.5 text-sm font-semibold text-zinc-400 rounded-md transition-all';
+            document.getElementById('browseTypeSeries').className = 'flex-1 py-1 text-xs font-bold rounded-md transition-all bg-brand-red text-white shadow-brand-glow';
+            document.getElementById('browseTypeMovie').className = 'flex-1 py-1 text-xs font-bold text-zinc-400 rounded-md transition-all';
             renderGenreGrid();
         });
 
@@ -726,60 +677,54 @@
             const grid = document.getElementById('genreGrid');
             grid.innerHTML = '';
 
-            // Filter movies by active type
             const filteredItems = state.moviesData.filter(m => m.type === state.activeBrowseType);
-            
-            // Extract unique genres
             const genres = [...new Set(filteredItems.flatMap(m => m.genres || []))];
 
             if (genres.length === 0) {
-                grid.innerHTML = `<div class="col-span-2 text-center py-10 text-xs text-zinc-500">No items available.</div>`;
+                grid.innerHTML = `<div class="col-span-2 text-center py-10 text-xs text-zinc-500">No items available</div>`;
                 return;
             }
 
             genres.forEach(genre => {
                 const matches = filteredItems.filter(m => m.genres.includes(genre));
-                // Collage backgrounds composed of up to 4 poster slivers/images
                 const images = matches.slice(0, 4).map(m => m.poster);
                 
                 const card = document.createElement('div');
-                card.className = 'relative aspect-[16/11] bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800/60 flex active:scale-98 transition-transform cursor-pointer';
+                card.className = 'relative aspect-[16/11] bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800/10 flex active:scale-98 transition-transform cursor-pointer';
                 card.onclick = () => openGenreBrowse(genre, state.activeBrowseType);
 
-                // Build Collage Grid split dynamically
                 let imageBlocksHtml = '';
                 if (images.length === 1) {
-                    imageBlocksHtml = `<img class="w-full h-full object-cover opacity-35" src="${images[0]}" alt="genre bg">`;
+                    imageBlocksHtml = `<img class="w-full h-full object-cover opacity-20" src="${images[0]}" alt="genre bg">`;
                 } else if (images.length === 2) {
                     imageBlocksHtml = `
-                        <div class="w-1/2 h-full"><img class="w-full h-full object-cover opacity-35" src="${images[0]}"></div>
-                        <div class="w-1/2 h-full"><img class="w-full h-full object-cover opacity-35" src="${images[1]}"></div>
+                        <div class="w-1/2 h-full"><img class="w-full h-full object-cover opacity-20" src="${images[0]}"></div>
+                        <div class="w-1/2 h-full"><img class="w-full h-full object-cover opacity-20" src="${images[1]}"></div>
                     `;
                 } else {
                     imageBlocksHtml = `
                         <div class="w-1/2 h-full flex flex-col">
-                            <img class="h-1/2 w-full object-cover opacity-35" src="${images[0]}">
-                            <img class="h-1/2 w-full object-cover opacity-35" src="${images[1] || images[0]}">
+                            <img class="h-1/2 w-full object-cover opacity-20" src="${images[0]}">
+                            <img class="h-1/2 w-full object-cover opacity-20" src="${images[1] || images[0]}">
                         </div>
                         <div class="w-1/2 h-full flex flex-col">
-                            <img class="h-1/2 w-full object-cover opacity-35" src="${images[2] || images[0]}">
-                            <img class="h-1/2 w-full object-cover opacity-35" src="${images[3] || images[0]}">
+                            <img class="h-1/2 w-full object-cover opacity-20" src="${images[2] || images[0]}">
+                            <img class="h-1/2 w-full object-cover opacity-20" src="${images[3] || images[0]}">
                         </div>
                     `;
                 }
 
                 card.innerHTML = `
                     <div class="absolute inset-0 flex">${imageBlocksHtml}</div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-zinc-950/30 flex flex-col justify-end p-3.5">
-                        <span class="text-sm font-extrabold text-white leading-tight tracking-wide">${genre}</span>
-                        <span class="text-[10px] text-zinc-400 font-semibold mt-0.5">Explore →</span>
+                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-zinc-950/40 flex flex-col justify-end p-3">
+                        <span class="text-xs font-extrabold text-white leading-none tracking-wide">${genre}</span>
+                        <span class="text-[9px] text-zinc-500 font-bold mt-0.5">EXPLORE →</span>
                     </div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        // Open Genre exploration modal or swap search target
         function openGenreBrowse(genre, type) {
             const tabSearch = document.querySelector('.nav-tab[data-target="search"]');
             tabSearch.click();
@@ -787,7 +732,6 @@
             runSearch(genre);
         }
 
-        // Search engine logic
         const searchInput = document.getElementById('searchInput');
         const clearSearchBtn = document.getElementById('clearSearchBtn');
         const searchGrid = document.getElementById('searchResultsGrid');
@@ -826,199 +770,181 @@
             searchGrid.innerHTML = '';
             if (matches.length > 0) {
                 searchCount.classList.remove('hidden');
-                searchCount.innerText = `Found ${matches.length} matches`;
+                searchCount.innerText = `Matches (${matches.length})`;
                 matches.forEach(item => {
                     const card = document.createElement('div');
-                    card.className = 'space-y-1.5 active:scale-95 transition-transform cursor-pointer';
+                    card.className = 'space-y-1 active:scale-95 transition-transform cursor-pointer';
                     card.onclick = () => openDetails(item.id);
                     card.innerHTML = `
-                        <div class="relative aspect-[2/3] bg-zinc-900 rounded-lg overflow-hidden border border-zinc-800/40">
+                        <div class="relative aspect-[2/3] bg-zinc-900 rounded-md overflow-hidden border border-zinc-800/20">
                             <img class="w-full h-full object-cover" src="${item.poster}" alt="${item.title}">
-                            <div class="absolute top-1.5 left-1.5 bg-zinc-950/80 border border-zinc-800/40 text-[9px] font-bold text-brand-red px-1.5 py-0.5 rounded-full backdrop-blur-sm">
+                            <div class="absolute top-1 left-1 bg-zinc-950/90 border border-zinc-800/30 text-[8px] font-extrabold text-brand-red px-1 rounded backdrop-blur-sm">
                                 ★ ${item.rating}
                             </div>
                         </div>
                         <div class="px-0.5">
-                            <p class="text-xs font-bold text-zinc-200 line-clamp-1">${item.title}</p>
-                            <p class="text-[10px] text-zinc-500 font-semibold">${item.year}</p>
+                            <p class="text-[10px] font-bold text-zinc-200 line-clamp-1 leading-normal">${item.title}</p>
+                            <p class="text-[9px] text-zinc-500 font-bold mt-0.5">${item.year}</p>
                         </div>
                     `;
                     searchGrid.appendChild(card);
                 });
             } else {
                 searchCount.classList.remove('hidden');
-                searchCount.innerText = `No results found for "${query}"`;
+                searchCount.innerText = `No results found`;
             }
         }
 
-        // Details view engine loaded inside single overlays securely (defensive style checks)
         function openDetails(id) {
             try {
                 const item = state.moviesData.find(m => m.id === id);
-                if (!item) throw new Error("Item mapping mismatch on loading details window");
+                if (!item) throw new Error("Reference mismatch in loading modal");
 
                 const modal = document.getElementById('detailsModal');
                 const content = document.getElementById('detailsModalContent');
                 const isSaved = state.watchlist.includes(item.id);
 
-                // Build HTML inside modal content dynamic structure
                 let actionsAreaHtml = '';
                 let tabBlockAreaHtml = '';
 
                 if (item.type === 'movie') {
-                    // Movies layout (Excluding Watch/Trailer features completely)
                     actionsAreaHtml = `
-                        <div class="grid grid-cols-2 gap-3 px-4">
-                            <a href="${item.download_url || '#'}" target="_blank" class="h-12 flex items-center justify-center gap-2 bg-brand-red hover:bg-brand-redHover rounded-xl text-sm font-bold text-white shadow-lg shadow-brand-red/20 active:scale-95 transition-transform">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <div class="grid grid-cols-2 gap-2.5 px-4">
+                            <a href="${item.download_url || '#'}" target="_blank" class="h-10 flex items-center justify-center gap-1.5 bg-brand-red hover:bg-brand-redHover rounded-lg text-xs font-extrabold text-white shadow-brand-glow active:scale-95 transition-transform">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                                 Download
                             </a>
-                            <button onclick="shareLink('${item.id}')" class="h-12 flex items-center justify-center gap-2 bg-zinc-900 border border-zinc-800 rounded-xl text-sm font-bold text-zinc-200 active:scale-95 transition-transform">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 10.742l4.632-2.316m0 0a3 3 0 100-4.342m-4.632 6.658a3 3 0 110-4.342m4.632 6.658l-4.632 2.316m0 0a3 3 0 100 4.342"></path></svg>
+                            <button onclick="shareLink('${item.id}')" class="h-10 flex items-center justify-center gap-1.5 bg-zinc-900 border border-zinc-800/50 rounded-lg text-xs font-extrabold text-zinc-200 active:scale-95 transition-transform">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8.684 10.742l4.632-2.316m0 0a3 3 0 100-4.342m-4.632 6.658a3 3 0 110-4.342m4.632 6.658l-4.632 2.316m0 0a3 3 0 100 4.342"></path></svg>
                                 Share
                             </button>
                         </div>
                     `;
 
                     tabBlockAreaHtml = `
-                        <div class="px-4 space-y-3">
-                            <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-wider">Overview</h3>
-                            <p class="text-sm leading-relaxed text-zinc-300 font-medium">${item.description}</p>
+                        <div class="px-4 space-y-2">
+                            <h3 class="text-[9px] font-extrabold text-zinc-500 uppercase tracking-widest">Overview</h3>
+                            <p class="text-xs leading-relaxed text-zinc-300 font-medium">${item.description}</p>
                         </div>
                     `;
                 } else if (item.type === 'series') {
-                    // Series layout (Support Seasons / Overview selection pills)
-                    actionsAreaHtml = ``; // Action buttons hidden in series in favor of inline episodes download buttons
+                    actionsAreaHtml = ``;
 
                     tabBlockAreaHtml = `
                         <div class="px-4">
-                            <!-- Detail Tabs Switch -->
-                            <div class="flex border-b border-zinc-900 mb-4 gap-6">
-                                <button onclick="switchDetailsTab('seasons')" id="detailTab-seasons" class="pb-3 text-sm font-bold text-white border-b-2 border-brand-red">Seasons</button>
-                                <button onclick="switchDetailsTab('overview')" id="detailTab-overview" class="pb-3 text-sm font-bold text-zinc-400">Overview</button>
+                            <div class="flex border-b border-zinc-900/40 mb-3.5 gap-4">
+                                <button onclick="switchDetailsTab('seasons')" id="detailTab-seasons" class="pb-2 text-xs font-extrabold text-white border-b-2 border-brand-red">Seasons</button>
+                                <button onclick="switchDetailsTab('overview')" id="detailTab-overview" class="pb-2 text-xs font-extrabold text-zinc-400">Overview</button>
                             </div>
 
-                            <!-- Seasons Tab content Panel -->
-                            <div id="detailPanel-seasons" class="space-y-4">
-                                <div class="flex gap-2 overflow-x-auto no-scrollbar" id="seasonsListContainer">
-                                    <!-- Dynamic Season Pills -->
+                            <div id="detailPanel-seasons" class="space-y-3.5">
+                                <div class="flex gap-1.5 overflow-x-auto no-scrollbar" id="seasonsListContainer">
                                     ${(item.seasons || []).map((s, idx) => `
-                                        <button onclick="selectSeason(${idx})" class="season-pill flex-none px-4 py-2 text-xs font-extrabold rounded-lg border ${idx === 0 ? 'bg-zinc-100 text-zinc-950 border-white' : 'bg-zinc-900 text-zinc-400 border-zinc-800'}" data-index="${idx}">
+                                        <button onclick="selectSeason(${idx})" class="season-pill flex-none px-3.5 py-1.5 text-[10px] font-extrabold rounded bg-zinc-900/60 text-zinc-400 border border-zinc-850 active:scale-95 transition-all ${idx === 0 ? 'bg-zinc-100 text-zinc-950 border-white' : ''}" data-index="${idx}">
                                             S${s.season_number}
                                         </button>
                                     `).join('')}
                                 </div>
                                 
-                                <div class="space-y-3" id="episodesListContainer">
-                                    <!-- Dynamic Episode Cards inside first season by default -->
+                                <div class="space-y-2.5" id="episodesListContainer">
                                     ${buildEpisodesList(item, 0)}
                                 </div>
                             </div>
 
-                            <!-- Overview Tab content Panel -->
                             <div id="detailPanel-overview" class="hidden">
-                                <p class="text-sm leading-relaxed text-zinc-300 font-medium">${item.description}</p>
+                                <p class="text-xs leading-relaxed text-zinc-300 font-medium">${item.description}</p>
                             </div>
                         </div>
                     `;
                 }
 
                 content.innerHTML = `
-                    <!-- Top banner section -->
-                    <div class="relative w-full aspect-[16/10] bg-zinc-950">
+                    <div class="relative w-full aspect-[16/10] bg-zinc-950/40">
                         <div class="absolute inset-0">
-                            <img class="w-full h-full object-cover blur-md opacity-30 scale-105" src="${item.backdrop || item.poster}" alt="backdrop blur">
-                            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 to-zinc-950/20"></div>
+                            <!-- Premium blur wash effect with heavy blur-3xl and high wash opacity -->
+                            <img class="w-full h-full object-cover blur-3xl opacity-45 scale-110" src="${item.backdrop || item.poster}" alt="backdrop blur">
+                            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/70 to-zinc-950/10"></div>
                         </div>
                         
-                        <div class="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end pb-4">
-                            <div class="w-28 aspect-[2/3] rounded-xl overflow-hidden border border-zinc-800 shadow-2xl relative z-10 bg-zinc-900">
-                                <img class="w-full h-full object-cover" src="${item.poster}" alt="Poster sharp">
+                        <div class="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end pb-2">
+                            <div class="w-24 aspect-[2/3] rounded-lg overflow-hidden border border-zinc-800/40 shadow-2xl relative z-10 bg-zinc-900">
+                                <img class="w-full h-full object-cover" src="${item.poster}" alt="Poster">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Meta information -->
-                    <div class="text-center px-4 py-3 space-y-2 relative z-10">
-                        <h1 class="text-2xl font-black text-white leading-tight tracking-wide">${item.title}</h1>
-                        <div class="flex items-center justify-center gap-2 flex-wrap text-xs font-semibold text-zinc-400">
+                    <div class="text-center px-4 py-2 space-y-1.5 relative z-10">
+                        <h1 class="text-lg font-black text-white leading-tight tracking-wide">${item.title}</h1>
+                        <div class="flex items-center justify-center gap-1.5 flex-wrap text-[10px] font-bold text-zinc-400">
                             <span>${item.year}</span>
-                            <span class="w-1 h-1 rounded-full bg-zinc-700"></span>
+                            <span class="w-1 h-1 rounded-full bg-zinc-750"></span>
                             <span class="text-brand-red">★ ${item.rating}</span>
-                            <span class="w-1 h-1 rounded-full bg-zinc-700"></span>
+                            <span class="w-1 h-1 rounded-full bg-zinc-750"></span>
                             <span>${item.runtime}</span>
                             ${item.status ? `
-                                <span class="w-1 h-1 rounded-full bg-zinc-700"></span>
-                                <span class="bg-zinc-900 border border-zinc-800 text-[10px] uppercase font-bold text-brand-red px-2 py-0.5 rounded-full">${item.status}</span>
+                                <span class="w-1 h-1 rounded-full bg-zinc-750"></span>
+                                <span class="bg-zinc-900/90 border border-zinc-800/50 text-[8px] uppercase font-bold text-brand-red px-1.5 py-0.5 rounded">${item.status}</span>
                             ` : ''}
                         </div>
                         
-                        <div class="flex items-center justify-center gap-1.5 flex-wrap pt-1">
+                        <div class="flex items-center justify-center gap-1 flex-wrap pt-0.5">
                             ${(item.genres || []).map(g => `
-                                <span class="text-[10px] font-extrabold tracking-wide bg-zinc-900 border border-zinc-800/80 px-2.5 py-1 rounded-md text-zinc-300">${g}</span>
+                                <span class="text-[9px] font-extrabold tracking-wide bg-zinc-900/60 border border-zinc-800/30 px-2 py-0.5 rounded text-zinc-400">${g}</span>
                             `).join('')}
                         </div>
                     </div>
 
-                    <!-- Actions and tabs dynamic blocks area -->
-                    <div class="space-y-6 pt-3">
+                    <div class="space-y-4 pt-2">
                         ${actionsAreaHtml}
                         ${tabBlockAreaHtml}
                     </div>
 
-                    <!-- Bottom Modal Buttons Bar sticky layer emulation -->
-                    <div class="mt-8 border-t border-zinc-900 pt-6 px-4 flex gap-3">
-                        <button onclick="closeDetails()" class="flex-1 h-11 bg-zinc-900 border border-zinc-800 rounded-xl text-xs font-bold text-zinc-300 active:scale-95 transition-transform flex items-center justify-center gap-2">
+                    <div class="mt-6 border-t border-zinc-900/30 pt-4 px-4 flex gap-2.5">
+                        <button onclick="closeDetails()" class="flex-1 h-10 bg-zinc-900/80 border border-zinc-800/30 rounded-lg text-xs font-extrabold text-zinc-400 active:scale-95 transition-transform flex items-center justify-center gap-1.5">
                             ← Back
                         </button>
-                        <button id="modalWatchlistBtn" onclick="toggleWatchlistDetails('${item.id}')" class="flex-1 h-11 border rounded-xl text-xs font-bold active:scale-95 transition-transform flex items-center justify-center gap-2 ${isSaved ? 'bg-zinc-900 border-zinc-800 text-brand-red' : 'bg-zinc-100 text-zinc-950 border-zinc-100'}">
-                            <svg class="w-4 h-4 ${isSaved ? 'fill-brand-red stroke-brand-red' : 'stroke-zinc-950 fill-none'}" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                        <button id="modalWatchlistBtn" onclick="toggleWatchlistDetails('${item.id}')" class="flex-1 h-10 border rounded-lg text-xs font-extrabold active:scale-95 transition-transform flex items-center justify-center gap-1.5 ${isSaved ? 'bg-zinc-900 border-zinc-800 text-brand-red' : 'bg-zinc-100 text-zinc-950 border-zinc-100'}">
+                            <svg class="w-3.5 h-3.5 ${isSaved ? 'fill-brand-red stroke-brand-red' : 'stroke-zinc-950 fill-none'}" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
                             ${isSaved ? 'In Watchlist' : 'Add to List'}
                         </button>
                     </div>
                 `;
 
-                // Cache active modal item inside temporary memory
                 state.activeModalItemId = item.id;
                 modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // Stop background scrolling
+                document.body.style.overflow = 'hidden';
             } catch (err) {
-                console.error("Defensive details rendering halt:", err);
                 showToast("Failed to load details");
             }
         }
 
-        // Sub-tabs switches inside Details Modal
         function switchDetailsTab(panel) {
             const tabs = ['seasons', 'overview'];
             tabs.forEach(t => {
                 const button = document.getElementById(`detailTab-${t}`);
                 const view = document.getElementById(`detailPanel-${t}`);
                 if (t === panel) {
-                    button.className = "pb-3 text-sm font-bold text-white border-b-2 border-brand-red";
+                    button.className = "pb-2 text-xs font-extrabold text-white border-b-2 border-brand-red";
                     view.classList.remove('hidden');
                 } else {
-                    button.className = "pb-3 text-sm font-bold text-zinc-400";
+                    button.className = "pb-2 text-xs font-extrabold text-zinc-400";
                     view.classList.add('hidden');
                 }
             });
         }
 
-        // Select specific Season tab dynamically
         function selectSeason(index) {
             const item = state.moviesData.find(m => m.id === state.activeModalItemId);
             if (!item) return;
 
-            // Swap styling for season pills
             document.querySelectorAll('.season-pill').forEach((pill, idx) => {
                 if (idx === index) {
-                    pill.className = 'season-pill flex-none px-4 py-2 text-xs font-extrabold rounded-lg bg-zinc-100 text-zinc-950 border border-white';
+                    pill.className = 'season-pill flex-none px-3.5 py-1.5 text-[10px] font-extrabold rounded bg-zinc-100 text-zinc-950 border border-white';
                 } else {
-                    pill.className = 'season-pill flex-none px-4 py-2 text-xs font-extrabold rounded-lg bg-zinc-900 text-zinc-400 border border-zinc-800';
+                    pill.className = 'season-pill flex-none px-3.5 py-1.5 text-[10px] font-extrabold rounded bg-zinc-900/60 text-zinc-400 border border-zinc-800/80';
                 }
             });
 
-            // Rebuild episodes layout
             const container = document.getElementById('episodesListContainer');
             container.innerHTML = buildEpisodesList(item, index);
         }
@@ -1030,20 +956,19 @@
             }
 
             return season.episodes.map(ep => `
-                <div class="glass-panel rounded-xl p-3 flex items-center justify-between gap-3 border-zinc-800/40">
-                    <div class="flex items-center gap-3">
-                        <div class="w-16 aspect-[16/10] bg-zinc-800 rounded-lg overflow-hidden relative flex-shrink-0">
+                <div class="glass-panel rounded-lg p-2.5 flex items-center justify-between gap-2.5 border-zinc-800/10">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-14 aspect-[16/10] bg-zinc-800 rounded overflow-hidden relative flex-shrink-0">
                             <img class="w-full h-full object-cover" src="${ep.thumbnail || item.poster}" alt="ep thumb">
-                            <div class="absolute bottom-1 right-1 bg-zinc-950/80 px-1 py-0.5 rounded text-[8px] font-extrabold text-white">E${ep.episode_number}</div>
+                            <div class="absolute bottom-0.5 right-0.5 bg-zinc-950/80 px-1 py-0.5 rounded text-[7px] font-extrabold text-white">E${ep.episode_number}</div>
                         </div>
                         <div>
-                            <h4 class="text-xs font-extrabold text-zinc-200 line-clamp-1">${ep.title}</h4>
-                            <p class="text-[10px] text-zinc-500 font-semibold mt-0.5">${ep.duration}</p>
+                            <h4 class="text-[11px] font-extrabold text-zinc-200 line-clamp-1 leading-normal">${ep.title}</h4>
+                            <p class="text-[9px] text-zinc-500 font-bold mt-0.5">${ep.duration}</p>
                         </div>
                     </div>
-                    <!-- Right prominent single download action button -->
-                    <a href="${ep.download_url || '#'}" target="_blank" class="h-8 px-3 rounded-lg bg-brand-red hover:bg-brand-redHover flex items-center justify-center gap-1.5 text-white text-[11px] font-extrabold active:scale-95 transition-transform shrink-0">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    <a href="${ep.download_url || '#'}" target="_blank" class="h-7 px-3 rounded-md bg-brand-red hover:bg-brand-redHover flex items-center justify-center gap-1 text-[10px] font-extrabold text-white active:scale-95 transition-transform shrink-0">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         Download
                     </a>
                 </div>
@@ -1055,46 +980,42 @@
             const isSaved = state.watchlist.includes(id);
             const btn = document.getElementById('modalWatchlistBtn');
             if (isSaved) {
-                btn.className = 'flex-1 h-11 bg-zinc-900 border border-zinc-800 rounded-xl text-xs font-bold text-brand-red active:scale-95 transition-transform flex items-center justify-center gap-2';
-                btn.innerHTML = `<svg class="w-4 h-4 fill-brand-red stroke-brand-red" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>In Watchlist`;
+                btn.className = 'flex-1 h-10 bg-zinc-900 border border-zinc-800 rounded-lg text-xs font-extrabold text-brand-red active:scale-95 transition-transform flex items-center justify-center gap-1.5';
+                btn.innerHTML = `<svg class="w-3.5 h-3.5 fill-brand-red stroke-brand-red" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>In Watchlist`;
             } else {
-                btn.className = 'flex-1 h-11 bg-zinc-100 text-zinc-950 border border-zinc-100 rounded-xl text-xs font-bold active:scale-95 transition-transform flex items-center justify-center gap-2';
-                btn.innerHTML = `<svg class="w-4 h-4 stroke-zinc-950 fill-none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>Add to List`;
+                btn.className = 'flex-1 h-10 bg-zinc-100 text-zinc-950 border border-zinc-100 rounded-lg text-xs font-extrabold active:scale-95 transition-transform flex items-center justify-center gap-1.5';
+                btn.innerHTML = `<svg class="w-3.5 h-3.5 stroke-zinc-950 fill-none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>Add to List`;
             }
         }
 
         function closeDetails() {
             document.getElementById('detailsModal').classList.add('hidden');
-            document.body.style.overflow = ''; // Unlock background scrolling
+            document.body.style.overflow = '';
         }
 
         function shareLink(id) {
-            // Generates Telegram Mini App share link
             const baseUrl = window.location.origin + window.location.pathname;
             const shareUrl = `${baseUrl}?startapp=${id}`;
             
-            // Modern copy mechanism
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(shareUrl)
-                    .then(() => showToast("Link copied to clipboard"))
-                    .catch(() => showToast("Sharing failed"));
+                    .then(() => showToast("LINK COPIED"))
+                    .catch(() => showToast("FAILED"));
             } else {
-                // Secondary fallback input method
                 const temp = document.createElement('input');
                 temp.value = shareUrl;
                 document.body.appendChild(temp);
                 temp.select();
                 try {
                     document.execCommand('copy');
-                    showToast("Link copied to clipboard");
+                    showToast("LINK COPIED");
                 } catch (e) {
-                    showToast("Sharing failed");
+                    showToast("FAILED");
                 }
                 document.body.removeChild(temp);
             }
         }
 
-        // Profile dialog toggles
         document.getElementById('profileBtn').addEventListener('click', () => {
             renderProfileInfo();
             document.getElementById('profileModal').classList.remove('hidden');
@@ -1104,7 +1025,6 @@
             document.getElementById('profileModal').classList.add('hidden');
         });
 
-        // Close details modal on hitting Escape key
         window.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
                 closeDetails();
@@ -1112,7 +1032,6 @@
             }
         });
 
-        // Check for startup direct link params (e.g. sharing launch)
         function checkStartupParameters() {
             if (tgInstance && tgInstance.initDataUnsafe && tgInstance.initDataUnsafe.start_param) {
                 const param = tgInstance.initDataUnsafe.start_param;
@@ -1124,7 +1043,6 @@
             }
         }
 
-        // Initialize Core App
         (async function initApp() {
             loadWatchlist();
             await fetchMoviesData();
@@ -1135,4 +1053,4 @@
         })();
     </script>
 </body>
-    </html>
+ </html>
