@@ -11,41 +11,48 @@
     "banners": [
         {
             "id": "banner-1",
-            "title": "Silo",
-            "year": "2023",
-            "rating": "8.2",
-            "overview": "In a ruined and toxic future, thousands live in a giant silo deep underground. After its sheriff breaks a cardinal rule and residents die mysteriously, engineer Juliette starts to uncover shocking secrets.",
-            "backdrop": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1200",
-            "poster": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=600",
-            "runtime": "10 Episodes",
+            "title": "The Rookie",
+            "type": "series",
+            "status": "Returning Series",
+            "year": "2018",
+            "rating": "8.5",
+            "overview": "Starting over isn't easy, especially for small-town guy John Nolan who, after a life-altering incident, is pursuing his dream of being an LAPD officer. As the force's oldest rookie, he's met with skepticism from some higher-ups who see him as just a walking midlife crisis.",
+            "backdrop": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=1200",
+            "poster": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=600",
+            "runtime": "7 Seasons",
             "genres": [
-                "Sci-Fi",
+                "Crime",
                 "Drama",
-                "Thriller"
+                "Comedy"
             ],
-            "downloadUrl": "https://t.me/your_telegram_bot?start=silo"
-        },
-        {
-            "id": "banner-2",
-            "title": "The Odyssey",
-            "year": "2026",
-            "rating": "6.9",
-            "overview": "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
-            "backdrop": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=1200",
-            "poster": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=600",
-            "runtime": "2h 53m",
-            "genres": [
-                "Adventure",
-                "Action",
-                "Fantasy"
-            ],
-            "downloadUrl": "https://t.me/your_telegram_bot?start=odyssey"
+            "seasons": [
+                {
+                    "seasonNumber": 1,
+                    "episodes": [
+                        {
+                            "episodeNumber": 1,
+                            "title": "Pilot",
+                            "duration": "43m",
+                            "thumbnail": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=400",
+                            "downloadUrl": "https://t.me/your_bot?start=rookie_s1e1"
+                        },
+                        {
+                            "episodeNumber": 2,
+                            "title": "Crash Course",
+                            "duration": "42m",
+                            "thumbnail": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400",
+                            "downloadUrl": "https://t.me/your_bot?start=rookie_s1e2"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "movies": [
         {
             "id": "movie-1",
             "title": "The Odyssey",
+            "type": "movie",
             "category": "Trending Now",
             "year": "2026",
             "rating": "6.9",
@@ -62,73 +69,48 @@
         },
         {
             "id": "movie-2",
-            "title": "Backrooms",
+            "title": "The Rookie",
+            "type": "series",
+            "status": "Returning Series",
             "category": "Trending Now",
-            "year": "2026",
-            "rating": "7.0",
-            "overview": "An atmospheric exploration into the liminal terror of anomalous, yellow-walled spaces. A rescue team must map out an endless, repeating layout while evading unidentified entity signatures.",
-            "poster": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600",
-            "backdrop": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200",
-            "runtime": "1h 44m",
+            "year": "2018",
+            "rating": "8.5",
+            "overview": "Starting over isn't easy, especially for small-town guy John Nolan who, after a life-altering incident, is pursuing his dream of being an LAPD officer. As the force's oldest rookie, he's met with skepticism from some higher-ups who see him as just a walking midlife crisis.",
+            "poster": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=600",
+            "backdrop: ": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=1200",
+            "runtime": "7 Seasons",
             "genres": [
-                "Horror",
-                "Sci-Fi",
-                "Thriller"
+                "Crime",
+                "Drama",
+                "Comedy"
             ],
-            "downloadUrl": "https://t.me/your_telegram_bot?start=backrooms"
+            "seasons": [
+                {
+                    "seasonNumber": 1,
+                    "episodes": [
+                        {
+                            "episodeNumber": 1,
+                            "title": "Pilot",
+                            "duration": "43m",
+                            "thumbnail": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=400",
+                            "downloadUrl": "https://t.me/your_bot?start=rookie_s1e1"
+                        },
+                        {
+                            "episodeNumber": 2,
+                            "title": "Crash Course",
+                            "duration": "42m",
+                            "thumbnail": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400",
+                            "downloadUrl": "https://t.me/your_bot?start=rookie_s1e2"
+                        }
+                    ]
+                }
+            ]
         },
         {
             "id": "movie-3",
-            "title": "Obsession",
-            "category": "Trending Now",
-            "year": "2026",
-            "rating": "8.2",
-            "overview": "A psychological thriller detailing the breakdown of a renowned cryptographer who is lured into decoding ancient texts of unknown origin, gradually revealing secrets best kept forgotten.",
-            "poster": "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=600",
-            "backdrop": "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=1200",
-            "runtime": "2h 10m",
-            "genres": [
-                "Drama",
-                "Thriller"
-            ],
-            "downloadUrl": "https://t.me/your_telegram_bot?start=obsession"
-        },
-        {
-            "id": "movie-4",
-            "title": "Accidental Love",
-            "category": "Top Rated Movies",
-            "year": "2026",
-            "rating": "9.1",
-            "overview": "Two polar opposite rival investigators are forced together when their respective cases intersect. Soon they learn that their professional collision is anything but accidental.",
-            "poster": "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&q=80&w=600",
-            "backdrop": "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&q=80&w=1200",
-            "runtime": "2h 15m",
-            "genres": [
-                "Romance",
-                "Comedy"
-            ],
-            "downloadUrl": "https://t.me/your_telegram_bot?start=accident"
-        },
-        {
-            "id": "movie-5",
-            "title": "Swapped",
-            "category": "Top Rated Movies",
-            "year": "2026",
-            "rating": "8.9",
-            "overview": "When a world-renowned fantasy designer trades lives with a simple village artisan, chaotic high-stakes events force both to re-evaluate what truly matters.",
-            "poster": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=600",
-            "backdrop": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=1200",
-            "runtime": "1h 56m",
-            "genres": [
-                "Animation",
-                "Comedy",
-                "Fantasy"
-            ],
-            "downloadUrl": "https://t.me/your_telegram_bot?start=swapped"
-        },
-        {
-            "id": "movie-6",
             "title": "Teach You a Lesson",
+            "type": "series",
+            "status": "Returning Series",
             "category": "Top Rated Series",
             "year": "2026",
             "rating": "9.5",
@@ -140,23 +122,20 @@
                 "Drama",
                 "Thriller"
             ],
-            "downloadUrl": "https://t.me/your_telegram_bot?start=teach"
-        },
-        {
-            "id": "movie-7",
-            "title": "Dutton Ranch",
-            "category": "Top Rated Series",
-            "year": "2026",
-            "rating": "9.3",
-            "overview": "A grit-infused drama exploring the legal maneuvers, family sacrifices, and high-tension standoffs of managing a historic mountain valley boundary reservation.",
-            "poster": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=600",
-            "backdrop": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1200",
-            "runtime": "8 Episodes",
-            "genres": [
-                "Action",
-                "Drama"
-            ],
-            "downloadUrl": "https://t.me/your_telegram_bot?start=dutton"
+            "seasons": [
+                {
+                    "seasonNumber": 1,
+                    "episodes": [
+                        {
+                            "episodeNumber": 1,
+                            "title": "Unorthodox Start",
+                            "duration": "50m",
+                            "thumbnail": "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=400",
+                            "downloadUrl": "https://t.me/your_bot?start=teach_s1e1"
+                        }
+                    ]
+                }
+            ]
         }
     ]
  }
