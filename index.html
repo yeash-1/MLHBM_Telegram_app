@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -122,7 +122,7 @@
                     <!-- Linear bottom fading overlay -->
                     <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent pointer-events-none"></div>
                     
-                    <!-- Dynamic Information Overlay (Applies to current banner) -->
+                    <!-- Dynamic Information Overlay -->
                     <div class="absolute inset-x-0 bottom-0 p-4 flex flex-col justify-end pointer-events-none">
                         <div id="hero-info" class="space-y-1.5 transition-opacity duration-300 select-none">
                             <div class="flex items-center space-x-2">
@@ -154,7 +154,7 @@
                     </div>
                 </div>
 
-                <!-- Dynamic Row Containers -->
+                <!-- Dynamic Row Containers (Trending Now, Popular Movies, Popular Series etc.) -->
                 <div id="dynamic-rows" class="space-y-6 px-4">
                     <!-- Loaded dynamically via JS, ignoring category "None" -->
                 </div>
@@ -218,7 +218,7 @@
 
         </main>
 
-        <!-- BOTTOM NAVIGATION BAR (Exactly 4 tabs, premium glassmorphic style) -->
+        <!-- BOTTOM NAVIGATION BAR (Exactly 4 tabs) -->
         <nav class="fixed bottom-0 inset-x-0 max-w-md mx-auto glass-panel h-[72px] flex items-center justify-around px-4 rounded-t-2xl z-40 border-t border-zinc-800/40 pb-safe shadow-2xl">
             <button id="tab-home" class="nav-tab flex flex-col items-center justify-center space-y-1 text-brand">
                 <svg class="w-5 h-5 transition-transform active:scale-95" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -297,7 +297,7 @@
         </div>
     </div>
 
-    <!-- MOVIE & TV SHOW DETAILS MODAL (Image 2 style layout) -->
+    <!-- DETAILS MODAL -->
     <div id="details-modal" class="fixed inset-0 z-50 flex flex-col justify-end hidden">
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-black/85 backdrop-blur-md" id="details-modal-bg"></div>
@@ -375,7 +375,7 @@
 
     <!-- CORE LOGIC SCRIPTS -->
     <script>
-        // Fallback premium dataset (Runs if movies.json fetch fails)
+        // Highly Polished Static Records including requested Category structure
         const FALLBACK_DATA = [
             {
                 "id": "f1",
@@ -389,7 +389,7 @@
                 "backdropUrl": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1200",
                 "genres": ["Sci-Fi", "Drama", "Adventure"],
                 "downloadUrl": "https://t.me/your_bot_or_channel_link",
-                "category": "Trending"
+                "category": "Trending Now"
             },
             {
                 "id": "f2",
@@ -403,7 +403,7 @@
                 "posterUrl": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=400",
                 "backdropUrl": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1200",
                 "genres": ["Sci-Fi", "Drama", "Horror"],
-                "category": "Popular Shows",
+                "category": "Popular Series",
                 "seasons": [
                     {
                         "name": "Season 1",
@@ -434,11 +434,67 @@
                 "rating": "8.9",
                 "runtime": "166 min",
                 "description": "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.",
-                "posterUrl": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=400",
-                "backdropUrl": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1200",
-                "genres": ["Sci-Fi", "Adventure"],
+                "posterUrl": "https://images.unsplash.com/photo-1547483238-2cbf88bf2443?q=80&w=400",
+                "backdropUrl": "https://images.unsplash.com/photo-1547483238-2cbf88bf2443?q=80&w=1200",
+                "genres": ["Sci-Fi", "Adventure", "Action"],
                 "downloadUrl": "https://t.me/dune_two_download",
-                "category": "Trending"
+                "category": "Trending Now"
+            },
+            {
+                "id": "f4",
+                "title": "Oppenheimer",
+                "type": "movie",
+                "year": "2023",
+                "rating": "8.9",
+                "runtime": "180 min",
+                "description": "The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.",
+                "posterUrl": "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=400",
+                "backdropUrl": "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=1200",
+                "genres": ["Biography", "Drama", "History"],
+                "downloadUrl": "https://t.me/oppenheimer_download",
+                "category": "Popular Movies"
+            },
+            {
+                "id": "f5",
+                "title": "The Dark Knight",
+                "type": "movie",
+                "year": "2008",
+                "rating": "9.0",
+                "runtime": "152 min",
+                "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+                "posterUrl": "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=400",
+                "backdropUrl": "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=1200",
+                "genres": ["Action", "Crime", "Drama"],
+                "downloadUrl": "https://t.me/dark_knight_download",
+                "category": "Popular Movies"
+            },
+            {
+                "id": "f6",
+                "title": "The Last of Us",
+                "type": "series",
+                "year": "2023",
+                "rating": "8.8",
+                "runtime": "1 Season",
+                "status": "Returning Series",
+                "description": "After a global pandemic destroys civilization, a hardened survivor takes charge of a 14-year-old girl who may be humanity's last hope.",
+                "posterUrl": "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=400",
+                "backdropUrl": "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=1200",
+                "genres": ["Action", "Adventure", "Drama"],
+                "category": "Popular Series",
+                "seasons": [
+                    {
+                        "name": "Season 1",
+                        "episodes": [
+                            {
+                                "episodeNumber": "E1",
+                                "title": "When You're Lost in the Darkness",
+                                "duration": "81 min",
+                                "thumbnailUrl": "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=300",
+                                "downloadUrl": "https://t.me/lastofus_e1"
+                            }
+                        ]
+                    }
+                ]
             }
         ];
 
@@ -447,7 +503,6 @@
         if (tg) {
             tg.ready();
             tg.expand();
-            // Match Telegram's header bar color
             tg.setHeaderColor('#09090b');
             tg.setBackgroundColor('#09090b');
         }
@@ -458,15 +513,12 @@
         let currentView = 'home';
         let currentHeroIndex = 0;
         let heroTimer = null;
-        let activeBrowseType = 'movie'; // 'movie' or 'series'
+        let activeBrowseType = 'movie'; 
         let currentDetailItem = null;
-        let activeDetailSeasonIndex = 0;
 
         // Custom Security Protocols
         function initSecurity() {
-            // Context Menu Prevention
             document.addEventListener('contextmenu', e => e.preventDefault());
-            // Inspection Prevention Keys
             document.addEventListener('keydown', e => {
                 if (e.key === 'F12' || 
                     (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || 
@@ -474,7 +526,6 @@
                     e.preventDefault();
                 }
             });
-            // Double-tap zoom mitigation
             let lastTouchTime = 0;
             document.addEventListener('touchend', e => {
                 const now = new Date().getTime();
@@ -485,7 +536,6 @@
             }, { passive: false });
         }
 
-        // Watchlist helper scoped to TG user ID if possible
         function getWatchlistKey() {
             const userId = tg?.initDataUnsafe?.user?.id || 'guest';
             return `mlhbm_watchlist_${userId}`;
@@ -529,7 +579,7 @@
             });
         }
 
-        // Show glassy custom Toast notifications
+        // Custom Toast Notifications
         function showToast(message) {
             const container = document.getElementById('toast-container');
             if (!container) return;
@@ -544,12 +594,10 @@
             `;
             container.appendChild(toast);
             
-            // animate in
             setTimeout(() => {
                 toast.classList.remove('translate-y-2', 'opacity-0');
             }, 50);
 
-            // destroy out
             setTimeout(() => {
                 toast.classList.add('opacity-0', 'translate-y-[-10px]');
                 setTimeout(() => {
@@ -562,14 +610,12 @@
         function switchView(viewName) {
             currentView = viewName;
             
-            // Toggle panels
             document.querySelectorAll('.view-panel').forEach(panel => {
                 panel.classList.add('hidden');
             });
             const targetView = document.getElementById(`${viewName}-view`);
             if (targetView) targetView.classList.remove('hidden');
 
-            // Reset navigation indicators
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('text-brand');
                 tab.classList.add('text-zinc-500', 'hover:text-zinc-300');
@@ -581,7 +627,6 @@
                 activeTab.classList.add('text-brand');
             }
 
-            // Perform context-specific actions
             if (viewName === 'watchlist') {
                 renderWatchlist();
             } else if (viewName === 'browse') {
@@ -589,12 +634,12 @@
             }
         }
 
-        // Slider logic
+        // Slider Setup with Swipe Gestures
         let sliderTouchStartX = 0;
         let sliderTouchEndX = 0;
 
         function renderHeroSlider() {
-            const banners = mediaAssets.slice(0, 4); // Limit to top 4 for features
+            const banners = mediaAssets.slice(0, 4);
             const track = document.getElementById('hero-track');
             const dotsContainer = document.getElementById('slider-dots');
             if (!track || banners.length === 0) return;
@@ -603,16 +648,12 @@
             dotsContainer.innerHTML = '';
 
             banners.forEach((item, index) => {
-                // Track Banners
                 const bannerDiv = document.createElement('div');
                 bannerDiv.className = "w-full h-full flex-shrink-0 bg-cover bg-center select-none relative";
                 bannerDiv.style.backgroundImage = `url('${item.backdropUrl}')`;
-                bannerDiv.setAttribute('data-id', item.id);
-                // Click events handled separately or integrated
                 bannerDiv.onclick = () => openDetailsModal(item.id);
                 track.appendChild(bannerDiv);
 
-                // Slide Dots
                 const dot = document.createElement('button');
                 dot.className = `w-1.5 h-1.5 rounded-full transition-all duration-300 ${index === 0 ? 'bg-brand w-3' : 'bg-zinc-600'}`;
                 dot.onclick = (e) => {
@@ -623,7 +664,6 @@
                 dotsContainer.appendChild(dot);
             });
 
-            // Update info displays first time
             updateHeroInfo(banners[0]);
             setupSliderGestures();
             startHeroTimer();
@@ -643,12 +683,11 @@
             if (elements.year) elements.year.innerText = item.year;
             if (elements.desc) elements.desc.innerText = item.description;
 
-            // Info buttons hook
             const infoBtn = document.getElementById('hero-info-btn');
             if (infoBtn) {
                 infoBtn.onclick = () => openDetailsModal(item.id);
             }
-            // Bookmark Sync
+
             const favBtn = document.getElementById('hero-fav-btn');
             const favIcon = document.getElementById('hero-fav-icon');
             if (favBtn && favIcon) {
@@ -659,7 +698,6 @@
                 favBtn.onclick = (e) => {
                     e.stopPropagation();
                     toggleWatchlistItem(item.id);
-                    // refresh current banner UI
                     const updatedSave = watchlist.includes(item.id);
                     favIcon.setAttribute('fill', updatedSave ? 'currentColor' : 'none');
                     favIcon.className = updatedSave ? 'w-4 h-4 text-brand' : 'w-4 h-4 text-zinc-300';
@@ -675,7 +713,6 @@
             currentHeroIndex = index;
             track.style.transform = `translateX(-${index * 100}%)`;
 
-            // update dots
             for (let i = 0; i < dots.length; i++) {
                 if (i === index) {
                     dots[i].className = "w-1.5 h-1.5 rounded-full transition-all duration-300 bg-brand w-3";
@@ -684,7 +721,6 @@
                 }
             }
 
-            // update description panel
             const featuredItems = mediaAssets.slice(0, 4);
             updateHeroInfo(featuredItems[index]);
         }
@@ -714,13 +750,13 @@
 
             container.addEventListener('touchstart', (e) => {
                 sliderTouchStartX = e.changedTouches[0].screenX;
-                stopHeroTimer(); // Pause auto cycle during manual intervention
+                stopHeroTimer();
             }, { passive: true });
 
             container.addEventListener('touchend', (e) => {
                 sliderTouchEndX = e.changedTouches[0].screenX;
                 handleSwipe();
-                startHeroTimer(); // resume auto cycle
+                startHeroTimer();
             }, { passive: true });
         }
 
@@ -731,34 +767,37 @@
 
             if (Math.abs(diff) > threshold) {
                 if (diff > 0) {
-                    // Swiped Left -> Next Item
                     goToSlide((currentHeroIndex + 1) % total);
                 } else {
-                    // Swiped Right -> Prev Item
                     goToSlide((currentHeroIndex - 1 + total) % total);
                 }
             }
         }
 
-        // Render Homepage Dynamic Categories (Skips None category securely)
+        // Render Homepage Categories (Explicitly renders Trending Now, Popular Movies, Popular Series)
         function renderHomeCategories() {
             const container = document.getElementById('dynamic-rows');
             if (!container) return;
             container.innerHTML = '';
 
-            // Group contents by their display category mapping
+            // Group media assets by category
             const groups = {};
             mediaAssets.forEach(item => {
-                const cat = item.category || 'Trending';
-                if (cat.toLowerCase() === 'none') return; // Skip categories labeled 'None' completely
+                const cat = item.category || 'Trending Now';
+                if (cat.toLowerCase() === 'none') return; // Skip item securely if mapped to "None"
 
                 if (!groups[cat]) groups[cat] = [];
                 groups[cat].push(item);
             });
 
-            // Iterate and build row blocks
-            Object.keys(groups).forEach(catName => {
+            // Clean priority order to render rows beautifully
+            const rowPriority = ["Trending Now", "Popular Movies", "Popular Series"];
+            const sortedCategories = Array.from(new Set([...rowPriority, ...Object.keys(groups)]));
+
+            sortedCategories.forEach(catName => {
                 const items = groups[catName];
+                if (!items || items.length === 0) return; // Skip if no items fit this row
+
                 const section = document.createElement('div');
                 section.className = "space-y-3";
                 
@@ -785,7 +824,7 @@
             });
         }
 
-        // Render Search Area Logic
+        // Search Setup
         function setupSearch() {
             const input = document.getElementById('search-input');
             if (!input) return;
@@ -827,7 +866,7 @@
             };
         }
 
-        // Browse / Genre Collage implementation
+        // Browse Collage setup
         function setupBrowseView() {
             const btnMovies = document.getElementById('toggle-movies');
             const btnShows = document.getElementById('toggle-shows');
@@ -852,7 +891,6 @@
             const grid = document.getElementById('browse-genres-grid');
             if (!grid) return;
 
-            // Extract all dynamic genres and sample posters corresponding to active type
             const filteredItems = mediaAssets.filter(item => item.type === activeBrowseType);
             const genreMap = {};
 
@@ -865,7 +903,6 @@
                 }
             });
 
-            // Render collage
             grid.innerHTML = '';
             const genres = Object.keys(genreMap);
 
@@ -875,7 +912,7 @@
             }
 
             genres.forEach(genre => {
-                const img = genreMap[genre][0]; // Grab first available backdrop
+                const img = genreMap[genre][0];
                 const card = document.createElement('div');
                 card.className = "relative h-24 rounded-lg overflow-hidden border border-zinc-800/80 bg-zinc-900 cursor-pointer active:scale-95 transition-all";
                 card.onclick = () => triggerGenreSearch(genre);
@@ -900,7 +937,7 @@
             }
         }
 
-        // Render Watchlist implementation
+        // Render Watchlist
         function renderWatchlist() {
             const grid = document.getElementById('watchlist-grid');
             const empty = document.getElementById('watchlist-empty');
@@ -928,16 +965,14 @@
             `).join('');
         }
 
-        // Details Modal Manager (Try-Catch safe system)
+        // Details Modal Manager (Try-Catch Safe)
         function openDetailsModal(itemId) {
             try {
                 const item = mediaAssets.find(i => i.id === itemId);
-                if (!item) throw new Error("Media asset not found in catalog database.");
+                if (!item) throw new Error("Media asset not found in database.");
 
                 currentDetailItem = item;
-                activeDetailSeasonIndex = 0; // reset active season tab trigger
 
-                // Set Base Data Elements
                 document.getElementById('details-backsplash').style.backgroundImage = `url('${item.backdropUrl}')`;
                 document.getElementById('details-poster').src = item.posterUrl;
                 document.getElementById('details-title').innerText = item.title;
@@ -946,7 +981,6 @@
                 document.getElementById('details-runtime').innerText = item.runtime || "N/A";
                 document.getElementById('details-overview').innerText = item.description || "No overview available.";
 
-                // Status tag
                 const statusEl = document.getElementById('details-status');
                 if (item.status) {
                     statusEl.innerText = item.status;
@@ -955,7 +989,6 @@
                     statusEl.classList.add('hidden');
                 }
 
-                // Genre Pills UI
                 const genrePanel = document.getElementById('details-genres');
                 genrePanel.innerHTML = '';
                 if (item.genres) {
@@ -967,12 +1000,10 @@
                     });
                 }
 
-                // Switch UI rendering block by type strictly
                 const condPanel = document.getElementById('conditional-content');
                 condPanel.innerHTML = '';
 
                 if (item.type === 'movie') {
-                    // Movie UI: Prominent Download and Share row
                     const actionRow = document.createElement('div');
                     actionRow.className = "grid grid-cols-2 gap-3";
                     
@@ -1002,11 +1033,9 @@
                     condPanel.appendChild(actionRow);
 
                 } else if (item.type === 'series') {
-                    // Series UI: Seasons and Episodes Subpanel Tab
                     const tabsWrapper = document.createElement('div');
                     tabsWrapper.className = "space-y-4";
                     
-                    // Seasons indicators horizontally scrolled
                     const seasonsContainer = document.createElement('div');
                     seasonsContainer.className = "flex space-x-2 overflow-x-auto no-scrollbar py-1 border-b border-zinc-900";
                     
@@ -1020,7 +1049,6 @@
                             pill.innerText = season.name || `S${sIdx + 1}`;
                             
                             pill.onclick = () => {
-                                // update style
                                 Array.from(seasonsContainer.children).forEach((child, cIdx) => {
                                     if (cIdx === sIdx) {
                                         child.className = "px-3.5 py-1 text-xs font-bold rounded-lg transition-all bg-brand/20 border border-brand/50 text-brand";
@@ -1034,7 +1062,6 @@
                             seasonsContainer.appendChild(pill);
                         });
 
-                        // render initial season's episodes
                         renderEpisodes(item.seasons[0].episodes, episodesListContainer);
                     } else {
                         episodesListContainer.innerHTML = `<div class="text-center py-4 text-xs text-zinc-600">No seasons configured.</div>`;
@@ -1045,10 +1072,8 @@
                     condPanel.appendChild(tabsWrapper);
                 }
 
-                // Bookmark Control Bar update
                 updateDetailsModalButtons();
 
-                // Open Modal transition safely
                 const m = document.getElementById('details-modal');
                 m.classList.remove('hidden');
                 setTimeout(() => {
@@ -1057,7 +1082,7 @@
 
             } catch (err) {
                 showToast("Error launching movie profiles securely.");
-                console.error("Crash safety validation failed:", err);
+                console.error(err);
             }
         }
 
@@ -1084,7 +1109,6 @@
                             <p class="text-[9px] text-zinc-500">${ep.duration || "N/A"}</p>
                         </div>
                     </div>
-                    <!-- Right action strictly single Download icon -->
                     <a href="${ep.downloadUrl || '#'}" target="_blank" class="w-8 h-8 rounded-full bg-brand/10 hover:bg-brand/20 border border-brand/50 flex items-center justify-center text-brand flex-shrink-0 active:scale-95 transition-all">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -1125,7 +1149,6 @@
             }
         }
 
-        // Share app link via WebApp or clipboard fallback
         function handleShareLink(item) {
             const appUrl = tg?.initDataUnsafe?.start_param 
                 ? `https://t.me/mlhbm_bot/app?startapp=${item.id}`
@@ -1133,15 +1156,14 @@
 
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(appUrl)
-                    .then(() => showToast("Share Link copied to Clipboard!"))
-                    .catch(() => showToast("Sharing copy failed. Try again."));
+                    .then(() => showToast("Share Link copied!"))
+                    .catch(() => showToast("Failed to copy link."));
             } else {
-                // Fallback direct dialog integration
-                showToast("Failed to write clipboard data.");
+                showToast("Clipboard unavailable.");
             }
         }
 
-        // Profile Console Trigger Modal Dashboard setup
+        // Profile Modal Console initialization
         function initProfileConsole() {
             const btn = document.getElementById('profile-trigger');
             const modal = document.getElementById('profile-modal');
@@ -1150,7 +1172,6 @@
 
             if (btn && modal) {
                 btn.onclick = () => {
-                    // Populate Profile Elements before open
                     const tgUser = tg?.initDataUnsafe?.user;
                     
                     if (tgUser) {
@@ -1185,7 +1206,7 @@
             }
         }
 
-        // Initialize App & Load Media Files
+        // Initialize Core Engine
         async function initApp() {
             initSecurity();
             loadWatchlistFromStorage();
@@ -1193,11 +1214,9 @@
             setupSearch();
             setupBrowseView();
 
-            // Set up Global Back buttons inside Detail modal
             document.getElementById('details-back-btn').onclick = closeDetailsModal;
             document.getElementById('details-modal-bg').onclick = closeDetailsModal;
 
-            // Set up Bottom Tab Click triggers
             const tabs = ['home', 'search', 'browse', 'watchlist'];
             tabs.forEach(tab => {
                 const btn = document.getElementById(`tab-${tab}`);
@@ -1208,21 +1227,20 @@
                 }
             });
 
-            // Fetch Data Files Dynamic loading
+            // Fetch Data JSON dynamically
             try {
                 const response = await fetch('movies.json');
-                if (!response.ok) throw new Error("Database configuration dynamic load failed.");
+                if (!response.ok) throw new Error("Database load failed.");
                 mediaAssets = await response.json();
             } catch (err) {
-                console.warn("Using localized hardcoded static records instead...", err);
+                console.warn("Using default internal catalog...", err);
                 mediaAssets = FALLBACK_DATA;
             }
 
-            // Run features rendering cycle
             renderHeroSlider();
             renderHomeCategories();
 
-            // Deep-link launch parameter check (Redirect users direct to movie profiles if parameter exists)
+            // Handle startapp Deep links
             try {
                 if (tg && tg.initDataUnsafe?.start_param) {
                     const deepId = tg.initDataUnsafe.start_param;
@@ -1231,12 +1249,11 @@
                     }
                 }
             } catch (err) {
-                console.error("Deep link analysis failed:", err);
+                console.error("Deep link parser error:", err);
             }
         }
 
-        // Kick off app initialization
         window.onload = initApp;
     </script>
 </body>
- </html>
+</html>
