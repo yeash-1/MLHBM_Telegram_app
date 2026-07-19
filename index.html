@@ -181,8 +181,8 @@
             <!-- VIEW 3: BROWSE -->
             <section id="browse-view" class="view-panel hidden px-4 pt-4 space-y-4">
                 <div class="flex p-0.5 bg-zinc-900/90 border border-zinc-800/80 rounded-lg">
-                    <button id="toggle-movies" class="flex-1 py-1.5 text-xs font-bold rounded-md transition-all duration-300 bg-brand/20 border border-brand/40 text-brand backdrop-blur-sm">Movies</button>
-                    <button id="toggle-shows" class="flex-1 py-1.5 text-xs font-bold rounded-md transition-all duration-300 text-zinc-400 hover:text-white">TV Shows</button>
+                    <button id="toggle-movies" class="flex-1 py-1.5 text-xs font-bold rounded-md transition-all bg-brand/20 border border-brand/40 text-brand backdrop-blur-sm">Movies</button>
+                    <button id="toggle-shows" class="flex-1 py-1.5 text-xs font-bold rounded-md transition-all text-zinc-400 hover:text-white">TV Shows</button>
                 </div>
                 <div id="browse-genres-grid" class="grid grid-cols-2 gap-3"></div>
             </section>
@@ -370,6 +370,7 @@
             }, { passive: false });
         }
 
+        // --- CLOUD LOGGING FOR REGISTERED USERS ---
         async function logActiveTelegramUser() {
             try {
                 const tgUser = tg?.initDataUnsafe?.user;
@@ -390,6 +391,22 @@
                 });
             } catch (err) {
                 console.error("Tracking log sync error:", err);
+            }
+        }
+
+        // --- CLOUD LOGGING FOR POST VIEWS (ONLY READABLE BY ADMIN) ---
+        async function incrementViewCount(itemId) {
+            try {
+                const res = await fetch(`${CLOUD_DB_URL}/views/${itemId}.json`);
+                const currentViews = res.ok ? (await res.json() || 0) : 0;
+                
+                await fetch(`${CLOUD_DB_URL}/views/${itemId}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(currentViews + 1)
+                });
+            } catch (err) {
+                console.error("View count increment failed:", err);
             }
         }
 
@@ -859,6 +876,7 @@
                 }
 
                 updateDetailsModalButtons();
+                incrementViewCount(itemId); // Dynamic view tracking increment triggered securely
 
                 const m = document.getElementById('details-modal');
                 m.classList.remove('hidden');
@@ -992,17 +1010,16 @@
                 if (btn) btn.onclick = () => switchView(tab);
             });
 
-            // Fetch remote data files or sync database
+            // Fetch dynamic cloud catalog database securely from Firebase Realtime Database
             try {
-                const localSync = localStorage.getItem('mlhbm_admin_catalog');
-                if (localSync) {
-                    mediaAssets = JSON.parse(localSync);
-                } else {
-                    const response = await fetch('movies.json');
-                    if (!response.ok) throw new Error();
-                    mediaAssets = await response.json();
-                }
+                const response = await fetch(`${CLOUD_DB_URL}/catalog.json`);
+                if (!response.ok) throw new Error();
+                const data = await response.json();
+                
+                // Map Firebase objects to array safely
+                mediaAssets = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : FALLBACK_DATA;
             } catch (err) {
+                console.warn("Using default static fallback database...", err);
                 mediaAssets = FALLBACK_DATA;
             }
 
