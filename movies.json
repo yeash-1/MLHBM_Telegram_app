@@ -1,141 +1,127 @@
- {
-    "settings": {
-        "appName": "MLHBM",
-        "primaryColor": "#E50914"
+ [
+    {
+        "id": "item_silo_01",
+        "title": "Silo",
+        "year": "2023",
+        "type": "series",
+        "rating": "8.2",
+        "runtime": "45m",
+        "category": "Trending Now",
+        "genres": ["Sci-Fi", "Drama"],
+        "description": "In a ruined and toxic future, thousands live in a giant silo deep underground. After its sheriff breaks a cardinal rule and residents die mysteriously, engineer Juliette starts to uncover shocking secrets.",
+        "backdrop": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=1200",
+        "poster": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=500",
+        "status": "Returning Series",
+        "pin_to_slider": true,
+        "seasons": [
+            {
+                "season_number": 1,
+                "episodes": [
+                    {
+                        "episode_number": 1,
+                        "title": "Freedom",
+                        "duration": "48m",
+                        "thumbnail": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=300",
+                        "download_url": "https://t.me/yourchannel/s1e1"
+                    },
+                    {
+                        "episode_number": 2,
+                        "title": "Holston's Pick",
+                        "duration": "44m",
+                        "thumbnail": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=300",
+                        "download_url": "https://t.me/yourchannel/s1e2"
+                    }
+                ]
+            }
+        ]
     },
-    "categories": [
-        "Trending Now",
-        "Top Rated Movies",
-        "Top Rated Series"
-    ],
-    "banners": [
-        {
-            "id": "banner-1",
-            "title": "The Rookie",
-            "type": "series",
-            "status": "Returning Series",
-            "year": "2018",
-            "rating": "8.5",
-            "overview": "Starting over isn't easy, especially for small-town guy John Nolan who, after a life-altering incident, is pursuing his dream of being an LAPD officer. As the force's oldest rookie, he's met with skepticism from some higher-ups who see him as just a walking midlife crisis.",
-            "backdrop": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=1200",
-            "poster": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=600",
-            "runtime": "7 Seasons",
-            "genres": [
-                "Crime",
-                "Drama",
-                "Comedy"
-            ],
-            "seasons": [
-                {
-                    "seasonNumber": 1,
-                    "episodes": [
-                        {
-                            "episodeNumber": 1,
-                            "title": "Pilot",
-                            "duration": "43m",
-                            "thumbnail": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=400",
-                            "downloadUrl": "https://t.me/your_bot?start=rookie_s1e1"
-                        },
-                        {
-                            "episodeNumber": 2,
-                            "title": "Crash Course",
-                            "duration": "42m",
-                            "thumbnail": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400",
-                            "downloadUrl": "https://t.me/your_bot?start=rookie_s1e2"
-                        }
-                    ]
-                }
-            ]
-        }
-    ],
-    "movies": [
-        {
-            "id": "movie-1",
-            "title": "The Odyssey",
-            "type": "movie",
-            "category": "Trending Now",
-            "year": "2026",
-            "rating": "6.9",
-            "overview": "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
-            "poster": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=600",
-            "backdrop": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=1200",
-            "runtime": "2h 53m",
-            "genres": [
-                "Adventure",
-                "Action",
-                "Fantasy"
-            ],
-            "downloadUrl": "https://t.me/your_telegram_bot?start=odyssey"
-        },
-        {
-            "id": "movie-2",
-            "title": "The Rookie",
-            "type": "series",
-            "status": "Returning Series",
-            "category": "Trending Now",
-            "year": "2018",
-            "rating": "8.5",
-            "overview": "Starting over isn't easy, especially for small-town guy John Nolan who, after a life-altering incident, is pursuing his dream of being an LAPD officer. As the force's oldest rookie, he's met with skepticism from some higher-ups who see him as just a walking midlife crisis.",
-            "poster": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=600",
-            "backdrop: ": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=1200",
-            "runtime": "7 Seasons",
-            "genres": [
-                "Crime",
-                "Drama",
-                "Comedy"
-            ],
-            "seasons": [
-                {
-                    "seasonNumber": 1,
-                    "episodes": [
-                        {
-                            "episodeNumber": 1,
-                            "title": "Pilot",
-                            "duration": "43m",
-                            "thumbnail": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=400",
-                            "downloadUrl": "https://t.me/your_bot?start=rookie_s1e1"
-                        },
-                        {
-                            "episodeNumber": 2,
-                            "title": "Crash Course",
-                            "duration": "42m",
-                            "thumbnail": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400",
-                            "downloadUrl": "https://t.me/your_bot?start=rookie_s1e2"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": "movie-3",
-            "title": "Teach You a Lesson",
-            "type": "series",
-            "status": "Returning Series",
-            "category": "Top Rated Series",
-            "year": "2026",
-            "rating": "9.5",
-            "overview": "An brilliant but unorthodox professor takes a personal interest in systemic school fraud, orchestrating complex, psychological traps to hold corrupt board administrators accountable.",
-            "poster": "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=600",
-            "backdrop": "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=1200",
-            "runtime": "12 Episodes",
-            "genres": [
-                "Drama",
-                "Thriller"
-            ],
-            "seasons": [
-                {
-                    "seasonNumber": 1,
-                    "episodes": [
-                        {
-                            "episodeNumber": 1,
-                            "title": "Unorthodox Start",
-                            "duration": "50m",
-                            "thumbnail": "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=400",
-                            "downloadUrl": "https://t.me/your_bot?start=teach_s1e1"
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
- }
+    {
+        "id": "item_odyssey_02",
+        "title": "The Odyssey",
+        "year": "2026",
+        "type": "movie",
+        "rating": "6.9",
+        "runtime": "2h 53m",
+        "category": "Trending Now",
+        "genres": ["Action", "Adventure", "Fantasy"],
+        "description": "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
+        "backdrop": "https://images.unsplash.com/photo-1585647347483-22b66260dfff?auto=format&fit=crop&q=80&w=1200",
+        "poster": "https://images.unsplash.com/photo-1585647347483-22b66260dfff?auto=format&fit=crop&q=80&w=500",
+        "download_url": "https://t.me/yourchannel/movie_odyssey",
+        "pin_to_slider": true
+    },
+    {
+        "id": "item_backrooms_03",
+        "title": "Backrooms",
+        "year": "2026",
+        "type": "movie",
+        "rating": "7.0",
+        "runtime": "1h 42m",
+        "category": "Trending Now",
+        "genres": ["Horror", "Sci-Fi"],
+        "description": "A young filmmaker gets trapped inside the yellow, endlessly repeating rooms of the Backrooms structure. Searching for escape routes, they discover terrifying entities.",
+        "backdrop": "https://images.unsplash.com/photo-1505635330303-31953c0e8a21?auto=format&fit=crop&q=80&w=1200",
+        "poster": "https://images.unsplash.com/photo-1505635330303-31953c0e8a21?auto=format&fit=crop&q=80&w=500",
+        "download_url": "https://t.me/yourchannel/movie_backrooms",
+        "pin_to_slider": false
+    },
+    {
+        "id": "item_love_04",
+        "title": "Accidental Love",
+        "year": "2026",
+        "type": "movie",
+        "rating": "9.1",
+        "runtime": "1h 55m",
+        "category": "Top Rated Movies",
+        "genres": ["Romance", "Comedy"],
+        "description": "A small-town waitress accidentally gets a nail lodged in her head, causing erratic behavior that leads her to Washington D.C., where she falls for a young senator.",
+        "backdrop": "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80&w=1200",
+        "poster": "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80&w=500",
+        "download_url": "https://t.me/yourchannel/movie_accidental_love",
+        "pin_to_slider": false
+    },
+    {
+        "id": "item_swapped_05",
+        "title": "Swapped",
+        "year": "2026",
+        "type": "movie",
+        "rating": "8.9",
+        "runtime": "1h 31m",
+        "category": "Top Rated Movies",
+        "genres": ["Animation", "Comedy"],
+        "description": "A forest creature switches minds with a space traveler, sparking a series of humorous mishaps while searching for a way back.",
+        "backdrop": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=1200",
+        "poster": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=500",
+        "download_url": "https://t.me/yourchannel/movie_swapped",
+        "pin_to_slider": true
+    },
+    {
+        "id": "item_lesson_06",
+        "title": "Teach You a Lesson",
+        "year": "2026",
+        "type": "series",
+        "rating": "9.5",
+        "runtime": "50m",
+        "category": "Top Rated Series",
+        "genres": ["Drama", "Thriller"],
+        "description": "Undercover agents expose systemic corruption inside high-ranking educational facilities using precise surveillance and sting operations.",
+        "backdrop": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200",
+        "poster": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=500",
+        "status": "Ended",
+        "pin_to_slider": false,
+        "seasons": [
+            {
+                "season_number": 1,
+                "episodes": [
+                    {
+                        "episode_number": 1,
+                        "title": "The Assessment",
+                        "duration": "52m",
+                        "thumbnail": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=300",
+                        "download_url": "https://t.me/yourchannel/lesson_s1e1"
+                    }
+                ]
+            }
+        ]
+    }
+ ]
