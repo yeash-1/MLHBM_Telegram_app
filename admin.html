@@ -1,24 +1,26 @@
-<!DOCTYPE html>
-<html lang="en" class="h-full select-none">
+ <!DOCTYPE html>
+<html lang="en" class="dark h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>MLHBM - Admin Console</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
                         brand: {
                             DEFAULT: '#E50914',
-                            hover: '#B80710',
-                            dark: '#1F0103',
+                            hover: '#C20710',
+                            glass: 'rgba(229, 9, 20, 0.15)',
+                            border: 'rgba(229, 9, 20, 0.3)'
                         }
                     },
                     fontFamily: {
-                        sans: ['Outfit', 'Inter', 'sans-serif'],
+                        sans: ['Outfit', 'Inter', 'sans-serif']
                     }
                 }
             }
@@ -27,963 +29,1083 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Custom scrollbars and styling */
-        ::-webkit-scrollbar {
-            display: none;
-        }
         body {
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
             user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
             -webkit-tap-highlight-color: transparent;
         }
         .glass-panel {
             background: rgba(24, 24, 27, 0.85);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(63, 63, 70, 0.4);
         }
         .glass-card {
-            background: rgba(39, 39, 42, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(18, 18, 18, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(63, 63, 70, 0.3);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(63, 63, 70, 0.4);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(229, 9, 20, 0.5);
         }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 font-sans min-h-full flex flex-col antialiased">
+<body class="bg-zinc-950 text-zinc-100 font-sans h-full relative overflow-hidden">
 
-    <!-- Passcode Gate Overlay -->
-    <div id="auth-overlay" class="fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center p-4">
-        <div class="w-full max-w-md glass-panel p-8 rounded-2xl border border-zinc-800 space-y-6 text-center shadow-2xl">
+    <!-- PASSCODE GATE OVERLAY -->
+    <div id="auth-gate" class="fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center p-6">
+        <div class="absolute inset-0 bg-radial-gradient from-brand/10 to-transparent pointer-events-none"></div>
+        <div class="w-full max-w-xs space-y-6 text-center relative z-10">
             <div class="space-y-2">
-                <div class="w-16 h-16 bg-brand/10 border border-brand/20 rounded-full flex items-center justify-center mx-auto text-brand">
-                    <i class="fa-solid fa-lock text-2xl"></i>
-                </div>
-                <h2 class="text-2xl font-bold tracking-tight text-white">MLHBM Admin Panel</h2>
-                <p class="text-xs text-zinc-400">Please enter your management credentials</p>
+                <h1 class="text-3xl font-black tracking-widest text-white">MLH<span class="text-brand">BM</span></h1>
+                <p class="text-xs text-zinc-500 uppercase tracking-widest">Console Security Protection</p>
             </div>
             
-            <form id="auth-form" class="space-y-4">
-                <div class="relative">
-                    <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-                    <input type="password" id="passcode-input" placeholder="••••••••" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-3 pl-11 pr-4 text-zinc-100 placeholder-zinc-650 text-sm focus:outline-none focus:border-brand transition-colors" required>
-                </div>
-                <button type="submit" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 px-4 rounded-xl transition-all duration-150 transform active:scale-[0.98]">
-                    Unlock Console
+            <div class="space-y-3">
+                <input type="password" id="passcode-input" class="w-full h-12 text-center bg-zinc-900/60 border border-zinc-800 rounded-xl text-white font-mono text-sm tracking-widest placeholder-zinc-600 focus:outline-none focus:border-brand/60 focus:ring-1 focus:ring-brand/30 transition-all shadow-inner" placeholder="••••••••" autocomplete="current-password">
+                <button onclick="authSubmit()" class="w-full py-3 rounded-xl bg-brand hover:bg-brand-hover text-xs font-bold text-white tracking-widest transition-all active:scale-95 shadow-md shadow-brand/10">
+                    UNLOCK CONSOLE
                 </button>
-                <p id="auth-error" class="text-xs text-brand font-medium hidden">Invalid password. Please try again.</p>
-            </form>
+            </div>
         </div>
     </div>
 
-    <!-- Main Admin Shell Container -->
-    <div id="admin-shell" class="flex-1 flex flex-col overflow-hidden hidden">
-        <!-- Top Header -->
-        <header class="glass-panel sticky top-0 z-40 border-b border-zinc-900 px-4 py-3 flex items-center justify-between">
+    <!-- MAIN ADMIN INTERFACE -->
+    <div id="admin-workspace" class="hidden h-full flex flex-col overflow-hidden max-w-md mx-auto relative z-10">
+        
+        <!-- HEADER -->
+        <header class="flex items-center justify-between px-4 py-4 border-b border-zinc-900/80 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-20">
             <div class="flex items-center space-x-2">
-                <span class="text-brand font-black text-xl tracking-wider">MLHBM</span>
-                <span class="text-zinc-700">|</span>
-                <span class="text-[10px] font-bold uppercase bg-zinc-900 border border-zinc-800 text-zinc-400 px-2 py-0.5 rounded">Admin</span>
+                <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                <h1 class="text-lg font-bold tracking-wider text-white">MLH<span class="text-brand">BM</span> Console</h1>
             </div>
-            <button id="logout-btn" class="bg-zinc-900 hover:bg-zinc-850 text-zinc-400 hover:text-white border border-zinc-800 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">
-                <i class="fa-solid fa-power-off"></i>
-            </button>
+            
+                <!-- Top Header Logout Icon -->
+                <button onclick="logoutAdmin()" class="w-8 h-8 rounded-lg bg-zinc-900/90 border border-zinc-800/80 hover:border-brand/40 text-zinc-400 hover:text-brand flex items-center justify-center transition-all">
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                </button>
+            </div>
         </header>
 
-        <!-- Main Content Area -->
-        <main class="flex-1 overflow-y-auto no-scrollbar pb-28 p-4 space-y-6">
-            
-            <!-- Metrics Row -->
-            <div class="grid grid-cols-3 gap-3">
-                <div class="glass-card p-3 rounded-xl border border-zinc-800/50 flex flex-col justify-center">
-                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Movies</span>
-                    <h3 id="stat-movies-count" class="text-lg font-black text-white mt-0.5">0</h3>
-                </div>
-                <div class="glass-card p-3 rounded-xl border border-zinc-800/50 flex flex-col justify-center">
-                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Genres</span>
-                    <h3 id="stat-genres-count" class="text-lg font-black text-white mt-0.5">0</h3>
-                </div>
-                <div class="glass-card p-3 rounded-xl border border-zinc-800/50 flex flex-col justify-center">
-                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Banners</span>
-                    <h3 id="stat-banners-count" class="text-lg font-black text-white mt-0.5">0</h3>
-                </div>
-            </div>
+        <!-- VIEWS SCROLL CONTENT -->
+        <main class="flex-1 overflow-y-auto relative pb-28" style="-webkit-overflow-scrolling: touch;">
 
-            <!-- Two-Column Layout -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <!-- VIEW 1: HOME (MANAGE) -->
+            <section id="view-home" class="view-panel p-4 space-y-5">
                 
-                <!-- Dynamic Form -->
-                <div id="left-form-container" class="lg:col-span-5 space-y-4">
-                    <div class="glass-panel p-5 rounded-2xl border border-zinc-800 shadow-xl space-y-4">
-                        <div class="flex items-center justify-between border-b border-zinc-900 pb-2">
-                            <h3 id="form-heading" class="text-xs font-bold text-white uppercase tracking-wider">Register New Entry</h3>
-                            <button id="form-reset-btn" class="text-xs text-brand font-semibold hover:underline hidden">
-                                Cancel Edit
-                            </button>
-                        </div>
-
-                        <form id="master-form" class="space-y-4">
-                            <!-- Toggle switch for Movie vs Series -->
-                            <div class="space-y-1">
-                                <label class="text-[10px] font-semibold text-zinc-400">Media Type</label>
-                                <select id="m-type" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand">
-                                    <option value="movie">Movie</option>
-                                    <option value="series">TV Show / Series</option>
-                                </select>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="space-y-1">
-                                    <label class="text-[10px] font-semibold text-zinc-400">Title</label>
-                                    <input type="text" id="m-title" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. Silo" required>
-                                </div>
-                                <div class="space-y-1">
-                                    <label class="text-[10px] font-semibold text-zinc-400">Release Year</label>
-                                    <input type="text" id="m-year" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. 2026" required>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="space-y-1">
-                                    <label class="text-[10px] font-semibold text-zinc-400">Runtime / Total Seasons</label>
-                                    <input type="text" id="m-runtime" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. 2h 10m or 7 Seasons" required>
-                                </div>
-                                <div class="space-y-1">
-                                    <label class="text-[10px] font-semibold text-zinc-400">Rating (0.0 - 10.0)</label>
-                                    <input type="text" id="m-rating" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. 8.5" required>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div id="category-select-wrapper" class="space-y-1">
-                                    <label class="text-[10px] font-semibold text-zinc-400">Display Row Category</label>
-                                    <select id="m-category" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand">
-                                        <!-- Populated Dynamically -->
-                                    </select>
-                                </div>
-                                <div class="space-y-1">
-                                    <label class="text-[10px] font-semibold text-zinc-400">Status (For TV Shows)</label>
-                                    <input type="text" id="m-status" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. Returning Series">
-                                </div>
-                            </div>
-
-                            <!-- Multiple Dynamic Genre Tag Selection System -->
-                            <div class="space-y-1.5 border-t border-zinc-900 pt-3">
-                                <label class="text-[10px] font-semibold text-zinc-400 block">Select Dynamic Genres (Multiple)</label>
-                                <div id="genre-pool" class="flex flex-wrap gap-1 max-h-24 overflow-y-auto p-1.5 border border-zinc-900 rounded-lg no-scrollbar">
-                                    <!-- Dynamic Genre Pill Switches -->
-                                </div>
-                                <div class="flex gap-2">
-                                    <input type="text" id="new-genre-input" placeholder="Create tag..." class="flex-1 bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand">
-                                    <button type="button" id="add-genre-tag-btn" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold px-2.5 rounded-lg border border-zinc-750">
-                                        Create
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="space-y-1">
-                                <label class="text-[10px] font-semibold text-zinc-400">Description / Overview</label>
-                                <textarea id="m-overview" rows="2" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand resize-none" placeholder="Enter overview text..." required></textarea>
-                            </div>
-
-                            <div class="space-y-1">
-                                <label class="text-[10px] font-semibold text-zinc-400">Poster URL</label>
-                                <input type="url" id="m-poster" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="https://domain.com/poster.jpg" required>
-                            </div>
-
-                            <div class="space-y-1">
-                                <label class="text-[10px] font-semibold text-zinc-400">Backdrop/Banner URL</label>
-                                <input type="url" id="m-backdrop" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="https://domain.com/backdrop.jpg" required>
-                            </div>
-
-                            <!-- MOVIE DOWNLOAD URL (Shown only if type is 'movie') -->
-                            <div id="movie-only-fields" class="space-y-1">
-                                <label class="text-[10px] font-semibold text-zinc-400">Movie Download Target Link (URL)</label>
-                                <input type="url" id="m-download" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="https://t.me/your_bot">
-                            </div>
-
-                            <!-- SERIES SEASONS & EPISODES BUILDER (Shown only if type is 'series') -->
-                            <div id="series-only-fields" class="space-y-3 border-t border-zinc-900 pt-3 hidden">
-                                <div class="flex items-center justify-between">
-                                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Seasons & Episodes Builder</label>
-                                    <button type="button" id="add-season-btn" class="text-[9px] bg-brand/20 border border-brand/30 hover:bg-brand/30 text-brand font-bold px-2 py-1 rounded">
-                                        <i class="fa-solid fa-plus mr-1"></i>Add Season
-                                    </button>
-                                </div>
-                                <div id="seasons-builder-list" class="space-y-4 max-h-[350px] overflow-y-auto no-scrollbar">
-                                    <!-- Embedded dynamic season structures with episode cards -->
-                                </div>
-                            </div>
-
-                            <button type="submit" id="form-submit-btn" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-2.5 rounded-xl text-xs transition-colors shadow-lg shadow-brand/10">
-                                Save Catalog Entry
-                            </button>
-                        </form>
+                <!-- HOME DASHBOARD STATS -->
+                <div class="grid grid-cols-3 gap-2.5">
+                    <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-850 flex flex-col items-center justify-center text-center space-y-1">
+                        <span class="text-[9px] font-bold uppercase tracking-wider text-zinc-500">Movies</span>
+                        <span id="stat-movies" class="text-lg font-extrabold text-white">0</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-850 flex flex-col items-center justify-center text-center space-y-1">
+                        <span class="text-[9px] font-bold uppercase tracking-wider text-zinc-500">Series</span>
+                        <span id="stat-series" class="text-lg font-extrabold text-white">0</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-zinc-900/60 border border-zinc-850 flex flex-col items-center justify-center text-center space-y-1">
+                        <span class="text-[9px] font-bold uppercase tracking-wider text-zinc-500">Members</span>
+                        <span id="stat-members" class="text-lg font-extrabold text-brand">0</span>
                     </div>
                 </div>
 
-                <!-- Database Listing Console (Takes up 7 columns) -->
-                <div id="right-listing-container" class="lg:col-span-7 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <h3 id="list-panel-heading" class="text-xs font-bold text-white uppercase tracking-wider">Dynamic Catalog Records</h3>
-                        <span id="record-count-label" class="text-[10px] text-zinc-500 font-bold">0 Active Items</span>
+                <!-- Segmented Type Selector -->
+                <div class="flex p-0.5 bg-zinc-900 rounded-lg border border-zinc-800/80">
+                    <button id="home-toggle-movies" onclick="switchHomeTab('movie')" class="flex-1 py-1.5 text-xs font-bold rounded-md transition-all duration-300 bg-brand/20 border border-brand/40 text-brand backdrop-blur-sm">Movies</button>
+                    <button id="home-toggle-shows" onclick="switchHomeTab('series')" class="flex-1 py-1.5 text-xs font-bold rounded-md transition-all duration-300 text-zinc-400 hover:text-white">TV Shows</button>
+                </div>
+
+                <div id="home-catalog-list" class="space-y-3"></div>
+            </section>
+
+            <!-- VIEW 2: UPLOAD (FORM) -->
+            <section id="view-upload" class="view-panel hidden p-4 space-y-4">
+                <div class="flex items-center justify-between border-b border-zinc-900 pb-2">
+                    <h2 id="uploader-header" class="text-xs font-bold uppercase tracking-widest text-zinc-500">Upload New Asset</h2>
+                    <button id="cancel-edit-btn" onclick="resetFormState()" class="hidden text-[10px] font-bold text-brand hover:underline">Cancel Edit</button>
+                </div>
+
+                <div class="space-y-4">
+                    <input type="hidden" id="edit-id">
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Asset Title</label>
+                        <input type="text" id="asset-title" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 text-xs text-white focus:outline-none focus:border-brand/60" placeholder="e.g. Interstellar">
                     </div>
 
-                    <!-- Card Grid Container -->
-                    <div id="records-grid-container" class="grid grid-cols-1 gap-3 max-h-[750px] overflow-y-auto pr-1 no-scrollbar pb-10">
-                        <!-- Dynamic Records Cards -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Media Type</label>
+                            <div onclick="openSelectSheet('type-sheet')" id="select-type-btn" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 flex items-center justify-between cursor-pointer text-xs text-white">
+                                <span id="selected-type-label">Movie</span>
+                                <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                            <input type="hidden" id="asset-type" value="movie">
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Display Row</label>
+                            <div onclick="openSelectSheet('category-sheet')" id="select-category-btn" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 flex items-center justify-between cursor-pointer text-xs text-white">
+                                <span id="selected-category-label">Trending Now</span>
+                                <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                            <input type="hidden" id="asset-category" value="Trending Now">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-zinc-900/50 border border-zinc-800/80">
+                        <div class="space-y-0.5">
+                            <span class="text-xs font-bold text-white">Pin to Hero Slider</span>
+                            <p class="text-[10px] text-zinc-500">Feature this banner on homepage slider</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="asset-pin" class="sr-only peer">
+                            <div class="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-zinc-400 after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand peer-checked:after:bg-white peer-checked:after:border-brand"></div>
+                        </label>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Year</label>
+                            <input type="text" id="asset-year" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 text-xs text-white focus:outline-none" placeholder="e.g. 2024">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Rating</label>
+                            <input type="text" id="asset-rating" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 text-xs text-white focus:outline-none" placeholder="e.g. 8.7">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Runtime</label>
+                            <input type="text" id="asset-runtime" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 text-xs text-white focus:outline-none" placeholder="e.g. 169 min">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Poster URL</label>
+                        <input type="text" id="asset-poster" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 text-xs text-white focus:outline-none" placeholder="https://...">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Backdrop Banner URL</label>
+                        <input type="text" id="asset-backdrop" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 text-xs text-white focus:outline-none" placeholder="https://...">
+                    </div>
+
+                    <div class="space-y-2 p-3 rounded-lg bg-zinc-900/40 border border-zinc-800/80">
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Genres Checklist</label>
+                        <div id="genres-checklist" class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto py-1 pr-1"></div>
+                        <div class="flex space-x-2 pt-2 border-t border-zinc-800/60">
+                            <input type="text" id="new-genre-input" class="flex-1 h-8 bg-zinc-950 border border-zinc-800 rounded px-2.5 text-[11px] text-white focus:outline-none" placeholder="Create new custom genre tag">
+                            <button type="button" onclick="createNewGenreTag()" class="px-3 h-8 rounded bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-200 border border-zinc-700/50">+ CREATE</button>
+                        </div>
+                    </div>
+
+                    <div id="status-field-container" class="space-y-1 hidden">
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Series Status Badge</label>
+                        <input type="text" id="asset-status" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 text-xs text-white focus:outline-none" placeholder="e.g. Returning Series or Ended">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Overview Description</label>
+                        <textarea id="asset-desc" rows="3" class="w-full bg-zinc-900/60 border border-zinc-800 rounded p-3 text-xs text-white focus:outline-none" placeholder="Overview details..."></textarea>
+                    </div>
+
+                    <div id="movie-fields" class="space-y-1">
+                        <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Download / Telegram Bot Link</label>
+                        <input type="text" id="asset-download" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 text-xs text-white focus:outline-none" placeholder="https://t.me/...">
+                    </div>
+
+                    <div id="series-fields" class="space-y-4 hidden border-t border-zinc-900 pt-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-black text-zinc-500 uppercase tracking-wider">Seasons & Episodes Builder</span>
+                            <button onclick="addSeasonRecord()" type="button" class="px-2.5 py-1 rounded bg-zinc-900 border border-zinc-800 text-[10px] font-bold text-zinc-300">+ ADD SEASON</button>
+                        </div>
+                        <div id="seasons-builder-container" class="space-y-4"></div>
+                    </div>
+
+                    <button type="button" onclick="saveRecord()" class="w-full py-3.5 rounded-xl bg-brand hover:bg-brand-hover text-xs font-black text-white tracking-widest shadow-lg shadow-brand/10 uppercase">
+                        Save Asset Record
+                    </button>
+                </div>
+            </section>
+
+            <!-- VIEW 3: SLIDER -->
+            <section id="view-slider" class="view-panel hidden p-4 space-y-4">
+                <div class="border-b border-zinc-900 pb-2">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-500">Slider Banners Deck</h2>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 flex items-center">
+                        <span class="w-1.5 h-1.5 rounded-full bg-brand mr-2 animate-pulse"></span>
+                        Currently Featured Slides
+                    </h3>
+                    <div id="slider-active-list" class="space-y-2"></div>
+                </div>
+                <div class="space-y-3 pt-4 border-t border-zinc-900">
+                    <h3 class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Available Assets library</h3>
+                    <div id="slider-available-list" class="space-y-2"></div>
+                </div>
+            </section>
+
+            <!-- VIEW 4: USERS -->
+            <section id="view-users" class="view-panel hidden p-4 space-y-4">
+                <div class="flex items-center justify-between border-b border-zinc-900 pb-2">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-500">Registered Telegram Users</h2>
+                    <span id="users-total-badge" class="px-2 py-0.5 text-[10px] font-bold bg-zinc-900 border border-zinc-800 text-brand rounded-full">0 Users</span>
+                </div>
+
+                <div class="relative">
+                    <input type="text" id="users-search" oninput="searchUsers()" placeholder="Search users by name/ID..." class="w-full h-10 bg-zinc-900 border border-zinc-800 rounded-lg px-3 text-xs text-white focus:outline-none focus:border-brand/50">
+                </div>
+
+                <div id="users-list" class="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
+                    <div class="text-center py-10 text-xs text-zinc-600">Connecting to cloud logger...</div>
+                </div>
+            </section>
+
+            <!-- VIEW 5: DATABASE (UPGRADED CARD INTERFACE MATCHING IMAGE MOCKUP) -->
+            <section id="view-database" class="view-panel hidden p-4 space-y-4">
+                <div class="border-b border-zinc-900 pb-2">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-500">Database Sync Interface</h2>
+                </div>
+                
+                <div class="space-y-4">
+                    <!-- Export Card Mockup -->
+                    <div class="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col space-y-4">
+                        <div class="flex items-start space-x-3.5">
+                            <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-sm font-bold text-white tracking-tight">Export movies.json</h3>
+                                <p class="text-[11px] text-zinc-500 leading-normal">Convert local modifications to a downloadable JSON file for your server.</p>
+                            </div>
+                        </div>
+                        <button onclick="exportDatabaseFile()" class="w-full h-11 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs font-bold flex items-center justify-center space-x-2 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <span>Export database file</span>
+                        </button>
+                    </div>
+
+                    <!-- Import Card Mockup -->
+                    <div class="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col space-y-4">
+                        <div class="flex items-start space-x-3.5">
+                            <div class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                </svg>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-sm font-bold text-white tracking-tight">Import movies.json</h3>
+                                <p class="text-[11px] text-zinc-500 leading-normal">Load a pre-configured movies.json database into your current editor memory.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Stylized Native File Input -->
+                        <div class="relative">
+                            <input type="file" id="import-file-input" onchange="handleFileImport(event)" accept=".json" class="sr-only">
+                            <label for="import-file-input" class="w-full h-11 rounded-lg bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 cursor-pointer flex items-center justify-between px-4 transition-all">
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                    </svg>
+                                    <span class="text-xs font-bold text-white">Choose File</span>
+                                </span>
+                                <span id="file-name-label" class="text-[10px] text-zinc-500 truncate max-w-[150px]">No file loaded</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Database File Management (Takes up full width when active) -->
-                <div id="io-container" class="lg:col-span-12 space-y-4 hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Export Card -->
-                        <div class="glass-panel p-5 rounded-2xl border border-zinc-800 space-y-3">
-                            <div class="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400">
-                                <i class="fa-solid fa-cloud-arrow-down text-lg"></i>
-                            </div>
-                            <div class="space-y-0.5">
-                                <h3 class="text-sm font-bold text-white">Export movies.json</h3>
-                                <p class="text-[10px] text-zinc-400">Convert local modifications to a downloadable JSON file for your server.</p>
-                            </div>
-                            <button id="io-export-btn" class="bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-400 font-bold py-2 px-4 rounded-xl text-xs transition-all flex items-center space-x-2">
-                                <i class="fa-solid fa-file-export"></i>
-                                <span>Export database file</span>
-                            </button>
-                        </div>
+                <!-- Hidden textual JSON sync buffer used in code logic -->
+                <textarea id="json-io" class="hidden"></textarea>
+            </section>
 
-                        <!-- Import Card -->
-                        <div class="glass-panel p-5 rounded-2xl border border-zinc-800 space-y-3">
-                            <div class="w-10 h-10 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center text-blue-400">
-                                <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
-                            </div>
-                            <div class="space-y-0.5">
-                                <h3 class="text-sm font-bold text-white">Import movies.json</h3>
-                                <p class="text-[10px] text-zinc-400">Load a pre-configured movies.json database into your current editor memory.</p>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <input type="file" id="io-file-input" accept=".json" class="hidden">
-                                <button id="io-trigger-btn" class="bg-zinc-900 hover:bg-zinc-850 text-white font-bold py-2 px-4 border border-zinc-800 rounded-xl text-xs transition-colors flex items-center space-x-2">
-                                    <i class="fa-solid fa-folder-open"></i>
-                                    <span>Choose File</span>
-                                </button>
-                                <span id="io-file-status" class="text-[10px] text-zinc-500">No file loaded</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
         </main>
 
-        <!-- Mobile-First Bottom Navigation Bar -->
-        <nav class="glass-panel fixed bottom-0 inset-x-0 z-45 border-t border-zinc-900 px-3 pb-safe pt-2 bg-zinc-950/90 backdrop-blur-md">
-            <div class="max-w-md mx-auto flex items-center justify-around h-12">
-                <button id="nav-btn-movies" class="admin-nav-item flex flex-col items-center justify-center space-y-1 text-brand active:scale-90 transition-transform">
-                    <i class="fa-solid fa-film text-lg"></i>
-                    <span class="text-[10px] font-bold">Movies</span>
-                </button>
-                <button id="nav-btn-banners" class="admin-nav-item flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300 active:scale-90 transition-transform">
-                    <i class="fa-solid fa-images text-lg"></i>
-                    <span class="text-[10px] font-semibold">Banners</span>
-                </button>
-                <button id="nav-btn-io" class="admin-nav-item flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300 active:scale-90 transition-transform">
-                    <i class="fa-solid fa-database text-lg"></i>
-                    <span class="text-[10px] font-semibold">Database</span>
-                </button>
-            </div>
+        <!-- BOTTOM NAVIGATION BAR (Exactly 5 Tabs, premium glassy) -->
+        <nav class="fixed bottom-0 inset-x-0 max-w-md mx-auto glass-panel h-[72px] flex items-center justify-around px-2 rounded-t-2xl z-40 border-t border-zinc-800/40 pb-safe shadow-2xl">
+            <button id="tab-home" onclick="switchView('home')" class="nav-tab flex flex-col items-center justify-center space-y-1 text-brand">
+                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="text-[9px] font-bold tracking-wider">Home</span>
+            </button>
+            <button id="tab-upload" onclick="switchView('upload')" class="nav-tab flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300">
+                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                <span class="text-[9px] font-semibold tracking-wider">Upload</span>
+            </button>
+            <button id="tab-slider" onclick="switchView('slider')" class="nav-tab flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300">
+                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <span class="text-[9px] font-semibold tracking-wider">Slider</span>
+            </button>
+            <button id="tab-users" onclick="switchView('users')" class="nav-tab flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300">
+                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span class="text-[9px] font-semibold tracking-wider">Users</span>
+            </button>
+            <button id="tab-database" onclick="switchView('database')" class="nav-tab flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300">
+                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                <span class="text-[9px] font-semibold tracking-wider">Database</span>
+            </button>
         </nav>
+
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div id="confirm-modal" class="fixed inset-0 z-50 bg-zinc-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="w-full max-w-sm glass-panel p-6 rounded-2xl border border-zinc-800 text-center space-y-5 shadow-2xl">
-            <div class="w-14 h-14 bg-brand/10 border border-brand/20 rounded-full flex items-center justify-center mx-auto text-brand">
-                <i class="fa-solid fa-triangle-exclamation text-xl"></i>
-            </div>
-            <div class="space-y-1.5">
-                <h3 class="text-base font-bold text-white">Confirm Removal</h3>
-                <p class="text-xs text-zinc-400 leading-relaxed">Are you sure you want to permanently delete this catalog entry? This process cannot be undone.</p>
-            </div>
-            <div class="flex items-center space-x-3 pt-1">
-                <button id="modal-cancel" class="flex-1 bg-zinc-900 border border-zinc-800 text-zinc-300 py-2.5 rounded-xl text-xs font-semibold hover:bg-zinc-850 transition-colors">
-                    No, Cancel
+    <!-- GLASSMORPHIC BOTTOM SELECT SHEETS -->
+    <div id="type-sheet" class="fixed inset-0 z-50 flex items-end justify-center hidden select-none">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSelectSheet('type-sheet')"></div>
+        <div class="relative w-full max-w-md bg-zinc-950 border-t border-zinc-900 rounded-t-3xl overflow-hidden p-6 space-y-4 transition-transform duration-300 transform translate-y-full glass-panel">
+            <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mb-2"></div>
+            <h4 class="text-xs font-bold tracking-widest text-zinc-400 uppercase text-center">Select Media Type</h4>
+            <div class="space-y-2">
+                <button onclick="selectTypeOption('movie', 'Movie')" class="w-full p-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-between transition-colors">
+                    <span class="text-xs font-bold text-white">Movie</span>
+                    <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="type-movie-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
-                <button id="modal-confirm" class="flex-1 bg-brand hover:bg-brand-hover text-white py-2.5 rounded-xl text-xs font-bold transition-colors">
-                    Yes, Delete
+                <button onclick="selectTypeOption('series', 'TV Series')" class="w-full p-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-between transition-colors">
+                    <span class="text-xs font-bold text-white">TV Series</span>
+                    <span class="w-4 h-4 rounded-full border border-zinc-800 p-0.5 flex items-center justify-center" id="type-series-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Application Controller Logic -->
+    <div id="category-sheet" class="fixed inset-0 z-50 flex items-end justify-center hidden select-none">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSelectSheet('category-sheet')"></div>
+        <div class="relative w-full max-w-md bg-zinc-950 border-t border-zinc-900 rounded-t-3xl overflow-hidden p-6 space-y-4 transition-transform duration-300 transform translate-y-full glass-panel">
+            <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mb-2"></div>
+            <h4 class="text-xs font-bold tracking-widest text-zinc-400 uppercase text-center">Select Display Category</h4>
+            <div class="space-y-2">
+                <button onclick="selectCategoryOption('Trending Now')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-between transition-colors">
+                    <span class="text-xs font-bold text-white">Trending Now</span>
+                    <span class="w-4 h-4 rounded-full border border-zinc-800 p-0.5 flex items-center justify-center" id="cat-Trending-Now-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
+                </button>
+                <button onclick="selectCategoryOption('Popular Movies')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-between transition-colors">
+                    <span class="text-xs font-bold text-white">Popular Movies</span>
+                    <span class="w-4 h-4 rounded-full border border-zinc-800 p-0.5 flex items-center justify-center" id="cat-Popular-Movies-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
+                </button>
+                <button onclick="selectCategoryOption('Popular Series')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-between transition-colors">
+                    <span class="text-xs font-bold text-white">Popular Series</span>
+                    <span class="w-4 h-4 rounded-full border border-zinc-800 p-0.5 flex items-center justify-center" id="cat-Popular-Series-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
+                </button>
+                <button onclick="selectCategoryOption('None')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-between transition-colors">
+                    <span class="text-xs font-bold text-white">None</span>
+                    <span class="w-4 h-4 rounded-full border border-zinc-800 p-0.5 flex items-center justify-center" id="cat-None-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION DELETE TRIGGER MODAL -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 select-none">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeConfirmModal()"></div>
+        <div class="relative w-full max-w-xs p-6 bg-zinc-900 border border-zinc-800 rounded-2xl text-center space-y-5 shadow-2xl glass-panel">
+            <div class="w-12 h-12 bg-brand/10 border border-brand/30 text-brand rounded-full flex items-center justify-center mx-auto text-xl font-bold">!</div>
+            <div class="space-y-1">
+                <h4 class="text-sm font-bold text-white">Remove Record permanently?</h4>
+                <p class="text-xs text-zinc-500">This action can't be undone in sync memory.</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 rounded-lg border border-zinc-700/50">Cancel</button>
+                <button id="confirm-delete-btn" class="flex-1 py-2.5 bg-brand hover:bg-brand-hover text-xs font-bold text-white rounded-lg">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST SYSTEM -->
+    <div id="toast-container" class="fixed top-4 inset-x-0 mx-auto w-max max-w-xs z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
+
+    <!-- CORE ADMIN LOGIC -->
     <script>
-        // Core Working State (Matches the updated Multi-season schema)
-        let dbState = {
-            settings: { appName: "MLHBM", primaryColor: "#E50914" },
-            categories: ["Trending Now", "Top Rated Movies", "Top Rated Series"],
-            banners: [],
-            movies: []
+        const CLOUD_DB_URL = "https://mlhbm-c2e65-default-rtdb.firebaseio.com"; 
+
+        let localCatalog = [];
+        let globalUsers = []; 
+        let genresList = ["Action", "Sci-Fi", "Drama", "Comedy", "Horror", "Romance", "Thriller", "Adventure", "Biography", "History", "Crime"];
+        let currentHomeTab = 'movie'; 
+        let currentDeleteId = null;
+        let seasonsList = [];
+
+        const trackerOptions = {
+            type: 'movie',
+            category: 'Trending Now'
         };
 
-        let dynamicGenres = ["Action", "Sci-Fi", "Thriller", "Adventure", "Fantasy", "Horror", "Drama", "Romance", "Comedy", "Animation", "Crime"];
-        let selectedFormGenres = [];
-        let seasonsData = []; // Multi-season builder memory state
-        let currentEditingId = null;
-        let activeAdminTab = 'movies'; // 'movies', 'banners', 'io'
-        let pendingDeleteTarget = null; // { type: 'movie'|'banner', id: string }
-
-        // Session validation handlers
-        document.addEventListener('DOMContentLoaded', () => {
-            const unlocked = sessionStorage.getItem('mlhbm_admin_unlocked');
-            if (unlocked === 'true') {
-                showAdminDashboard();
+        // Passcode Lock Submissions
+        function authSubmit() {
+            const val = document.getElementById('passcode-input').value.trim();
+            if (val === 'rifat6143') {
+                document.getElementById('auth-gate').classList.add('hidden');
+                document.getElementById('admin-workspace').classList.remove('hidden');
+                initWorkspace();
             } else {
-                setupAuth();
+                showToast("Invalid credentials.");
+                document.getElementById('passcode-input').value = '';
             }
+        }
+
+        document.getElementById('passcode-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') authSubmit();
         });
 
-        function setupAuth() {
-            const form = document.getElementById('auth-form');
-            const input = document.getElementById('passcode-input');
-            const errorMsg = document.getElementById('auth-error');
-
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                // Passcode is now evaluated silently (hidden from UI and placeholder inputs)
-                if (input.value === 'mlhbm6143') {
-                    sessionStorage.setItem('mlhbm_admin_unlocked', 'true');
-                    showAdminDashboard();
-                } else {
-                    errorMsg.classList.remove('hidden');
-                    input.value = '';
-                    input.focus();
-                }
-            });
+        // Top Header Admin Logout handler
+        function logoutAdmin() {
+            document.getElementById('passcode-input').value = '';
+            document.getElementById('admin-workspace').classList.add('hidden');
+            document.getElementById('auth-gate').classList.remove('hidden');
+            showToast("Admin logged out successfully.");
         }
 
-        function showAdminDashboard() {
-            document.getElementById('auth-overlay').classList.add('hidden');
-            document.getElementById('admin-shell').classList.remove('hidden');
-            
-            loadMockDataset();
-            setupTabControls();
-            setupFormInteractions();
-            setupDataHandlers();
-            setupSeasonBuilderListeners();
-            
-            // Sync current forms & dataset
-            resetMasterForm();
-            syncDynamicDashboardView();
-        }
-
-        // Lock Panel Action
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            sessionStorage.removeItem('mlhbm_admin_unlocked');
-            window.location.reload();
-        });
-
-        // Initialize fallback content mapping (matches client application schema)
-        function loadMockDataset() {
-            dbState.banners = [
-                {
-                    id: "banner-1",
-                    title: "The Rookie",
-                    type: "series",
-                    status: "Returning Series",
-                    year: "2018",
-                    rating: "8.5",
-                    overview: "Starting over isn't easy, especially for small-town guy John Nolan who, after a life-altering incident, is pursuing his dream of being an LAPD officer. As the force's oldest rookie, he's met with skepticism from some higher-ups who see him as just a walking midlife crisis.",
-                    backdrop: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=1200",
-                    poster: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=600",
-                    runtime: "7 Seasons",
-                    genres: ["Crime", "Drama", "Comedy"],
-                    seasons: [
-                        {
-                            seasonNumber: 1,
-                            episodes: [
-                                { episodeNumber: 1, title: "Pilot", duration: "43m", thumbnail: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=400", downloadUrl: "https://t.me/your_bot?start=rookie_s1e1" },
-                                { episodeNumber: 2, title: "Crash Course", duration: "42m", thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400", downloadUrl: "https://t.me/your_bot?start=rookie_s1e2" }
-                            ]
-                        }
-                    ]
-                }
-            ];
-
-            dbState.movies = [
-                {
-                    id: "movie-1",
-                    title: "The Odyssey",
-                    type: "movie",
-                    category: "Trending Now",
-                    year: "2026",
-                    rating: "6.9",
-                    overview: "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
-                    poster: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=600",
-                    backdrop: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=1200",
-                    runtime: "2h 53m",
-                    genres: ["Adventure", "Action", "Fantasy"],
-                    downloadUrl: "https://t.me/your_telegram_bot?start=odyssey"
-                },
-                {
-                    id: "movie-2",
-                    title: "The Rookie",
-                    type: "series",
-                    status: "Returning Series",
-                    category: "Trending Now",
-                    year: "2018",
-                    rating: "8.5",
-                    overview: "Starting over isn't easy, especially for small-town guy John Nolan who, after a life-altering incident, is pursuing his dream of being an LAPD officer. As the force's oldest rookie, he's met with skepticism from some higher-ups who see him as just a walking midlife crisis.",
-                    poster: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=600",
-                    backdrop: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=1200",
-                    runtime: "7 Seasons",
-                    genres: ["Crime", "Drama", "Comedy"],
-                    seasons: [
-                        {
-                            seasonNumber: 1,
-                            episodes: [
-                                { episodeNumber: 1, title: "Pilot", duration: "43m", thumbnail: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=400", downloadUrl: "https://t.me/your_bot?start=rookie_s1e1" },
-                                { episodeNumber: 2, title: "Crash Course", duration: "42m", thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400", downloadUrl: "https://t.me/your_bot?start=rookie_s1e2" }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    id: "movie-3",
-                    title: "Teach You a Lesson",
-                    type: "series",
-                    status: "Returning Series",
-                    category: "Top Rated Series",
-                    year: "2026",
-                    rating: "9.5",
-                    overview: "An brilliant but unorthodox professor takes a personal interest in systemic school fraud, orchestrating complex, psychological traps to hold corrupt board administrators accountable.",
-                    poster: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=600",
-                    backdrop: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=1200",
-                    runtime: "12 Episodes",
-                    genres: ["Drama", "Thriller"],
-                    seasons: [
-                        {
-                            seasonNumber: 1,
-                            episodes: [
-                                { episodeNumber: 1, title: "Unorthodox Start", duration: "50m", thumbnail: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=400", downloadUrl: "https://t.me/your_bot?start=teach_s1e1" }
-                            ]
-                        }
-                    ]
-                }
-            ];
-
-            const customPool = new Set(dynamicGenres);
-            dbState.movies.forEach(m => m.genres?.forEach(g => customPool.add(g)));
-            dynamicGenres = Array.from(customPool);
-        }
-
-        // Bottom Navigation Controller Tab Selection
-        function setupTabControls() {
-            const tabs = [
-                { id: 'movies', btn: document.getElementById('nav-btn-movies') },
-                { id: 'banners', btn: document.getElementById('nav-btn-banners') },
-                { id: 'io', btn: document.getElementById('nav-btn-io') }
-            ];
-
-            tabs.forEach(t => {
-                t.btn.addEventListener('click', () => {
-                    activeAdminTab = t.id;
-                    
-                    tabs.forEach(item => {
-                        const label = item.btn.querySelector('span');
-                        if (item.id === t.id) {
-                            item.btn.className = "admin-nav-item flex flex-col items-center justify-center space-y-1 text-brand active:scale-90 transition-transform";
-                            label.classList.add('font-bold');
-                        } else {
-                            item.btn.className = "admin-nav-item flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300 active:scale-90 transition-transform";
-                            label.classList.remove('font-bold');
-                        }
-                    });
-
-                    const formContainer = document.getElementById('left-form-container');
-                    const listContainer = document.getElementById('right-listing-container');
-                    const ioContainer = document.getElementById('io-container');
-
-                    if (t.id === 'io') {
-                        formContainer.classList.add('hidden');
-                        listContainer.classList.add('hidden');
-                        ioContainer.classList.remove('hidden');
-                    } else {
-                        formContainer.classList.remove('hidden');
-                        listContainer.classList.remove('hidden');
-                        ioContainer.classList.add('hidden');
-
-                        resetMasterForm();
-                        syncDynamicDashboardView();
-                    }
-                });
-            });
-        }
-
-        // Tag management rendering
-        function renderGenreSwitches() {
-            const pool = document.getElementById('genre-pool');
-            pool.innerHTML = '';
-
-            dynamicGenres.forEach(genre => {
-                const isSelected = selectedFormGenres.includes(genre);
-                const pill = document.createElement('button');
-                pill.type = 'button';
-                pill.className = `text-[10px] px-2 py-0.5 rounded-md border transition-all ${
-                    isSelected 
-                    ? 'bg-brand/20 border-brand text-brand font-bold' 
-                    : 'bg-zinc-900 border-zinc-800 text-zinc-400 font-medium'
-                }`;
-                pill.textContent = genre;
-                pill.addEventListener('click', () => {
-                    if (isSelected) {
-                        selectedFormGenres = selectedFormGenres.filter(g => g !== genre);
-                    } else {
-                        selectedFormGenres.push(genre);
-                    }
-                    renderGenreSwitches();
-                });
-                pool.appendChild(pill);
-            });
-        }
-
-        // Initialize selectors
-        function populateCategorySelectors() {
-            const selector = document.getElementById('m-category');
-            selector.innerHTML = '';
-            dbState.categories.forEach(cat => {
-                const opt = document.createElement('option');
-                opt.value = cat;
-                opt.textContent = cat;
-                selector.appendChild(opt);
-            });
-        }
-
-        // Push new tags manually to the state list
-        document.getElementById('add-genre-tag-btn').addEventListener('click', () => {
-            const input = document.getElementById('new-genre-input');
-            const val = input.value.trim();
-            if (val.length > 0 && !dynamicGenres.includes(val)) {
-                dynamicGenres.push(val);
-                selectedFormGenres.push(val);
-                input.value = '';
-                renderGenreSwitches();
-            }
-        });
-
-        // Initialize Series vs Movie Form switch events
-        function setupSeasonBuilderListeners() {
-            const typeSelect = document.getElementById('m-type');
-            const movieFields = document.getElementById('movie-only-fields');
-            const seriesFields = document.getElementById('series-only-fields');
-
-            typeSelect.addEventListener('change', () => {
-                if (typeSelect.value === 'series') {
-                    movieFields.classList.add('hidden');
-                    seriesFields.classList.remove('hidden');
-                    renderSeasonsBuilder();
-                } else {
-                    movieFields.classList.remove('hidden');
-                    seriesFields.classList.add('hidden');
-                }
-            });
-
-            document.getElementById('add-season-btn').addEventListener('click', () => {
-                const nextSeasonNum = seasonsData.length + 1;
-                seasonsData.push({
-                    seasonNumber: nextSeasonNum,
-                    episodes: []
-                });
-                renderSeasonsBuilder();
-            });
-        }
-
-        // Live rendering Seasons and Episodes Forms (Dynamic memory bindings)
-        function renderSeasonsBuilder() {
-            const container = document.getElementById('seasons-builder-list');
-            container.innerHTML = '';
-
-            if (seasonsData.length === 0) {
-                container.innerHTML = `<span class="text-[10px] text-zinc-600 block text-center py-4">No Seasons added yet. Click "Add Season" to begin.</span>`;
-                return;
-            }
-
-            seasonsData.forEach((s, sIdx) => {
-                const block = document.createElement('div');
-                block.className = "bg-zinc-900 p-3 rounded-lg border border-zinc-800/80 space-y-3 relative";
-                
-                block.innerHTML = `
-                    <div class="flex items-center justify-between border-b border-zinc-850 pb-2">
-                        <span class="text-xs font-bold text-white">Season ${s.seasonNumber}</span>
-                        <div class="flex items-center space-x-2">
-                            <button type="button" onclick="addEpisodeToSeason(${sIdx})" class="text-[9px] bg-zinc-800 text-zinc-300 font-bold px-2 py-0.5 rounded border border-zinc-750">
-                                <i class="fa-solid fa-plus mr-1"></i>Episode
-                            </button>
-                            <button type="button" onclick="removeSeason(${sIdx})" class="text-[9px] text-brand hover:underline">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div id="episodes-wrapper-${sIdx}" class="space-y-3">
-                        <!-- Episode forms injected dynamically -->
-                    </div>
-                `;
-
-                const epWrapper = block.querySelector(`#episodes-wrapper-${sIdx}`);
-                s.episodes.forEach((ep, epIdx) => {
-                    const epForm = document.createElement('div');
-                    epForm.className = "bg-zinc-950 p-2.5 rounded-lg border border-zinc-900 space-y-2 relative";
-                    epForm.innerHTML = `
-                        <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-bold text-zinc-400">Episode ${ep.episodeNumber}</span>
-                            <button type="button" onclick="removeEpisodeFromSeason(${sIdx}, ${epIdx})" class="text-[9px] text-zinc-500 hover:text-brand">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <input type="text" placeholder="Title" value="${ep.title || ''}" oninput="updateEpisodeField(${sIdx}, ${epIdx}, 'title', this.value)" class="w-full bg-zinc-900 border border-zinc-850 rounded p-1.5 text-[10px] text-zinc-100 focus:outline-none focus:border-brand" required>
-                            <input type="text" placeholder="Duration (e.g. 45m)" value="${ep.duration || ''}" oninput="updateEpisodeField(${sIdx}, ${epIdx}, 'duration', this.value)" class="w-full bg-zinc-900 border border-zinc-850 rounded p-1.5 text-[10px] text-zinc-100 focus:outline-none focus:border-brand" required>
-                        </div>
-                        <input type="url" placeholder="Thumbnail Image URL" value="${ep.thumbnail || ''}" oninput="updateEpisodeField(${sIdx}, ${epIdx}, 'thumbnail', this.value)" class="w-full bg-zinc-900 border border-zinc-850 rounded p-1.5 text-[10px] text-zinc-100 focus:outline-none focus:border-brand" required>
-                        <input type="url" placeholder="Download Link URL" value="${ep.downloadUrl || ''}" oninput="updateEpisodeField(${sIdx}, ${epIdx}, 'downloadUrl', this.value)" class="w-full bg-zinc-900 border border-zinc-850 rounded p-1.5 text-[10px] text-zinc-100 focus:outline-none focus:border-brand" required>
-                    `;
-                    epWrapper.appendChild(epForm);
-                });
-
-                container.appendChild(block);
-            });
-        }
-
-        // Interactive Builder Helper functions (Wired to global scope)
-        window.addEpisodeToSeason = function(sIdx) {
-            const nextEpNum = seasonsData[sIdx].episodes.length + 1;
-            seasonsData[sIdx].episodes.push({
-                episodeNumber: nextEpNum,
-                title: '',
-                duration: '',
-                thumbnail: '',
-                downloadUrl: ''
-            });
-            renderSeasonsBuilder();
-        };
-
-        window.removeSeason = function(sIdx) {
-            seasonsData.splice(sIdx, 1);
-            // Re-order season numbers safely
-            seasonsData.forEach((s, idx) => s.seasonNumber = idx + 1);
-            renderSeasonsBuilder();
-        };
-
-        window.removeEpisodeFromSeason = function(sIdx, epIdx) {
-            seasonsData[sIdx].episodes.splice(epIdx, 1);
-            // Re-order episode numbers safely
-            seasonsData[sIdx].episodes.forEach((ep, idx) => ep.episodeNumber = idx + 1);
-            renderSeasonsBuilder();
-        };
-
-        window.updateEpisodeField = function(sIdx, epIdx, field, value) {
-            seasonsData[sIdx].episodes[epIdx][field] = value;
-        };
-
-        // Form processing interface
-        function setupFormInteractions() {
-            const form = document.getElementById('master-form');
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                const mType = document.getElementById('m-type').value;
-
-                // Build dynamic object structure
-                const entryData = {
-                    id: currentEditingId || (activeAdminTab === 'movies' ? `movie-${Date.now()}` : `banner-${Date.now()}`),
-                    type: mType,
-                    title: document.getElementById('m-title').value.trim(),
-                    year: document.getElementById('m-year').value.trim(),
-                    runtime: document.getElementById('m-runtime').value.trim(),
-                    rating: document.getElementById('m-rating').value.trim(),
-                    overview: document.getElementById('m-overview').value.trim(),
-                    poster: document.getElementById('m-poster').value.trim(),
-                    backdrop: document.getElementById('m-backdrop').value.trim(),
-                    genres: [...selectedFormGenres]
-                };
-
-                // Allocate movie vs series database parameters
-                if (mType === 'series') {
-                    entryData.status = document.getElementById('m-status').value.trim() || 'Returning Series';
-                    entryData.seasons = JSON.parse(JSON.stringify(seasonsData)); // Deep copy seasons builder state
-                } else {
-                    entryData.downloadUrl = document.getElementById('m-download').value.trim();
-                }
-
-                if (activeAdminTab === 'movies') {
-                    entryData.category = document.getElementById('m-category').value;
-                    
-                    if (currentEditingId) {
-                        const idx = dbState.movies.findIndex(m => String(m.id) === String(currentEditingId));
-                        if (idx !== -1) {
-                            dbState.movies[idx] = entryData;
-                        }
-                    } else {
-                        dbState.movies.push(entryData);
-                    }
-                } else {
-                    if (currentEditingId) {
-                        const idx = dbState.banners.findIndex(b => String(b.id) === String(currentEditingId));
-                        if (idx !== -1) {
-                            dbState.banners[idx] = entryData;
-                        }
-                    } else {
-                        dbState.banners.push(entryData);
-                    }
-                }
-
-                resetMasterForm();
-                syncDynamicDashboardView();
-            });
-
-            document.getElementById('form-reset-btn').addEventListener('click', resetMasterForm);
-        }
-
-        function resetMasterForm() {
-            currentEditingId = null;
-            selectedFormGenres = [];
-            seasonsData = [];
-            
-            document.getElementById('master-form').reset();
-            document.getElementById('form-reset-btn').classList.add('hidden');
-            
-            const typeSelect = document.getElementById('m-type');
-            typeSelect.value = 'movie';
-            document.getElementById('movie-only-fields').classList.remove('hidden');
-            document.getElementById('series-only-fields').classList.add('hidden');
-
-            if (activeAdminTab === 'movies') {
-                document.getElementById('form-heading').textContent = "Register New Movie / Show";
-                document.getElementById('category-select-wrapper').classList.remove('hidden');
+        // Initialize Admin Console Workspace
+        function initWorkspace() {
+            const storedCatalog = localStorage.getItem('mlhbm_admin_catalog');
+            if (storedCatalog) {
+                localCatalog = JSON.parse(storedCatalog);
             } else {
-                document.getElementById('form-heading').textContent = "Register New Banner";
-                document.getElementById('category-select-wrapper').classList.add('hidden');
+                localCatalog = [];
             }
-            document.getElementById('form-submit-btn').textContent = "Save Catalog Entry";
 
-            renderGenreSwitches();
-            populateCategorySelectors();
+            const storedGenres = localStorage.getItem('mlhbm_admin_genres');
+            if (storedGenres) {
+                genresList = JSON.parse(storedGenres);
+            }
+
+            renderGenresChecklist();
+            renderCatalogList();
+            renderSliderLists();
+            updateGlobalCounter();
+            updateDashboardStats();
+            fetchRegisteredUsers(); 
         }
 
-        // Sync view layout counters
-        function syncDynamicDashboardView() {
-            document.getElementById('stat-movies-count').textContent = dbState.movies.length;
-            document.getElementById('stat-banners-count').textContent = dbState.banners.length;
-
-            const allGenres = new Set();
-            dbState.movies.forEach(m => m.genres?.forEach(g => allGenres.add(g)));
-            document.getElementById('stat-genres-count').textContent = allGenres.size;
-
-            const label = document.getElementById('list-panel-heading');
-            const countLabel = document.getElementById('record-count-label');
-            
-            if (activeAdminTab === 'movies') {
-                label.textContent = "Dynamic Catalog Records";
-                countLabel.textContent = `${dbState.movies.length} Active Items`;
-                renderRecordsGrid(dbState.movies, 'movie');
-            } else {
-                label.textContent = "Hero Slider Banners";
-                countLabel.textContent = `${dbState.banners.length} Banners`;
-                renderRecordsGrid(dbState.banners, 'banner');
-            }
-        }
-
-        function renderRecordsGrid(dataset, type) {
-            const container = document.getElementById('records-grid-container');
-            container.innerHTML = '';
-
-            if (dataset.length === 0) {
-                container.innerHTML = `
-                    <div class="glass-card py-12 px-4 rounded-xl border border-zinc-900 text-center space-y-2">
-                        <i class="fa-solid fa-folder-open text-3xl text-zinc-700"></i>
-                        <p class="text-sm text-zinc-400">No active entries found.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            dataset.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "glass-card p-3 rounded-xl border border-zinc-800/60 flex items-center justify-between space-x-3";
-                const badgesHtml = item.genres ? item.genres.map(g => `<span class="bg-zinc-900 border border-zinc-800 text-zinc-400 text-[9px] font-bold px-1.5 py-0.5 rounded">${g}</span>`).join(' ') : '';
-
-                // Map movie vs series display parameters safely
-                const displayType = item.type === 'series' ? 'TV Show' : 'Movie';
-
-                card.innerHTML = `
-                    <div class="flex items-center space-x-3 min-w-0 flex-1">
-                        <img src="${item.poster}" alt="${item.title}" class="w-10 h-14 rounded-lg object-cover bg-zinc-900 border border-zinc-800/80 shrink-0">
-                        <div class="min-w-0 flex-1 space-y-0.5">
-                            <div class="flex items-center space-x-2">
-                                <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
-                                <span class="bg-brand/10 border border-brand/20 text-brand text-[8px] font-bold px-1.5 py-0.2 rounded uppercase shrink-0">${displayType}</span>
-                            </div>
-                            <div class="flex items-center space-x-1.5 text-[9px] text-zinc-500 font-semibold">
-                                <span>${item.year}</span>
-                                <span>•</span>
-                                <span>${item.runtime}</span>
-                                <span>•</span>
-                                <span class="text-brand font-bold"><i class="fa-solid fa-star text-[8px]"></i> ${item.rating}</span>
-                            </div>
-                            <div class="flex flex-wrap gap-1 pt-0.5">${badgesHtml}</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-2 shrink-0">
-                        <button onclick="triggerEditRecord('${type}', '${item.id}')" class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors">
-                            <i class="fa-solid fa-pencil"></i>
-                        </button>
-                        <button onclick="triggerDeleteModal('${type}', '${item.id}')" class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-500 hover:text-brand flex items-center justify-center text-xs transition-colors">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
+        // Global Navigation Engine
+        function switchView(viewName) {
+            document.querySelectorAll('.view-panel').forEach(panel => {
+                panel.classList.add('hidden');
             });
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('text-brand');
+                tab.classList.add('text-zinc-500', 'hover:text-zinc-300');
+            });
+            document.getElementById(`tab-${viewName}`).classList.add('text-brand');
+            document.getElementById(`tab-${viewName}`).classList.remove('text-zinc-500', 'hover:text-zinc-300');
+
+            if (viewName === 'home') {
+                renderCatalogList();
+                updateDashboardStats();
+            } else if (viewName === 'slider') {
+                renderSliderLists();
+            } else if (viewName === 'users') {
+                fetchRegisteredUsers();
+            } else if (viewName === 'database') {
+                document.getElementById('json-io').value = JSON.stringify(localCatalog, null, 4);
+            }
         }
 
-        // Pre-populate Master Form inputs for Editing (TV Shows & nested Seasons builder supported)
-        window.triggerEditRecord = function(type, id) {
-            const item = type === 'movie' 
-                ? dbState.movies.find(m => String(m.id) === String(id)) 
-                : dbState.banners.find(b => String(b.id) === String(id));
-            
-            if (!item) return;
+        function updateGlobalCounter() {
+            document.getElementById('global-counter').innerText = `${localCatalog.length} Assets`;
+        }
 
-            currentEditingId = item.id;
-            selectedFormGenres = [...(item.genres || [])];
+        // Home View Dashboard Counter Logic
+        function updateDashboardStats() {
+            const moviesCount = localCatalog.filter(i => i.type === 'movie').length;
+            const seriesCount = localCatalog.filter(i => i.type === 'series').length;
+            const membersCount = globalUsers.length;
 
-            const mType = item.type || 'movie';
-            const typeSelect = document.getElementById('m-type');
-            typeSelect.value = mType;
+            document.getElementById('stat-movies').innerText = moviesCount;
+            document.getElementById('stat-series').innerText = seriesCount;
+            document.getElementById('stat-members').innerText = membersCount;
+        }
 
-            document.getElementById('m-title').value = item.title;
-            document.getElementById('m-year').value = item.year;
-            document.getElementById('m-runtime').value = item.runtime;
-            document.getElementById('m-rating').value = item.rating;
-            document.getElementById('m-overview').value = item.overview;
-            document.getElementById('m-poster').value = item.poster;
-            document.getElementById('m-backdrop').value = item.backdrop;
-
-            const movieFields = document.getElementById('movie-only-fields');
-            const seriesFields = document.getElementById('series-only-fields');
-
-            if (mType === 'series') {
-                movieFields.classList.add('hidden');
-                seriesFields.classList.remove('hidden');
-                document.getElementById('m-status').value = item.status || 'Returning Series';
-                
-                // Load seasons/episodes array data deep cloned into builder memory
-                seasonsData = item.seasons ? JSON.parse(JSON.stringify(item.seasons)) : [];
-                renderSeasonsBuilder();
-            } else {
-                movieFields.classList.remove('hidden');
-                seriesFields.classList.add('hidden');
-                document.getElementById('m-download').value = item.downloadUrl || '';
-            }
-
-            document.getElementById('form-reset-btn').classList.remove('hidden');
-            document.getElementById('form-heading').textContent = `Editing: ${item.title}`;
-            document.getElementById('form-submit-btn').textContent = "Apply Changes";
+        // --- HOMEPAGE CATALOG LIST ---
+        function switchHomeTab(type) {
+            currentHomeTab = type;
+            const btnMovies = document.getElementById('home-toggle-movies');
+            const btnShows = document.getElementById('home-toggle-shows');
 
             if (type === 'movie') {
-                document.getElementById('m-category').value = item.category || dbState.categories[0];
-                document.getElementById('category-select-wrapper').classList.remove('hidden');
+                btnMovies.className = "flex-1 py-1.5 text-xs font-bold rounded-md transition-all duration-300 bg-brand/20 border border-brand/40 text-brand backdrop-blur-sm";
+                btnShows.className = "flex-1 py-1.5 text-xs font-bold rounded-md transition-all duration-300 text-zinc-400 hover:text-white";
             } else {
-                document.getElementById('category-select-wrapper').classList.add('hidden');
+                btnShows.className = "flex-1 py-1.5 text-xs font-bold rounded-md transition-all duration-300 bg-brand/20 border border-brand/40 text-brand backdrop-blur-sm";
+                btnMovies.className = "flex-1 py-1.5 text-xs font-bold rounded-md transition-all duration-300 text-zinc-400 hover:text-white";
             }
-
-            renderGenreSwitches();
+            renderCatalogList();
         }
 
-        // Clear selection target modals
-        window.triggerDeleteModal = function(type, id) {
-            pendingDeleteTarget = { type, id };
-            document.getElementById('confirm-modal').classList.remove('hidden');
+        function renderCatalogList() {
+            const list = document.getElementById('home-catalog-list');
+            if (!list) return;
+
+            const filtered = localCatalog.filter(i => i.type === currentHomeTab);
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="p-8 text-center border border-zinc-900 rounded-xl bg-zinc-900/20 text-zinc-600 text-xs flex flex-col items-center justify-center space-y-2">
+                        <span>No assets uploaded yet.</span>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = filtered.map(item => `
+                <div class="p-3 bg-zinc-900/60 border border-zinc-900 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center space-x-3 overflow-hidden">
+                        <img class="w-10 h-14 rounded object-cover bg-zinc-800 border border-zinc-800/50 flex-shrink-0" src="${item.posterUrl}" alt="">
+                        <div class="overflow-hidden">
+                            <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
+                            <div class="flex items-center space-x-2 text-[9px] mt-1 font-semibold uppercase">
+                                <span class="text-zinc-500">${item.year}</span>
+                                <span class="text-zinc-700">•</span>
+                                <span class="text-brand">${item.category || 'None'}</span>
+                                ${item.pinnedToSlider ? `<span class="px-1 py-0.2 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[8px]">SLIDER</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-1 flex-shrink-0 ml-4">
+                        <button onclick="editRecord('${item.id}')" class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-750 text-[10px] font-bold text-zinc-300 rounded border border-zinc-700/50">Edit</button>
+                        <button onclick="triggerDelete('${item.id}')" class="px-2.5 py-1.5 bg-brand/10 hover:bg-brand/20 text-[10px] font-bold text-brand rounded border border-brand/20">Delete</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        document.getElementById('modal-cancel').addEventListener('click', () => {
-            pendingDeleteTarget = null;
-            document.getElementById('confirm-modal').classList.add('hidden');
-        });
+        // --- USER TRACKING DATABASE SYSTEM ---
+        async function fetchRegisteredUsers() {
+            const listContainer = document.getElementById('users-list');
+            const totalBadge = document.getElementById('users-total-badge');
+            if (!listContainer) return;
 
-        document.getElementById('modal-confirm').addEventListener('click', () => {
-            if (pendingDeleteTarget) {
-                const { type, id } = pendingDeleteTarget;
-                if (type === 'movie') {
-                    dbState.movies = dbState.movies.filter(m => String(m.id) !== String(id));
-                } else {
-                    dbState.banners = dbState.banners.filter(b => String(b.id) !== String(id));
-                }
-                
-                if (String(currentEditingId) === String(id)) {
-                    resetMasterForm();
+            try {
+                const response = await fetch(`${CLOUD_DB_URL}/users.json`);
+                if (!response.ok) throw new Error();
+                const data = await response.json();
+
+                if (!data) {
+                    listContainer.innerHTML = `<div class="text-center py-10 text-xs text-zinc-600">No active users logged in database yet.</div>`;
+                    totalBadge.innerText = "0 Users";
+                    globalUsers = [];
+                    updateDashboardStats();
+                    return;
                 }
 
-                pendingDeleteTarget = null;
-                document.getElementById('confirm-modal').classList.add('hidden');
-                syncDynamicDashboardView();
+                globalUsers = Object.keys(data).map(key => ({
+                    id: key,
+                    ...data[key]
+                })).reverse(); 
+
+                totalBadge.innerText = `${globalUsers.length} Users`;
+                renderUsersList(globalUsers);
+                updateDashboardStats();
+
+            } catch (err) {
+                console.error(err);
+                listContainer.innerHTML = `
+                    <div class="text-center py-10 text-xs text-zinc-600">
+                        <span class="text-brand block font-bold">Cloud DB Sync Off</span>
+                        <p class="text-[10px] mt-1 text-zinc-500">Configure your DB URL inside code to enable real-time tracking.</p>
+                    </div>
+                `;
             }
-        });
+        }
 
-        // Dynamic File I/O setup
-        function setupDataHandlers() {
-            document.getElementById('io-export-btn').addEventListener('click', () => {
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dbState, null, 4));
+        function renderUsersList(users) {
+            const listContainer = document.getElementById('users-list');
+            if (!listContainer) return;
+
+            listContainer.innerHTML = users.map(user => {
+                const activeDate = user.last_active ? new Date(user.last_active).toLocaleString() : 'Never';
+                const avatarMarkup = user.photo_url 
+                    ? `<img class="w-10 h-10 rounded-full object-cover border border-zinc-800" src="${user.photo_url}" alt="">`
+                    : `<div class="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500">
+                           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                       </div>`;
+
+                return `
+                    <div class="p-3 bg-zinc-900/50 border border-zinc-900 rounded-lg flex items-center space-x-3">
+                        ${avatarMarkup}
+                        <div class="flex-1 overflow-hidden">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-xs font-bold text-white truncate">${user.first_name || 'Anonymous'} ${user.last_name || ''}</h4>
+                                <span class="text-[8px] font-bold text-zinc-500 font-mono">ID: ${user.id}</span>
+                            </div>
+                            <p class="text-[10px] text-brand font-semibold">${user.username ? '@' + user.username : 'No Username'}</p>
+                            <p class="text-[9px] text-zinc-500 mt-1">Active: ${activeDate}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function searchUsers() {
+            const val = document.getElementById('users-search').value.toLowerCase().trim();
+            if (!val) {
+                renderUsersList(globalUsers);
+                return;
+            }
+
+            const filtered = globalUsers.filter(user => {
+                const fullName = `${user.first_name || ''} ${user.last_name || ''}`.toLowerCase();
+                const username = (user.username || '').toLowerCase();
+                const id = String(user.id);
+                return fullName.includes(val) || username.includes(val) || id.includes(val);
+            });
+
+            renderUsersList(filtered);
+        }
+
+        // --- UPLOAD TAB LOGIC ---
+        function createNewGenreTag() {
+            const input = document.getElementById('new-genre-input');
+            const val = input.value.trim();
+            if (!val) return;
+
+            if (genresList.some(g => g.toLowerCase() === val.toLowerCase())) {
+                showToast("Genre tag already exists.");
+                return;
+            }
+
+            genresList.push(val);
+            localStorage.setItem('mlhbm_admin_genres', JSON.stringify(genresList));
+            renderGenresChecklist();
+            input.value = '';
+            showToast("New custom genre tag added!");
+        }
+
+        function saveRecord() {
+            const title = document.getElementById('asset-title').value.trim();
+            const type = document.getElementById('asset-type').value;
+            const category = document.getElementById('asset-category').value;
+            const pin = document.getElementById('asset-pin').checked;
+            const year = document.getElementById('asset-year').value.trim();
+            const rating = document.getElementById('asset-rating').value.trim();
+            const runtime = document.getElementById('asset-runtime').value.trim();
+            const poster = document.getElementById('asset-poster').value.trim();
+            const backdrop = document.getElementById('asset-backdrop').value.trim();
+            const status = document.getElementById('asset-status').value.trim();
+            const desc = document.getElementById('asset-desc').value.trim();
+            const download = document.getElementById('asset-download').value.trim();
+
+            if (!title || !poster || !backdrop) {
+                showToast("Provide Title, Poster and Backdrop.");
+                return;
+            }
+
+            const genres = [];
+            document.querySelectorAll('input[name="genre-checkbox"]:checked').forEach(cb => {
+                genres.push(cb.value);
+            });
+
+            const id = document.getElementById('edit-id').value;
+
+            const record = {
+                id: id || 'rec_' + Date.now(),
+                title,
+                type,
+                category,
+                pinnedToSlider: pin,
+                year,
+                rating,
+                runtime,
+                posterUrl: poster,
+                backdropUrl: backdrop,
+                genres,
+                description: desc
+            };
+
+            if (type === 'movie') {
+                record.downloadUrl = download;
+            } else {
+                record.status = status || 'Returning Series';
+                record.seasons = seasonsList;
+            }
+
+            if (id) {
+                const idx = localCatalog.findIndex(i => i.id === id);
+                if (idx > -1) localCatalog[idx] = record;
+                showToast("Asset updated successfully!");
+            } else {
+                localCatalog.push(record);
+                showToast("Asset uploaded successfully!");
+            }
+
+            localStorage.setItem('mlhbm_admin_catalog', JSON.stringify(localCatalog));
+            resetFormState();
+            updateGlobalCounter();
+            updateDashboardStats();
+            switchView('home');
+        }
+
+        function editRecord(id) {
+            const item = localCatalog.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('asset-title').value = item.title || '';
+            document.getElementById('asset-year').value = item.year || '';
+            document.getElementById('asset-rating').value = item.rating || '';
+            document.getElementById('asset-runtime').value = item.runtime || '';
+            document.getElementById('asset-poster').value = item.posterUrl || '';
+            document.getElementById('asset-backdrop').value = item.backdropUrl || '';
+            document.getElementById('asset-status').value = item.status || '';
+            document.getElementById('asset-desc').value = item.description || '';
+            document.getElementById('asset-download').value = item.downloadUrl || '';
+            document.getElementById('asset-pin').checked = !!item.pinnedToSlider;
+
+            selectTypeOption(item.type, item.type === 'movie' ? 'Movie' : 'TV Series');
+            selectCategoryOption(item.category || 'Trending Now');
+
+            document.querySelectorAll('input[name="genre-checkbox"]').forEach(cb => {
+                cb.checked = item.genres ? item.genres.includes(cb.value) : false;
+            });
+
+            if (item.type === 'series') {
+                seasonsList = JSON.parse(JSON.stringify(item.seasons || []));
+                renderSeasonsBuilder();
+            }
+
+            document.getElementById('uploader-header').innerText = "Edit Asset Record";
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+
+            switchView('upload');
+        }
+
+        function resetFormState() {
+            document.getElementById('edit-id').value = '';
+            document.getElementById('asset-title').value = '';
+            document.getElementById('asset-year').value = '';
+            document.getElementById('asset-rating').value = '';
+            document.getElementById('asset-runtime').value = '';
+            document.getElementById('asset-poster').value = '';
+            document.getElementById('asset-backdrop').value = '';
+            document.getElementById('asset-status').value = '';
+            document.getElementById('asset-desc').value = '';
+            document.getElementById('asset-download').value = '';
+            document.getElementById('asset-pin').checked = false;
+
+            selectTypeOption('movie', 'Movie');
+            selectCategoryOption('Trending Now');
+
+            document.querySelectorAll('input[name="genre-checkbox"]').forEach(cb => {
+                cb.checked = false;
+            });
+
+            seasonsList = [];
+            document.getElementById('seasons-builder-container').innerHTML = '';
+
+            document.getElementById('uploader-header').innerText = "Upload New Asset";
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+        }
+
+        // --- SLIDER TAB LOGIC ---
+        function renderSliderLists() {
+            const activeContainer = document.getElementById('slider-active-list');
+            const availableContainer = document.getElementById('slider-available-list');
+
+            if (!activeContainer || !availableContainer) return;
+
+            const pinned = localCatalog.filter(i => i.pinnedToSlider === true);
+            const unpinned = localCatalog.filter(i => !i.pinnedToSlider);
+
+            if (pinned.length === 0) {
+                activeContainer.innerHTML = `<div class="p-4 text-center border border-zinc-900 rounded bg-zinc-900/10 text-xs text-zinc-600">No active slide banners pinned.</div>`;
+            } else {
+                activeContainer.innerHTML = pinned.map(item => `
+                    <div class="p-2 bg-zinc-900/60 border border-zinc-900 rounded flex items-center justify-between">
+                        <div class="flex items-center space-x-2 overflow-hidden">
+                            <img class="w-8 h-8 rounded object-cover flex-shrink-0" src="${item.posterUrl}">
+                            <span class="text-xs font-bold text-white truncate">${item.title}</span>
+                        </div>
+                        <button onclick="toggleSliderPin('${item.id}', false)" class="px-2.5 py-1 text-[9px] font-bold bg-brand/10 hover:bg-brand/20 text-brand rounded border border-brand/20">UNPIN</button>
+                    </div>
+                `).join('');
+            }
+
+            if (unpinned.length === 0) {
+                availableContainer.innerHTML = `<div class="p-4 text-center border border-zinc-900 rounded bg-zinc-900/10 text-xs text-zinc-600">All library assets are pinned.</div>`;
+            } else {
+                availableContainer.innerHTML = unpinned.map(item => `
+                    <div class="p-2 bg-zinc-900/60 border border-zinc-900 rounded flex items-center justify-between">
+                        <div class="flex items-center space-x-2 overflow-hidden">
+                            <img class="w-8 h-8 rounded object-cover flex-shrink-0" src="${item.posterUrl}">
+                            <span class="text-xs font-semibold text-zinc-300 truncate">${item.title}</span>
+                        </div>
+                        <button onclick="toggleSliderPin('${item.id}', true)" class="px-2.5 py-1 text-[9px] font-bold bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded border border-zinc-700">PIN TO HERO</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function toggleSliderPin(id, isPin) {
+            const idx = localCatalog.findIndex(i => i.id === id);
+            if (idx > -1) {
+                localCatalog[idx].pinnedToSlider = isPin;
+                localStorage.setItem('mlhbm_admin_catalog', JSON.stringify(localCatalog));
+                renderSliderLists();
+                showToast(isPin ? "Pinned to slider banner!" : "Unpinned from slider.");
+            }
+        }
+
+        // --- DATABASE TAB FILE IMPORT & EXPORT HANDLING (IMAGE MOCKUP METHODS) ---
+        function exportDatabaseFile() {
+            try {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(localCatalog, null, 4));
                 const downloadAnchor = document.createElement('a');
                 downloadAnchor.setAttribute("href", dataStr);
                 downloadAnchor.setAttribute("download", "movies.json");
                 document.body.appendChild(downloadAnchor);
                 downloadAnchor.click();
                 downloadAnchor.remove();
-            });
+                showToast("Database movies.json file exported!");
+            } catch (err) {
+                showToast("Failed to compile database file.");
+            }
+        }
 
-            const triggerBtn = document.getElementById('io-trigger-btn');
-            const fileInput = document.getElementById('io-file-input');
-            const fileStatus = document.getElementById('io-file-status');
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-            triggerBtn.addEventListener('click', () => fileInput.click());
+            document.getElementById('file-name-label').innerText = file.name;
 
-            fileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                fileStatus.textContent = file.name;
-
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    try {
-                        const parsedData = JSON.parse(event.target.result);
-                        if (parsedData.movies && parsedData.banners && parsedData.categories) {
-                            dbState = parsedData;
-                            
-                            const customPool = new Set(dynamicGenres);
-                            dbState.movies.forEach(m => m.genres?.forEach(g => customPool.add(g)));
-                            dynamicGenres = Array.from(customPool);
-
-                            resetMasterForm();
-                            syncDynamicDashboardView();
-                            alert("Database Configuration Loaded Successfully!");
-                        } else {
-                            throw new Error("Invalid schema parameters");
-                        }
-                    } catch (err) {
-                        alert("File parsing failed: Check json schema structure.");
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (Array.isArray(parsed)) {
+                        localCatalog = parsed;
+                        localStorage.setItem('mlhbm_admin_catalog', JSON.stringify(localCatalog));
+                        updateGlobalCounter();
+                        renderCatalogList();
+                        renderSliderLists();
+                        updateDashboardStats();
+                        showToast("JSON file imported successfully!");
+                    } else {
+                        showToast("JSON content must be a structured list array.");
                     }
-                };
-                reader.readAsText(file);
+                } catch (err) {
+                    showToast("Error reading selected JSON compiled syntax.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function copyCatalogJSON() {
+            const box = document.getElementById('json-io');
+            box.value = JSON.stringify(localCatalog, null, 4);
+            box.select();
+            navigator.clipboard.writeText(box.value)
+                .then(() => showToast("Raw string copied!"));
+        }
+
+        function importCatalogJSON() {
+            const raw = document.getElementById('json-io').value;
+            try {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) {
+                    localCatalog = parsed;
+                    localStorage.setItem('mlhbm_admin_catalog', JSON.stringify(localCatalog));
+                    updateGlobalCounter();
+                    updateDashboardStats();
+                    showToast("Raw text imported successfully!");
+                } else {
+                    showToast("Import must be a JSON array.");
+                }
+            } catch (err) {
+                showToast("JSON compiling syntax error.");
+            }
+        }
+
+        // --- DELETE CONFIRMATION ---
+        function triggerDelete(id) {
+            currentDeleteId = id;
+            document.getElementById('confirm-modal').classList.remove('hidden');
+            document.getElementById('confirm-delete-btn').onclick = executeDelete;
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+            currentDeleteId = null;
+        }
+
+        function executeDelete() {
+            if (currentDeleteId) {
+                localCatalog = localCatalog.filter(i => i.id !== currentDeleteId);
+                localStorage.setItem('mlhbm_admin_catalog', JSON.stringify(localCatalog));
+                renderCatalogList();
+                updateGlobalCounter();
+                updateDashboardStats();
+                showToast("Record deleted.");
+                closeConfirmModal();
+            }
+        }
+
+        // --- CUSTOM SELECT SHEETS ---
+        function openSelectSheet(sheetId) {
+            const el = document.getElementById(sheetId);
+            el.classList.remove('hidden');
+            setTimeout(() => {
+                el.querySelector('.glass-panel').classList.remove('translate-y-full');
+            }, 50);
+            updateSelectSheetRadios();
+        }
+
+        function closeSelectSheet(sheetId) {
+            const el = document.getElementById(sheetId);
+            el.querySelector('.glass-panel').classList.add('translate-y-full');
+            setTimeout(() => {
+                el.classList.add('hidden');
+            }, 300);
+        }
+
+        function selectTypeOption(val, label) {
+            trackerOptions.type = val;
+            document.getElementById('asset-type').value = val;
+            document.getElementById('selected-type-label').innerText = label;
+            
+            const statusContainer = document.getElementById('status-field-container');
+            const movieContainer = document.getElementById('movie-fields');
+            const seriesContainer = document.getElementById('series-fields');
+
+            if (val === 'series') {
+                statusContainer.classList.remove('hidden');
+                seriesContainer.classList.remove('hidden');
+                movieContainer.classList.add('hidden');
+            } else {
+                statusContainer.classList.add('hidden');
+                seriesContainer.classList.add('hidden');
+                movieContainer.classList.remove('hidden');
+            }
+
+            closeSelectSheet('type-sheet');
+        }
+
+        function selectCategoryOption(val) {
+            trackerOptions.category = val;
+            document.getElementById('asset-category').value = val;
+            document.getElementById('selected-category-label').innerText = val;
+            closeSelectSheet('category-sheet');
+        }
+
+        function updateSelectSheetRadios() {
+            const types = ['movie', 'series'];
+            types.forEach(t => {
+                const radio = document.getElementById(`type-${t}-radio`).children[0];
+                if (trackerOptions.type === t) {
+                    radio.classList.remove('hidden');
+                } else {
+                    radio.classList.add('hidden');
+                }
             });
+
+            const categories = ["Trending Now", "Popular Movies", "Popular Series", "None"];
+            categories.forEach(c => {
+                const radioId = `cat-${c.replace(/\s+/g, '-')}-radio`;
+                const radioContainer = document.getElementById(radioId);
+                if (radioContainer) {
+                    const radio = radioContainer.children[0];
+                    if (trackerOptions.category === c) {
+                        radio.classList.remove('hidden');
+                    } else {
+                        radio.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        // --- SEASONS/EPISODES INTERACTIVE BUILDER ---
+        function renderSeasonsBuilder() {
+            const container = document.getElementById('seasons-builder-container');
+            container.innerHTML = '';
+
+            seasonsList.forEach((season, sIdx) => {
+                const card = document.createElement('div');
+                card.className = "p-3 rounded-lg border border-zinc-800 bg-zinc-900/40 space-y-3";
+                
+                card.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-zinc-800/60 pb-2">
+                        <input type="text" value="${season.name}" oninput="seasonsList[${sIdx}].name = this.value" class="bg-transparent text-xs font-bold text-white focus:outline-none border-b border-transparent focus:border-brand/40" placeholder="Season Title">
+                        <button onclick="removeSeasonRecord(${sIdx})" class="text-[10px] font-semibold text-brand hover:underline">Remove</button>
+                    </div>
+                    <div class="space-y-2" id="season-${sIdx}-episodes"></div>
+                    <button onclick="addEpisodeRecord(${sIdx})" type="button" class="w-full py-1.5 rounded border border-dashed border-zinc-800 hover:border-zinc-700 text-[10px] text-zinc-400 font-bold text-center">+ ADD EPISODE</button>
+                `;
+                container.appendChild(card);
+                renderEpisodesBuilder(sIdx, season.episodes);
+            });
+        }
+
+        function renderEpisodesBuilder(sIdx, episodes) {
+            const box = document.getElementById(`season-${sIdx}-episodes`);
+            if (!box) return;
+            box.innerHTML = '';
+
+            episodes.forEach((ep, eIdx) => {
+                const div = document.createElement('div');
+                div.className = "p-2 rounded bg-zinc-950/40 border border-zinc-900 space-y-2";
+                div.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-[9px] font-bold text-zinc-600 uppercase">Episode #${eIdx + 1}</span>
+                        <button onclick="removeEpisodeRecord(${sIdx}, ${eIdx})" class="text-[8px] font-bold text-zinc-500 hover:text-brand">Delete</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" value="${ep.episodeNumber || ''}" oninput="seasonsList[${sIdx}].episodes[${eIdx}].episodeNumber = this.value" placeholder="Num e.g. E1" class="h-8 bg-zinc-900 border border-zinc-800 rounded px-2 text-[10px] text-white">
+                        <input type="text" value="${ep.duration || ''}" oninput="seasonsList[${sIdx}].episodes[${eIdx}].duration = this.value" placeholder="Duration e.g. 50 min" class="h-8 bg-zinc-900 border border-zinc-800 rounded px-2 text-[10px] text-white">
+                    </div>
+                    <input type="text" value="${ep.title || ''}" oninput="seasonsList[${sIdx}].episodes[${eIdx}].title = this.value" placeholder="Episode Title" class="w-full h-8 bg-zinc-900 border border-zinc-800 rounded px-2 text-[10px] text-white">
+                    <input type="text" value="${ep.thumbnailUrl || ''}" oninput="seasonsList[${sIdx}].episodes[${eIdx}].thumbnailUrl = this.value" placeholder="Thumbnail Image URL" class="w-full h-8 bg-zinc-900 border border-zinc-800 rounded px-2 text-[10px] text-white">
+                    <input type="text" value="${ep.downloadUrl || ''}" oninput="seasonsList[${sIdx}].episodes[${eIdx}].downloadUrl = this.value" placeholder="Download Link" class="w-full h-8 bg-zinc-900 border border-zinc-800 rounded px-2 text-[10px] text-white">
+                `;
+                box.appendChild(div);
+            });
+        }
+
+        function renderGenresChecklist() {
+            const container = document.getElementById('genres-checklist');
+            if (!container) return;
+            container.innerHTML = genresList.map(g => `
+                <label class="flex items-center space-x-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-xs text-zinc-300 cursor-pointer select-none">
+                    <input type="checkbox" name="genre-checkbox" value="${g}" class="accent-brand rounded">
+                    <span>${g}</span>
+                </label>
+            `).join('');
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = "px-4 py-2 bg-zinc-900/90 border border-brand/40 text-brand text-xs font-bold rounded-lg shadow-lg backdrop-blur-md transition-all duration-300 transform translate-y-2 opacity-0 flex items-center space-x-2";
+            toast.innerHTML = `<svg class="w-3.5 h-3.5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 50);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-[-10px]');
+                setTimeout(() => { toast.remove(); }, 300);
+            }, 2500);
         }
     </script>
 </body>
