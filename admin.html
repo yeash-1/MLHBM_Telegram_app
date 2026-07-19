@@ -69,7 +69,7 @@
 </head>
 <body class="bg-zinc-950 text-zinc-100 font-sans h-full relative overflow-hidden">
 
-    <!-- ACCESS DENIED / UNAUTHORIZED SCREEN -->
+    <!-- ACCESS DENIED SCREEN -->
     <div id="access-denied-screen" class="hidden fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center p-6 text-center">
         <div class="absolute inset-0 bg-radial-gradient from-brand/10 to-transparent pointer-events-none"></div>
         <div class="w-full max-w-xs p-6 rounded-2xl bg-zinc-900/60 border border-zinc-800 space-y-4 relative z-10 glass-panel">
@@ -82,20 +82,22 @@
                 <p class="text-[10px] text-zinc-500 uppercase font-black">Your Telegram ID</p>
                 <p id="denied-telegram-id" class="text-sm font-mono font-bold text-brand mt-0.5">00000000</p>
             </div>
+            <button onclick="logoutAdmin()" class="w-full py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300">Retry Login</button>
         </div>
     </div>
 
-    <!-- PASSCODE GATE OVERLAY (FALLBACK FOR WEB BROWSERS) -->
-    <div id="auth-gate" class="fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center p-6">
+    <!-- DOUBLE LAYER PASSCODE GATE OVERLAY -->
+    <div id="auth-gate" class="fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center p-6 hidden">
         <div class="absolute inset-0 bg-radial-gradient from-brand/10 to-transparent pointer-events-none"></div>
         <div class="w-full max-w-xs space-y-6 text-center relative z-10">
             <div class="space-y-2">
                 <h1 class="text-3xl font-black tracking-widest text-white">MLH<span class="text-brand">BM</span></h1>
-                <p class="text-xs text-zinc-500 uppercase tracking-widest">Console Identity Verification</p>
+                <p class="text-xs text-zinc-500 uppercase tracking-widest">Console Security Verification</p>
             </div>
             
             <div class="space-y-3">
-                <input type="text" id="passcode-input" class="w-full h-12 text-center bg-zinc-900/60 border border-zinc-800 rounded-xl text-white font-mono text-sm tracking-widest placeholder-zinc-600 focus:outline-none focus:border-brand/60 focus:ring-1 focus:ring-brand/30 transition-all shadow-inner" placeholder="Enter Telegram ID" autocomplete="off">
+                <input type="text" id="passcode-id" class="w-full h-12 text-center bg-zinc-900/60 border border-zinc-800 rounded-xl text-white font-mono text-sm tracking-widest placeholder-zinc-600 focus:outline-none focus:border-brand/60 focus:ring-1 focus:ring-brand/30 transition-all shadow-inner" placeholder="Your Telegram ID" autocomplete="off">
+                <input type="password" id="passcode-password" class="w-full h-12 text-center bg-zinc-900/60 border border-zinc-800 rounded-xl text-white font-mono text-sm tracking-widest placeholder-zinc-600 focus:outline-none focus:border-brand/60 focus:ring-1 focus:ring-brand/30 transition-all shadow-inner" placeholder="Passcode (PIN)" autocomplete="off">
                 <button onclick="authSubmit()" class="w-full py-3 rounded-xl bg-brand hover:bg-brand-hover text-xs font-bold text-white tracking-widest transition-all active:scale-95 shadow-md shadow-brand/10">
                     LOGIN TO CONSOLE
                 </button>
@@ -308,10 +310,13 @@
                 </div>
             </section>
 
-            <!-- VIEW 4: USERS -->
+            <!-- VIEW 4: USERS (OWNER ONLY) -->
             <section id="view-users" class="view-panel hidden p-4 space-y-4">
                 <div class="flex items-center justify-between border-b border-zinc-900 pb-2">
-                    <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-500">Registered Telegram Users</h2>
+                    <div class="flex p-0.5 bg-zinc-900 rounded-lg border border-zinc-800 max-w-[180px]">
+                        <button id="users-toggle-regular" onclick="switchUsersTab('users')" class="px-3 py-1 text-[10px] font-bold rounded-md bg-brand/20 text-brand border border-brand/40">Users</button>
+                        <button id="users-toggle-admins" onclick="switchUsersTab('admins')" class="px-3 py-1 text-[10px] font-bold rounded-md text-zinc-400 hover:text-white">Admins</button>
+                    </div>
                     <span id="users-total-badge" class="px-2 py-0.5 text-[10px] font-bold bg-zinc-900 border border-zinc-800 text-brand rounded-full">0 Users</span>
                 </div>
 
@@ -324,7 +329,29 @@
                 </div>
             </section>
 
-            <!-- VIEW 5: DATABASE -->
+            <!-- VIEW 5: ADMIN POSTS ("+ post" TAB - ADMIN ONLY) -->
+            <section id="view-admin-posts" class="view-panel hidden p-4 space-y-4">
+                <div class="flex items-center justify-between border-b border-zinc-900 pb-2">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-500">Your Uploaded Posts</h2>
+                    <span id="admin-posts-total-badge" class="px-2.5 py-0.5 text-[10px] font-bold bg-zinc-900 border border-zinc-850 text-brand rounded-full">Total Post: 0000</span>
+                </div>
+
+                <div class="relative">
+                    <input type="text" id="admin-posts-search" oninput="searchAdminPosts()" placeholder="Search posts..." class="w-full h-10 bg-zinc-900 border border-zinc-800 rounded-lg px-3 text-xs text-white focus:outline-none focus:border-brand/50">
+                </div>
+
+                <!-- Segmented Type Selector inside Admin posts tab -->
+                <div class="flex p-0.5 bg-zinc-900 rounded-lg border border-zinc-800/80">
+                    <button id="admin-posts-toggle-movies" onclick="switchAdminPostsType('movie')" class="flex-1 py-1 text-[10px] font-bold rounded-md bg-brand/20 text-brand border border-brand/40">Movies</button>
+                    <button id="admin-posts-toggle-series" onclick="switchAdminPostsType('series')" class="flex-1 py-1 text-[10px] font-bold rounded-md text-zinc-400 hover:text-white">TV Shows</button>
+                </div>
+
+                <div id="admin-posts-list" class="space-y-2 max-h-[55vh] overflow-y-auto pr-1">
+                    <!-- Dynamic admin posts list -->
+                </div>
+            </section>
+
+            <!-- VIEW 6: DATABASE -->
             <section id="view-database" class="view-panel hidden p-4 space-y-4">
                 <div class="border-b border-zinc-900 pb-2">
                     <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-500">Database Sync Interface</h2>
@@ -388,8 +415,8 @@
 
         </main>
 
-        <!-- BOTTOM NAVIGATION BAR (Exactly 5 Tabs, premium glassy) -->
-        <nav class="fixed bottom-0 inset-x-0 max-w-md mx-auto glass-panel h-[72px] flex items-center justify-around px-2 rounded-t-2xl z-40 border-t border-zinc-800/40 pb-safe shadow-2xl">
+        <!-- BOTTOM NAVIGATION BAR (Dynamic based on Roles, premium glassy) -->
+        <nav id="bottom-nav-bar" class="fixed bottom-0 inset-x-0 max-w-md mx-auto glass-panel h-[72px] flex items-center justify-around px-2 rounded-t-2xl z-40 border-t border-zinc-800/40 pb-safe shadow-2xl">
             <button id="tab-home" onclick="switchView('home')" class="nav-tab flex flex-col items-center justify-center space-y-1 text-brand">
                 <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 <span class="text-[9px] font-bold tracking-wider">Home</span>
@@ -402,10 +429,13 @@
                 <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 <span class="text-[9px] font-semibold tracking-wider">Slider</span>
             </button>
+            
+            <!-- Users Tab (Dynamically replaces with "+ post" tab for admins) -->
             <button id="tab-users" onclick="switchView('users')" class="nav-tab flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300">
                 <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                <span class="text-[9px] font-semibold tracking-wider">Users</span>
+                <span id="tab-users-label" class="text-[9px] font-semibold tracking-wider">Users</span>
             </button>
+
             <button id="tab-database" onclick="switchView('database')" class="nav-tab flex flex-col items-center justify-center space-y-1 text-zinc-500 hover:text-zinc-300">
                 <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                 <span class="text-[9px] font-semibold tracking-wider">Database</span>
@@ -414,132 +444,76 @@
 
     </div>
 
-    <!-- GLASSMORPHIC PROFILE MODAL/PANEL -->
-    <div id="profile-modal" class="fixed inset-0 z-50 flex items-end justify-center hidden select-none">
-        <div class="absolute inset-0 bg-black/70 backdrop-blur-md" onclick="closeProfileModal()"></div>
-        <div class="relative w-full max-w-md bg-zinc-950 border-t border-zinc-900 rounded-t-3xl overflow-hidden p-6 space-y-5 transition-transform duration-300 transform translate-y-full glass-panel max-h-[85vh] overflow-y-auto">
-            <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mb-1"></div>
-            
+    <!-- FULL SCREEN PROFILE DASHBOARD MODAL/PANEL (Problem 1 & 3 Fix) -->
+    <div id="profile-modal" class="fixed inset-0 z-50 bg-zinc-950 flex flex-col hidden select-none max-w-md mx-auto overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-4 border-b border-zinc-900 bg-zinc-950">
+            <h3 class="text-sm font-bold text-white tracking-widest uppercase">Profile Dashboard</h3>
+            <button onclick="closeProfileModal()" class="text-zinc-500 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4 space-y-6">
             <div class="flex items-center space-x-4 p-4 bg-zinc-900/50 border border-zinc-900 rounded-2xl">
                 <img id="profile-pic" class="w-16 h-16 rounded-full object-cover bg-zinc-800 border-2 border-brand" src="" alt="Profile">
                 <div>
-                    <h3 id="profile-name" class="text-sm font-bold text-white">Owner Name</h3>
+                    <h3 id="profile-name" class="text-sm font-bold text-white">Developer / Tester</h3>
                     <p id="profile-username" class="text-[10px] text-zinc-500 font-semibold mt-0.5">@username</p>
                     <div class="flex items-center space-x-1.5 mt-2">
                         <span id="profile-role-badge" class="px-2 py-0.5 rounded bg-brand/10 border border-brand/20 text-brand text-[9px] font-bold uppercase tracking-wider">OWNER</span>
-                        <span id="profile-id-badge" class="text-[9px] text-zinc-500 font-mono">ID: 0000</span>
+                        <span id="profile-id-badge" class="text-[9px] text-zinc-500 font-mono">ID: 0000000</span>
                     </div>
                 </div>
             </div>
 
-            <!-- OWNER SECTION (ADMINS & PENDING DELETE REQUESTS) -->
-            <div id="profile-owner-section" class="hidden space-y-5">
-                <!-- Delete Requests -->
-                <div class="space-y-3">
-                    <h4 class="text-[10px] font-black tracking-widest text-zinc-500 uppercase">Pending Delete Requests</h4>
-                    <div id="pending-deletes-list" class="space-y-2">
-                        <p class="text-[10px] text-zinc-600">No delete requests active.</p>
+            <!-- OWNER CONTROL PANEL -->
+            <div id="profile-owner-section" class="hidden space-y-6">
+                <!-- Statistics boxes -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-850 flex flex-col items-center justify-center text-center space-y-1">
+                        <span class="text-[9px] font-bold uppercase tracking-wider text-zinc-500">Total Admin</span>
+                        <span id="stat-total-admins" class="text-lg font-black text-white">0000</span>
+                    </div>
+                    <div class="p-4 rounded-xl bg-zinc-900/60 border border-zinc-850 flex flex-col items-center justify-center text-center space-y-1">
+                        <span class="text-[9px] font-bold uppercase tracking-wider text-zinc-500">Active Admin</span>
+                        <span id="stat-active-admins" class="text-lg font-black text-brand">0000</span>
                     </div>
                 </div>
 
-                <!-- Admin Management -->
+                <!-- Admin Management Grid -->
                 <div class="space-y-3">
-                    <h4 class="text-[10px] font-black tracking-widest text-zinc-500 uppercase">Manage Active Admins</h4>
-                    <div id="profile-admins-list" class="space-y-2.5">
-                        <p class="text-[10px] text-zinc-600">No admins promoted yet.</p>
+                    <h4 class="text-[10px] font-black tracking-widest text-zinc-400 uppercase">Manage Admin List</h4>
+                    <div id="profile-admins-list" class="grid grid-cols-2 gap-2">
+                        <!-- Dynamic list of admin cards matching Image 2 layout -->
                     </div>
                 </div>
             </div>
 
-            <!-- ADMIN SECTION (ADMIN POST STATISTICS) -->
+            <!-- ADMIN ACCESS STATISTICS -->
             <div id="profile-admin-section" class="hidden space-y-4">
-                <div class="p-3 bg-zinc-900/40 border border-zinc-850 rounded-xl space-y-1">
+                <div class="p-4 bg-zinc-900/40 border border-zinc-850 rounded-xl space-y-1">
                     <p class="text-[9px] font-bold uppercase tracking-wider text-zinc-500">Subscription Status</p>
                     <p id="profile-admin-expiry" class="text-xs font-semibold text-emerald-400">Active</p>
                 </div>
-                <div class="space-y-2">
-                    <h4 class="text-[10px] font-black tracking-widest text-zinc-500 uppercase">Your Uploaded Posts</h4>
-                    <div id="profile-admin-posts" class="space-y-2 max-h-48 overflow-y-auto pr-1">
-                        <p class="text-[10px] text-zinc-600">No posts uploaded yet.</p>
-                    </div>
-                </div>
             </div>
 
-            <button onclick="logoutAdmin()" class="w-full py-3 rounded-xl bg-zinc-900 hover:bg-zinc-850 text-xs font-bold text-zinc-400 hover:text-white tracking-widest transition-all">
+            <button onclick="logoutAdmin()" class="w-full py-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 text-xs font-bold text-zinc-400 hover:text-white tracking-widest transition-all">
                 LOG OUT FROM CONSOLE
             </button>
         </div>
     </div>
 
-    <!-- GLASSMORPHIC SELECT SHEET (TYPE & CATEGORIES) -->
-    <div id="type-sheet" class="fixed inset-0 z-50 flex items-end justify-center hidden select-none">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSelectSheet('type-sheet')"></div>
-        <div class="relative w-full max-w-md bg-zinc-950 border-t border-zinc-900 rounded-t-3xl overflow-hidden p-6 space-y-4 transition-transform duration-300 transform translate-y-full glass-panel">
-            <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mb-2"></div>
-            <h4 class="text-xs font-bold tracking-widest text-zinc-400 uppercase text-center">Select Media Type</h4>
-            <div class="space-y-2">
-                <button onclick="selectTypeOption('movie', 'Movie')" class="w-full p-4 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 flex items-center justify-between transition-colors">
-                    <span class="text-xs font-bold text-white">Movie</span>
-                    <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="type-movie-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
-                </button>
-                <button onclick="selectTypeOption('series', 'TV Series')" class="w-full p-4 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 flex items-center justify-between transition-colors">
-                    <span class="text-xs font-bold text-white">TV Series</span>
-                    <span class="w-4 h-4 rounded-full border border-zinc-800 p-0.5 flex items-center justify-center" id="type-series-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
-                </button>
-            </div>
+    <!-- FULL SCREEN ADMIN DETAILS MANAGER (Image 5 style) -->
+    <div id="admin-detail-modal" class="fixed inset-0 z-50 bg-zinc-950 flex flex-col hidden select-none max-w-md mx-auto overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-4 border-b border-zinc-900 bg-zinc-950">
+            <h3 class="text-sm font-bold text-white tracking-widest uppercase">Admin Profile Options</h3>
+            <button onclick="closeAdminDetailModal()" class="text-zinc-500 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
         </div>
-    </div>
 
-    <div id="category-sheet" class="fixed inset-0 z-50 flex items-end justify-center hidden select-none">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSelectSheet('category-sheet')"></div>
-        <div class="relative w-full max-w-md bg-zinc-950 border-t border-zinc-900 rounded-t-3xl overflow-hidden p-6 space-y-4 transition-transform duration-300 transform translate-y-full glass-panel">
-            <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mb-2"></div>
-            <h4 class="text-xs font-bold tracking-widest text-zinc-400 uppercase text-center">Select Display Category</h4>
-            <div class="space-y-2">
-                <button onclick="selectCategoryOption('Trending Now')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-brand flex items-center justify-between transition-colors">
-                    <span class="text-xs font-bold text-white">Trending Now</span>
-                    <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="cat-Trending-Now-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
-                </button>
-                <button onclick="selectCategoryOption('Popular Movies')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-brand flex items-center justify-between transition-colors">
-                    <span class="text-xs font-bold text-white">Popular Movies</span>
-                    <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="cat-Popular-Movies-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
-                </button>
-                <button onclick="selectCategoryOption('Popular Series')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-brand flex items-center justify-between transition-colors">
-                    <span class="text-xs font-bold text-white">Popular Series</span>
-                    <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="cat-Popular-Series-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
-                </button>
-                <button onclick="selectCategoryOption('None')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-brand flex items-center justify-between transition-colors">
-                    <span class="text-xs font-bold text-white">None</span>
-                    <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="cat-None-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ADMIN MANAGEMENT SUB-MODAL FOR OWNER -->
-    <div id="admin-detail-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 select-none">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeAdminDetailModal()"></div>
-        <div class="relative w-full max-w-sm p-6 bg-zinc-900 border border-zinc-800 rounded-2xl space-y-4 shadow-2xl glass-panel max-h-[80vh] overflow-y-auto">
-            <h4 class="text-xs font-black tracking-widest text-zinc-500 uppercase">Admin Details</h4>
-            <div id="admin-detail-content" class="space-y-4">
-                <!-- Dynamic detail contents -->
-            </div>
-        </div>
-    </div>
-
-    <!-- CONFIRMATION DELETE TRIGGER MODAL -->
-    <div id="confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden p-4 select-none">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeConfirmModal()"></div>
-        <div class="relative w-full max-w-xs p-6 bg-zinc-900 border border-zinc-800 rounded-2xl text-center space-y-5 shadow-2xl glass-panel">
-            <div class="w-12 h-12 bg-brand/10 border border-brand/30 text-brand rounded-full flex items-center justify-center mx-auto text-xl font-bold">!</div>
-            <div class="space-y-1">
-                <h4 id="confirm-modal-title" class="text-sm font-bold text-white">Remove Record permanently?</h4>
-                <p id="confirm-modal-desc" class="text-xs text-zinc-500">This action can't be undone in sync memory.</p>
-            </div>
-            <div class="flex items-center space-x-3">
-                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 rounded-lg border border-zinc-700/50">Cancel</button>
-                <button id="confirm-delete-btn" class="flex-1 py-2.5 bg-brand hover:bg-brand-hover text-xs font-bold text-white rounded-lg">Delete</button>
-            </div>
+        <div id="admin-detail-content" class="flex-1 overflow-y-auto p-4 space-y-5">
+            <!-- Dynamically populated to match Image 5 design -->
         </div>
     </div>
 
@@ -551,11 +525,11 @@
         const CLOUD_DB_URL = "https://mlhbm-c2e65-default-rtdb.firebaseio.com"; 
         const TMDB_API_KEY = "3dcff4c2aae103e7a50ee7935ea29af9"; 
         const OWNER_ID = "7261527889"; 
+        const MASTER_PASSCODE = "mlhbm6143"; 
 
         let localCatalog = [];
         let globalUsers = []; 
         let globalAdmins = {}; 
-        let globalDeletes = []; 
         let globalViews = {}; 
         let genresList = ["Action", "Sci-Fi", "Drama", "Comedy", "Horror", "Romance", "Thriller", "Adventure", "Biography", "History", "Crime"];
         let currentHomeTab = 'movie'; 
@@ -564,26 +538,25 @@
 
         let currentUser = null; 
         let currentUserRole = 'guest'; 
+        let currentUsersTab = 'users'; 
+        let currentAdminPostsType = 'movie'; 
+        let adminPostsSearchQuery = '';
 
         const trackerOptions = {
             type: 'movie',
             category: 'Trending Now'
         };
 
-        const safeSessionStorage = {
-            setItem: function(key, value) {
-                try { sessionStorage.setItem(key, value); } catch (e) {}
-            },
-            getItem: function(key) {
-                try { return sessionStorage.getItem(key); } catch (e) { return null; }
-            },
-            removeItem: function(key) {
-                try { sessionStorage.removeItem(key); } catch (e) {}
-            }
-        };
-
-        // --- DETECT TELEGRAM USER IDENTITY ---
+        // --- RELOAD LOGOUT FIX: localStorage PERSISTENT SESSION ---
         document.addEventListener('DOMContentLoaded', () => {
+            const cachedUser = localStorage.getItem('mlhbm_user_session');
+            if (cachedUser) {
+                currentUser = JSON.parse(cachedUser);
+                checkAuthorization();
+                return;
+            }
+
+            // Telegram WebApp direct handshake auto-login
             let tgWebApp = window.Telegram ? window.Telegram.WebApp : null;
             if (tgWebApp) {
                 tgWebApp.expand();
@@ -597,19 +570,14 @@
                         photo_url: tgUser.photo_url || ''
                     };
                     registerUserInDB(currentUser);
+                    localStorage.setItem('mlhbm_user_session', JSON.stringify(currentUser));
                     checkAuthorization();
                     return;
                 }
             }
 
-            // Fallback for normal browser
-            const storedAuth = safeSessionStorage.getItem('mlhbm_admin_authenticated');
-            if (storedAuth) {
-                currentUser = JSON.parse(storedAuth);
-                checkAuthorization();
-            } else {
-                document.getElementById('auth-gate').classList.remove('hidden');
-            }
+            // Otherwise force show secure double layer log-in gate
+            document.getElementById('auth-gate').classList.remove('hidden');
         });
 
         async function registerUserInDB(user) {
@@ -627,7 +595,7 @@
                     })
                 });
             } catch (err) {
-                console.error("User logging failed", err);
+                console.error(err);
             }
         }
 
@@ -643,7 +611,7 @@
                 return;
             }
 
-            // Check database if promoted admin and subscription is active
+            // Verify if admin database is active & authorized with exact unique passcode/PIN match
             try {
                 const response = await fetch(`${CLOUD_DB_URL}/admins/${userIdStr}.json`);
                 if (response.ok) {
@@ -661,48 +629,95 @@
                 console.error(err);
             }
 
-            // Access Denied screen
+            // Force access denied
             document.getElementById('auth-gate').classList.add('hidden');
             document.getElementById('admin-workspace').classList.add('hidden');
             document.getElementById('access-denied-screen').classList.remove('hidden');
         }
 
-        function authSubmit() {
-            const inputVal = document.getElementById('passcode-input').value.trim();
-            if (!inputVal) {
-                showToast("Please enter a valid Telegram ID.");
+        async function authSubmit() {
+            const inputId = document.getElementById('passcode-id').value.trim();
+            const inputPass = document.getElementById('passcode-password').value.trim();
+
+            if (!inputId || !inputPass) {
+                showToast("Please enter ID and passcode.");
                 return;
             }
 
-            currentUser = {
-                id: inputVal,
-                first_name: "Developer / Tester",
-                last_name: "",
-                username: "dev_testing",
-                photo_url: ""
-            };
+            // Owner Login
+            if (inputId === OWNER_ID && inputPass === MASTER_PASSCODE) {
+                currentUser = {
+                    id: OWNER_ID,
+                    first_name: "Developer / Tester",
+                    last_name: "",
+                    username: "dev_testing",
+                    photo_url: ""
+                };
+                localStorage.setItem('mlhbm_user_session', JSON.stringify(currentUser));
+                document.getElementById('auth-gate').classList.add('hidden');
+                checkAuthorization();
+                return;
+            }
 
-            safeSessionStorage.setItem('mlhbm_admin_authenticated', JSON.stringify(currentUser));
-            document.getElementById('auth-gate').classList.add('hidden');
-            checkAuthorization();
+            // Admin Login Validation
+            try {
+                showToast("Verifying account...");
+                const response = await fetch(`${CLOUD_DB_URL}/admins/${inputId}.json`);
+                if (response.ok) {
+                    const admin = await response.json();
+                    if (admin && admin.passcode === inputPass) {
+                        currentUser = {
+                            id: admin.id,
+                            first_name: admin.name,
+                            last_name: "",
+                            username: admin.username,
+                            photo_url: admin.photo_url
+                        };
+                        localStorage.setItem('mlhbm_user_session', JSON.stringify(currentUser));
+                        document.getElementById('auth-gate').classList.add('hidden');
+                        checkAuthorization();
+                        return;
+                    }
+                }
+                showToast("Invalid credentials.");
+            } catch (err) {
+                showToast("Login verification failed.");
+            }
         }
 
         function logoutAdmin() {
-            safeSessionStorage.removeItem('mlhbm_admin_authenticated'); 
+            localStorage.removeItem('mlhbm_user_session'); 
             currentUser = null;
             currentUserRole = 'guest';
             document.getElementById('admin-workspace').classList.add('hidden');
             document.getElementById('profile-modal').classList.add('hidden');
             document.getElementById('access-denied-screen').classList.add('hidden');
             document.getElementById('auth-gate').classList.remove('hidden');
-            document.getElementById('passcode-input').value = '';
+            document.getElementById('passcode-id').value = '';
+            document.getElementById('passcode-password').value = '';
             showToast("Logged out successfully.");
         }
 
         async function setupWorkspace() {
             document.getElementById('admin-workspace').classList.remove('hidden');
             
-            // Set up UI according to role
+            // Adjust Bottom Navigation Tab based on role
+            const usersTab = document.getElementById('tab-users');
+            const usersLabel = document.getElementById('tab-users-label');
+            
+            if (currentUserRole === 'admin') {
+                // Admin gets '+ post' instead of users tab (Image 4 format)
+                usersTab.onclick = () => switchView('admin-posts');
+                usersLabel.innerText = "+ post";
+                usersTab.querySelector('svg').innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>`;
+            } else {
+                // Owner gets standard Users tab
+                usersTab.onclick = () => switchView('users');
+                usersLabel.innerText = "Users";
+                usersTab.querySelector('svg').innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>`;
+            }
+
+            // Sync Header avatar
             const userPic = currentUser.photo_url || '';
             const avatarImg = document.getElementById('header-avatar');
             const avatarFallback = document.getElementById('header-avatar-fallback');
@@ -735,7 +750,7 @@
             fetchTMDBDiscoverFeed();
         }
 
-        // Global Navigation Tab Switching logic
+        // Tab Switching logic
         function switchView(viewName) {
             document.querySelectorAll('.view-panel').forEach(panel => {
                 panel.classList.add('hidden');
@@ -746,8 +761,20 @@
                 tab.classList.remove('text-brand');
                 tab.classList.add('text-zinc-500', 'hover:text-zinc-300');
             });
-            document.getElementById(`tab-${viewName}`).classList.add('text-brand');
-            document.getElementById(`tab-${viewName}`).classList.remove('text-zinc-500', 'hover:text-zinc-300');
+
+            // Adjust Active Navigation highlights
+            if (viewName === 'admin-posts') {
+                document.getElementById('tab-users').classList.add('text-brand');
+                document.getElementById('tab-users').classList.remove('text-zinc-500', 'hover:text-zinc-300');
+                renderAdminPostsTabList();
+            } else {
+                const targetTabId = `tab-${viewName}`;
+                const targetTab = document.getElementById(targetTabId);
+                if (targetTab) {
+                    targetTab.classList.add('text-brand');
+                    targetTab.classList.remove('text-zinc-500', 'hover:text-zinc-300');
+                }
+            }
 
             if (viewName === 'home') {
                 renderCatalogList();
@@ -761,11 +788,6 @@
             }
         }
 
-        function updateGlobalCounter() {
-            const el = document.getElementById('global-counter');
-            if (el) el.innerText = `${localCatalog.length} Assets`;
-        }
-
         function updateDashboardStats() {
             const moviesCount = localCatalog.filter(i => i.type === 'movie').length;
             const seriesCount = localCatalog.filter(i => i.type === 'series').length;
@@ -776,13 +798,12 @@
             document.getElementById('stat-members').innerText = membersCount;
         }
 
-        // --- FETCH DATA FROM FIREBASE CLOUD ---
+        // --- FETCH DYNAMIC DATABASE WRAPPERS ---
         async function fetchCatalogFromCloud() {
             try {
                 const response = await fetch(`${CLOUD_DB_URL}/catalog.json`);
                 if (!response.ok) throw new Error();
                 const data = await response.json();
-                
                 localCatalog = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
             } catch (err) {
                 console.error(err);
@@ -812,23 +833,10 @@
             }
         }
 
-        async function fetchDeleteRequestsFromCloud() {
-            try {
-                const response = await fetch(`${CLOUD_DB_URL}/delete_requests.json`);
-                if (response.ok) {
-                    const data = await response.json();
-                    globalDeletes = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
         async function refreshData() {
             await fetchCatalogFromCloud();
             await fetchViewsFromCloud();
             await fetchAdminsFromCloud();
-            await fetchDeleteRequestsFromCloud();
             renderCatalogList();
             renderSliderLists();
             updateDashboardStats();
@@ -884,54 +892,67 @@
                             </div>
                         </div>
                         <div class="flex space-x-1 flex-shrink-0 ml-4">
-                            <button onclick="editRecord('${item.id}')" class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-750 text-[10px] font-bold text-zinc-300 rounded border border-zinc-700/50">Edit</button>
-                            <button onclick="triggerDelete('${item.id}')" class="px-2.5 py-1.5 bg-brand/10 hover:bg-brand/20 text-[10px] font-bold text-brand rounded border border-brand/20">Delete</button>
+                            <!-- Show Edit/Delete option for Owner, or hide/rely on Admin posts tab -->
+                            ${currentUserRole === 'owner' ? `
+                                <button onclick="editRecord('${item.id}')" class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-750 text-[10px] font-bold text-zinc-300 rounded border border-zinc-700/50">Edit</button>
+                                <button onclick="triggerDelete('${item.id}')" class="px-2.5 py-1.5 bg-brand/10 hover:bg-brand/20 text-[10px] font-bold text-brand rounded border border-brand/20">Delete</button>
+                            ` : `<span class="text-[9px] text-zinc-500">Read-Only</span>`}
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        // --- USER & ADMIN MANAGEMENT ---
-        async function fetchRegisteredUsers() {
-            const listContainer = document.getElementById('users-list');
-            const totalBadge = document.getElementById('users-total-badge');
-            if (!listContainer) return;
+        // --- USERS VIEW (OWNER ONLY SEGMENTS FILTER) ---
+        function switchUsersTab(tabName) {
+            currentUsersTab = tabName;
+            const btnReg = document.getElementById('users-toggle-regular');
+            const btnAdm = document.getElementById('users-toggle-admins');
 
+            if (tabName === 'users') {
+                btnReg.className = "px-3 py-1 text-[10px] font-bold rounded-md bg-brand/20 text-brand border border-brand/40";
+                btnAdm.className = "px-3 py-1 text-[10px] font-bold rounded-md text-zinc-400 hover:text-white";
+            } else {
+                btnAdm.className = "px-3 py-1 text-[10px] font-bold rounded-md bg-brand/20 text-brand border border-brand/40";
+                btnReg.className = "px-3 py-1 text-[10px] font-bold rounded-md text-zinc-400 hover:text-white";
+            }
+            renderUsersAndAdminsList();
+        }
+
+        async function fetchRegisteredUsers() {
             try {
                 const response = await fetch(`${CLOUD_DB_URL}/users.json`);
                 if (!response.ok) throw new Error();
                 const data = await response.json();
 
-                if (!data) {
-                    listContainer.innerHTML = `<div class="text-center py-10 text-xs text-zinc-600">No active users logged in database yet.</div>`;
-                    totalBadge.innerText = "0 Users";
-                    globalUsers = [];
-                    updateDashboardStats();
-                    return;
-                }
-
-                globalUsers = Object.keys(data).map(key => ({
-                    id: key,
-                    ...data[key]
-                })).reverse(); 
-
-                totalBadge.innerText = `${globalUsers.length} Users`;
-                renderUsersList(globalUsers);
+                globalUsers = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
+                document.getElementById('users-total-badge').innerText = `${globalUsers.length} Users`;
+                renderUsersAndAdminsList();
                 updateDashboardStats();
-
             } catch (err) {
                 console.error(err);
-                listContainer.innerHTML = `<div class="text-center py-10 text-xs text-zinc-600">Failed to load users from cloud database.</div>`;
             }
         }
 
-        function renderUsersList(users) {
+        function renderUsersAndAdminsList() {
             const listContainer = document.getElementById('users-list');
             if (!listContainer) return;
 
-            listContainer.innerHTML = users.map(user => {
-                const activeDate = user.last_active ? new Date(user.last_active).toLocaleString() : 'Never';
+            let sourceList = [];
+            if (currentUsersTab === 'users') {
+                // Filter users who are NOT active admins
+                sourceList = globalUsers.filter(u => !globalAdmins[u.id] || globalAdmins[u.id].status !== 'active');
+            } else {
+                // Filter only registered admins
+                sourceList = Object.keys(globalAdmins).map(key => globalAdmins[key]);
+            }
+
+            if (sourceList.length === 0) {
+                listContainer.innerHTML = `<div class="text-center py-10 text-xs text-zinc-600">No registered records here.</div>`;
+                return;
+            }
+
+            listContainer.innerHTML = sourceList.map(user => {
                 const avatarMarkup = user.photo_url 
                     ? `<img class="w-10 h-10 rounded-full object-cover border border-zinc-800" src="${user.photo_url}" alt="">`
                     : `<div class="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500">
@@ -947,11 +968,11 @@
                             ${avatarMarkup}
                             <div class="overflow-hidden">
                                 <div class="flex items-center space-x-1.5">
-                                    <h4 class="text-xs font-bold text-white truncate">${user.first_name || 'Anonymous'} ${user.last_name || ''}</h4>
-                                    ${isAdmin ? `<span class="px-1.5 py-0.2 rounded bg-brand/10 border border-brand/20 text-brand text-[8px] font-bold uppercase tracking-wider">${adminStatus} ADMIN</span>` : ''}
+                                    <h4 class="text-xs font-bold text-white truncate">${user.first_name || user.name || 'Anonymous'} ${user.last_name || ''}</h4>
+                                    ${isAdmin ? `<span class="px-1.5 py-0.2 rounded bg-brand/10 border border-brand/20 text-brand text-[8px] font-bold uppercase tracking-wider">${adminStatus}</span>` : ''}
                                 </div>
                                 <p class="text-[10px] text-zinc-500 font-semibold truncate">${user.username ? '@' + user.username : 'No Username'}</p>
-                                <p class="text-[9px] text-zinc-500 mt-0.5 font-mono">ID: ${user.id} | Active: ${activeDate}</p>
+                                <p class="text-[9px] text-zinc-500 mt-0.5 font-mono">ID: ${user.id}</p>
                             </div>
                         </div>
                         
@@ -972,7 +993,7 @@
         function searchUsers() {
             const val = document.getElementById('users-search').value.toLowerCase().trim();
             if (!val) {
-                renderUsersList(globalUsers);
+                renderUsersAndAdminsList();
                 return;
             }
 
@@ -986,27 +1007,26 @@
             renderUsersList(filtered);
         }
 
-        // --- SUB-PANEL MANAGEMENT FOR ADMIN PROMOTION ---
+        // --- ADMIN DETAILED CONTROL INTERFACE (Image 5 style) ---
         async function promptPromoteAdmin(userId, name, username, photoUrl) {
-            currentDeleteId = userId; // reusing parameter variables
+            currentDeleteId = userId; 
             document.getElementById('confirm-modal-title').innerText = "Promote user to Admin?";
-            document.getElementById('confirm-modal-desc').innerText = "This user will be granted standard uploading access to your console. Select a manual subscription period.";
+            document.getElementById('confirm-modal-desc').innerText = "Grant Admin status. Default is INACTIVE (OFF). You must configure duration to activate.";
             
             document.getElementById('confirm-modal').classList.remove('hidden');
             
             const btn = document.getElementById('confirm-delete-btn');
-            btn.innerText = "Promote (30 Days)";
+            btn.innerText = "Promote Admin";
             btn.className = "flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white rounded-lg";
             
             btn.onclick = async function() {
-                const expiry = Date.now() + 30 * 24 * 60 * 60 * 1000;
                 const adminData = {
                     id: userId,
                     name: name,
                     username: username,
                     photo_url: photoUrl,
-                    status: 'active',
-                    expiryDate: new Date(expiry).toISOString(),
+                    status: 'inactive', // Default newly added is INACTIVE (Status OFF)
+                    expiryDate: new Date(Date.now()).toISOString(),
                     passcode: '1234'
                 };
 
@@ -1017,10 +1037,10 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(adminData)
                     });
-                    showToast("User promoted to Admin!");
+                    showToast("User added to Inactive Admins list.");
                     closeConfirmModal();
                     await refreshData();
-                    fetchRegisteredUsers();
+                    switchUsersTab('admins');
                 } catch (err) {
                     showToast("Promotion failed.");
                 }
@@ -1037,51 +1057,63 @@
             const detailBox = document.getElementById('admin-detail-content');
             detailBox.innerHTML = `
                 <div class="flex items-center space-x-3 pb-3 border-b border-zinc-800">
-                    <img class="w-12 h-12 rounded-full object-cover bg-zinc-800" src="${admin.photo_url || ''}">
+                    <img class="w-12 h-12 rounded-full object-cover bg-zinc-800 border-2 border-brand" src="${admin.photo_url || ''}">
                     <div>
-                        <h4 class="text-xs font-bold text-white">${admin.name}</h4>
+                        <div class="flex items-center space-x-2">
+                            <h4 class="text-xs font-bold text-white">${admin.name}</h4>
+                            <span class="px-1.5 py-0.2 rounded text-[8px] font-black ${admin.status === 'active' ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' : 'bg-zinc-800 text-zinc-500'}">${admin.status.toUpperCase()}</span>
+                        </div>
                         <p class="text-[9px] text-zinc-500">@${admin.username || 'username'}</p>
-                        <p class="text-[9px] text-brand font-mono mt-0.5">ID: ${admin.id}</p>
+                        <p class="text-[9px] text-zinc-400 font-mono mt-0.5">Posts: ${activePosts.length} | ID: ${admin.id}</p>
                     </div>
                 </div>
 
-                <div class="space-y-3">
+                <div class="space-y-4 pt-1">
+                    <!-- Dropdown Select & ON/OFF Switch (Image 5 Style) -->
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-zinc-400 font-bold uppercase">Account Status</span>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-xs font-bold ${admin.status === 'active' ? 'text-emerald-400' : 'text-zinc-500'}">${admin.status.toUpperCase()}</span>
-                            <button onclick="toggleAdminStatus('${adminId}', '${admin.status === 'active' ? 'inactive' : 'active'}')" class="px-2 py-1 bg-zinc-800 border border-zinc-700 text-[9px] font-bold text-zinc-300 rounded">Toggle</button>
+                        <div class="flex flex-col space-y-1">
+                            <span class="text-[10px] text-zinc-500 font-black uppercase">Set Manual Package</span>
+                            <select id="admin-detail-days" class="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none">
+                                <option value="30">30 Days</option>
+                                <option value="60">60 Days</option>
+                                <option value="90">90 Days</option>
+                            </select>
+                        </div>
+                        
+                        <div class="flex flex-col items-end space-y-1">
+                            <span class="text-[10px] text-zinc-500 font-black uppercase">Status ON/OFF</span>
+                            <label class="relative inline-flex items-center cursor-pointer mt-1">
+                                <input type="checkbox" id="admin-detail-status-toggle" ${admin.status === 'active' ? 'checked' : ''} class="sr-only peer" onchange="toggleAdminAccess('${adminId}')">
+                                <div class="w-11 h-6 bg-zinc-800 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-zinc-400 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand peer-checked:after:bg-white"></div>
+                            </label>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between">
-                        <span class="text-[10px] text-zinc-400 font-bold uppercase">Time Remaining</span>
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-zinc-900/50 border border-zinc-850">
+                        <span class="text-[10px] text-zinc-400 font-bold uppercase">Days Remaining</span>
                         <span class="text-xs font-bold ${daysLeft > 0 ? 'text-emerald-400' : 'text-brand'}">${daysLeft > 0 ? daysLeft + ' Days Left' : 'Expired'}</span>
                     </div>
 
-                    <div class="space-y-1.5 pt-2">
-                        <label class="text-[10px] text-zinc-500 font-black uppercase tracking-wider block">Set Manual Subscription</label>
-                        <div class="grid grid-cols-3 gap-1.5">
-                            <button onclick="setAdminSubscription('${adminId}', 30)" class="py-2 bg-zinc-800 hover:bg-zinc-750 text-[10px] font-bold text-white rounded border border-zinc-700/50">30 Days</button>
-                            <button onclick="setAdminSubscription('${adminId}', 60)" class="py-2 bg-zinc-800 hover:bg-zinc-750 text-[10px] font-bold text-white rounded border border-zinc-700/50">60 Days</button>
-                            <button onclick="setAdminSubscription('${adminId}', 90)" class="py-2 bg-zinc-800 hover:bg-zinc-750 text-[10px] font-bold text-white rounded border border-zinc-700/50">90 Days</button>
-                        </div>
-                    </div>
+                    <button onclick="saveAdminDetailSettings('${adminId}')" class="w-full h-10 rounded bg-brand text-xs font-bold text-white uppercase tracking-wider shadow">Save Subscription Package</button>
+                    
+                    <button onclick="removeAdminIdentity('${adminId}')" class="w-full h-10 rounded bg-brand/10 hover:bg-brand/20 border border-brand/20 text-brand text-[10px] font-black uppercase tracking-wider mt-1">Remove From Admin</button>
 
+                    <!-- List of uploads by this Admin -->
                     <div class="space-y-2 pt-4 border-t border-zinc-800">
-                        <h5 class="text-[10px] text-zinc-400 font-bold uppercase">Uploaded Posts (${activePosts.length})</h5>
-                        <div class="space-y-1.5 max-h-32 overflow-y-auto pr-1">
+                        <h5 class="text-[10px] text-zinc-400 font-black uppercase tracking-widest">Uploaded Posts</h5>
+                        <div class="space-y-2 max-h-36 overflow-y-auto pr-1">
                             ${activePosts.map(p => `
-                                <div class="p-2 bg-zinc-950/40 border border-zinc-900 rounded flex items-center justify-between">
+                                <div class="p-2.5 bg-zinc-900 border border-zinc-850 rounded-xl flex items-center justify-between">
                                     <span class="text-[10px] text-white truncate max-w-[150px] font-semibold">${p.title}</span>
-                                    <span class="text-[9px] text-brand font-bold">${globalViews[p.id] || 0} views</span>
+                                    <div class="flex space-x-1">
+                                        <button onclick="editRecord('${p.id}'); closeAdminDetailModal(); closeProfileModal();" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-[9px] font-bold text-zinc-300 rounded border border-zinc-700">Edit</button>
+                                        <button onclick="executeAdminPostDelete('${p.id}'); closeAdminDetailModal();" class="px-2 py-1 bg-brand/10 hover:bg-brand/20 text-[9px] font-bold text-brand rounded border border-brand/20">Delete</button>
+                                    </div>
                                 </div>
                             `).join('') || '<p class="text-[9px] text-zinc-600">No posts uploaded yet.</p>'}
                         </div>
                     </div>
                 </div>
-
-                <button onclick="removeAdminIdentity('${adminId}')" class="w-full py-2.5 rounded bg-brand/10 border border-brand/20 text-brand text-[10px] font-bold uppercase tracking-wider mt-4">Revoke Admin Access</button>
             `;
 
             document.getElementById('admin-detail-modal').classList.remove('hidden');
@@ -1091,29 +1123,13 @@
             document.getElementById('admin-detail-modal').classList.add('hidden');
         }
 
-        async function toggleAdminStatus(adminId, status) {
-            try {
-                showToast("Updating admin status...");
-                await fetch(`${CLOUD_DB_URL}/admins/${adminId}/status.json`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(status)
-                });
-                showToast("Admin status updated!");
-                closeAdminDetailModal();
-                await refreshData();
-                viewAdminDetails(adminId);
-            } catch (err) {
-                showToast("Status change failed.");
-            }
-        }
-
-        async function setAdminSubscription(adminId, days) {
-            const targetExpiry = Date.now() + days * 24 * 60 * 60 * 1000;
+        async function saveAdminDetailSettings(adminId) {
+            const selectDays = parseInt(document.getElementById('admin-detail-days').value);
+            const targetExpiry = Date.now() + selectDays * 24 * 60 * 60 * 1000;
             const updatedDate = new Date(targetExpiry).toISOString();
 
             try {
-                showToast("Setting subscription period...");
+                showToast("Setting subscription...");
                 await fetch(`${CLOUD_DB_URL}/admins/${adminId}/expiryDate.json`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -1124,37 +1140,148 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify("active")
                 });
-                showToast(`Subscription set for ${days} days!`);
+                showToast(`Subscription assigned for ${selectDays} days!`);
                 closeAdminDetailModal();
                 await refreshData();
                 viewAdminDetails(adminId);
             } catch (err) {
-                showToast("Subscription setup failed.");
+                showToast("Failed to save subscription.");
+            }
+        }
+
+        async function toggleAdminAccess(adminId) {
+            const isChecked = document.getElementById('admin-detail-status-toggle').checked;
+            const nextStatus = isChecked ? 'active' : 'inactive';
+
+            try {
+                await fetch(`${CLOUD_DB_URL}/admins/${adminId}/status.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(nextStatus)
+                });
+                showToast(`Admin status toggled to ${nextStatus.toUpperCase()}!`);
+                await refreshData();
+            } catch (err) {
+                showToast("Toggle failed.");
             }
         }
 
         async function removeAdminIdentity(adminId) {
             try {
                 showToast("Revoking admin rights...");
-                await fetch(`${CLOUD_DB_URL}/admins/${adminId}.json`, {
-                    method: 'DELETE'
-                });
-                showToast("Admin rights revoked.");
+                await fetch(`${CLOUD_DB_URL}/admins/${adminId}.json`, { method: 'DELETE' });
+                showToast("Admin deleted successfully.");
                 closeAdminDetailModal();
                 await refreshData();
                 fetchRegisteredUsers();
             } catch (err) {
-                showToast("Failed to revoke admin.");
+                showToast("Deletion failed.");
             }
+        }
+
+        // Helper delete execution (Owner managing admin's post directly)
+        async function executeAdminPostDelete(postId) {
+            try {
+                showToast("Deleting...");
+                await fetch(`${CLOUD_DB_URL}/catalog/${postId}.json`, { method: 'DELETE' });
+                showToast("Post deleted successfully.");
+                await refreshData();
+            } catch (err) {
+                showToast("Deletion failed.");
+            }
+        }
+
+        // --- "+ post" ADMIN SPECIFIC TAB VIEW (Image 4 Format) ---
+        function switchAdminPostsType(type) {
+            currentAdminPostsType = type;
+            const btnMovies = document.getElementById('admin-posts-toggle-movies');
+            const btnShows = document.getElementById('admin-posts-toggle-series');
+
+            if (type === 'movie') {
+                btnMovies.className = "flex-1 py-1 text-[10px] font-bold rounded-md bg-brand/20 text-brand border border-brand/40";
+                btnShows.className = "flex-1 py-1 text-[10px] font-bold rounded-md text-zinc-400 hover:text-white";
+            } else {
+                btnShows.className = "flex-1 py-1 text-[10px] font-bold rounded-md bg-brand/20 text-brand border border-brand/40";
+                btnMovies.className = "flex-1 py-1 text-[10px] font-bold rounded-md text-zinc-400 hover:text-white";
+            }
+            renderAdminPostsTabList();
+        }
+
+        function searchAdminPosts() {
+            adminPostsSearchQuery = document.getElementById('admin-posts-search').value.toLowerCase().trim();
+            renderAdminPostsTabList();
+        }
+
+        function renderAdminPostsTabList() {
+            const listContainer = document.getElementById('admin-posts-list');
+            const counterBadge = document.getElementById('admin-posts-total-badge');
+            if (!listContainer) return;
+
+            // Filter posts strictly created by CURRENT logged in Admin
+            const adminPosts = localCatalog.filter(i => i.uploadedBy && i.uploadedBy.id === currentUser.id);
+            counterBadge.innerText = `Total Post: ${String(adminPosts.length).padStart(4, '0')}`;
+
+            let filtered = adminPosts.filter(i => i.type === currentAdminPostsType);
+
+            if (adminPostsSearchQuery) {
+                filtered = filtered.filter(i => i.title.toLowerCase().includes(adminPostsSearchQuery));
+            }
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `<div class="text-center py-8 text-xs text-zinc-600">No posts matched.</div>`;
+                return;
+            }
+
+            listContainer.innerHTML = filtered.map(item => `
+                <div class="p-3 bg-zinc-900/60 border border-zinc-900 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center space-x-3 overflow-hidden">
+                        <img class="w-10 h-14 rounded object-cover bg-zinc-800 border border-zinc-800/50 flex-shrink-0" src="${item.posterUrl}" alt="">
+                        <div class="overflow-hidden">
+                            <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
+                            <div class="flex items-center space-x-2 text-[9px] mt-1 font-semibold uppercase">
+                                <span class="text-zinc-500">${item.year}</span>
+                                <span class="text-zinc-700">•</span>
+                                <span class="text-brand font-bold">${globalViews[item.id] || 0} views</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-1 flex-shrink-0 ml-4">
+                        <button onclick="editRecord('${item.id}')" class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-750 text-[10px] font-bold text-zinc-300 rounded border border-zinc-700/50">Edit</button>
+                        <!-- Admins can delete their own posts directly with NO requests needed -->
+                        <button onclick="executeSelfPostDelete('${item.id}')" class="px-2.5 py-1.5 bg-brand/10 hover:bg-brand/20 text-[10px] font-bold text-brand rounded border border-brand/20">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function executeSelfPostDelete(id) {
+            currentDeleteId = id;
+            document.getElementById('confirm-modal-title').innerText = "Delete your post?";
+            document.getElementById('confirm-modal-desc').innerText = "This will permanently remove your uploaded post from the catalogue database.";
+            
+            document.getElementById('confirm-modal').classList.remove('hidden');
+            
+            const btn = document.getElementById('confirm-delete-btn');
+            btn.innerText = "Delete Post";
+            btn.className = "flex-1 py-2.5 bg-brand hover:bg-brand-hover text-xs font-bold text-white rounded-lg";
+            btn.onclick = async function() {
+                try {
+                    showToast("Deleting your post...");
+                    await fetch(`${CLOUD_DB_URL}/catalog/${currentDeleteId}.json`, { method: 'DELETE' });
+                    showToast("Deleted successfully.");
+                    closeConfirmModal();
+                    await refreshData();
+                    renderAdminPostsTabList();
+                } catch (err) {
+                    showToast("Failed to delete post.");
+                }
+            };
         }
 
         // --- PROFILE SECTION & VIEWS OVERLAYS ---
         function openProfileModal() {
             const modal = document.getElementById('profile-modal');
             modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.querySelector('.glass-panel').classList.remove('translate-y-full');
-            }, 50);
 
             // Populate user stats
             document.getElementById('profile-pic').src = currentUser.photo_url || '';
@@ -1181,53 +1308,35 @@
         }
 
         function closeProfileModal() {
-            const modal = document.getElementById('profile-modal');
-            modal.querySelector('.glass-panel').classList.add('translate-y-full');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
+            document.getElementById('profile-modal').classList.add('hidden');
         }
 
         function renderOwnerPendingControls() {
-            // Render pending deletes
-            const deletesList = document.getElementById('pending-deletes-list');
-            if (globalDeletes.length === 0) {
-                deletesList.innerHTML = `<p class="text-[10px] text-zinc-600">No delete requests active.</p>`;
-            } else {
-                deletesList.innerHTML = globalDeletes.map(req => `
-                    <div class="p-3 bg-zinc-900 border border-zinc-800 rounded-xl space-y-2">
-                        <div class="space-y-0.5">
-                            <span class="text-[9px] text-brand font-bold uppercase tracking-widest font-mono">REQ #${req.id.split('_')[1]}</span>
-                            <h5 class="text-xs font-bold text-white leading-normal truncate">${req.movieTitle}</h5>
-                            <p class="text-[9px] text-zinc-500">Requested by: <span class="text-zinc-300 font-semibold">${req.requestedBy}</span></p>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 pt-1 border-t border-zinc-850">
-                            <button onclick="declineDeleteRequest('${req.id}')" class="py-1.5 bg-zinc-800 hover:bg-zinc-750 text-[9px] font-bold text-zinc-400 rounded">Decline</button>
-                            <button onclick="approveDeleteRequest('${req.id}', '${req.movieId}')" class="py-1.5 bg-brand hover:bg-brand-hover text-[9px] font-bold text-white rounded">Agree</button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            // Render Manage Admins
-            const adminsList = document.getElementById('profile-admins-list');
+            // Calculate Total/Active admin metrics
             const admins = Object.keys(globalAdmins).map(key => globalAdmins[key]);
-            
+            const totalCount = admins.length;
+            const activeCount = admins.filter(a => a.status === 'active').length;
+
+            document.getElementById('stat-total-admins').innerText = String(totalCount).padStart(4, '0');
+            document.getElementById('stat-active-admins').innerText = String(activeCount).padStart(4, '0');
+
+            // Render Manage Admins list matching Image 2 style
+            const adminsList = document.getElementById('profile-admins-list');
             if (admins.length === 0) {
-                adminsList.innerHTML = `<p class="text-[10px] text-zinc-600">No admins promoted yet.</p>`;
+                adminsList.innerHTML = `<p class="text-[10px] text-zinc-600 col-span-2 text-center">No admins promoted yet.</p>`;
             } else {
                 adminsList.innerHTML = admins.map(adm => {
                     const activePosts = localCatalog.filter(i => i.uploadedBy && i.uploadedBy.id === adm.id).length;
                     return `
-                        <div onclick="viewAdminDetails('${adm.id}')" class="p-3 bg-zinc-900 hover:bg-zinc-850 rounded-xl flex items-center justify-between border border-zinc-900 cursor-pointer transition-colors">
-                            <div class="flex items-center space-x-2.5 overflow-hidden">
+                        <div onclick="viewAdminDetails('${adm.id}')" class="p-3 bg-zinc-900 hover:bg-zinc-850 rounded-xl flex flex-col justify-between border border-zinc-850 cursor-pointer transition-colors space-y-2">
+                            <div class="flex items-center space-x-2">
                                 <img class="w-8 h-8 rounded-full object-cover bg-zinc-800" src="${adm.photo_url || ''}">
                                 <div class="overflow-hidden">
-                                    <h5 class="text-xs font-bold text-white truncate">${adm.name}</h5>
-                                    <p class="text-[9px] text-zinc-500">Posts uploaded: <span class="text-brand font-black">${activePosts}</span></p>
+                                    <h5 class="text-[10px] font-bold text-white truncate">${adm.name}</h5>
+                                    <p class="text-[8px] text-zinc-500 truncate">Posts: <span class="text-brand font-black">${activePosts}</span></p>
                                 </div>
                             </div>
-                            <span class="px-1.5 py-0.5 rounded bg-brand/10 border border-brand/20 text-brand text-[8px] font-bold uppercase tracking-wider">${adm.status}</span>
+                            <span class="w-full text-center py-1 rounded text-[8px] font-black ${adm.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-zinc-950 text-zinc-500 border border-zinc-850'}">${adm.status.toUpperCase()}</span>
                         </div>
                     `;
                 }).join('');
@@ -1240,45 +1349,6 @@
 
             const daysLeft = Math.ceil((new Date(admin.expiryDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
             document.getElementById('profile-admin-expiry').innerText = daysLeft > 0 ? `${daysLeft} Days subscription remaining` : 'Subscription Expired';
-
-            const activePosts = localCatalog.filter(i => i.uploadedBy && i.uploadedBy.id === currentUser.id);
-            const postsList = document.getElementById('profile-admin-posts');
-
-            if (activePosts.length === 0) {
-                postsList.innerHTML = `<p class="text-[10px] text-zinc-600">No posts uploaded yet.</p>`;
-            } else {
-                postsList.innerHTML = activePosts.map(p => `
-                    <div class="p-2.5 bg-zinc-900 border border-zinc-900 rounded-xl flex items-center justify-between">
-                        <span class="text-[10px] text-white truncate max-w-[150px] font-semibold">${p.title}</span>
-                        <span class="text-[9px] text-brand font-bold">${globalViews[p.id] || 0} views</span>
-                    </div>
-                `).join('');
-            }
-        }
-
-        async function approveDeleteRequest(reqId, movieId) {
-            try {
-                showToast("Deleting records from catalog...");
-                await fetch(`${CLOUD_DB_URL}/catalog/${movieId}.json`, { method: 'DELETE' });
-                await fetch(`${CLOUD_DB_URL}/delete_requests/${reqId}.json`, { method: 'DELETE' });
-                showToast("Request approved. File deleted.");
-                await refreshData();
-                renderOwnerPendingControls();
-            } catch (err) {
-                showToast("Approval processing failed.");
-            }
-        }
-
-        async function declineDeleteRequest(reqId) {
-            try {
-                showToast("Dismissing delete request...");
-                await fetch(`${CLOUD_DB_URL}/delete_requests/${reqId}.json`, { method: 'DELETE' });
-                showToast("Delete request declined.");
-                await refreshData();
-                renderOwnerPendingControls();
-            } catch (err) {
-                showToast("Decline failed.");
-            }
         }
 
         // --- TMDB AUTOMATIC MAGIC DISCOVER SHELF ---
@@ -1312,7 +1382,7 @@
                 }).join('');
 
             } catch (err) {
-                console.error("TMDB discovery shelf loading failed", err);
+                console.error(err);
                 shelf.innerHTML = `<div class="text-[10px] text-zinc-600">Failed to load TMDB discover feed.</div>`;
             }
         }
@@ -1561,6 +1631,12 @@
             const item = localCatalog.find(i => i.id === id);
             if (!item) return;
 
+            // Restrict Admins from editing another users posts
+            if (currentUserRole === 'admin' && (!item.uploadedBy || item.uploadedBy.id !== currentUser.id)) {
+                showToast("Access Denied: You cannot edit other admins posts.");
+                return;
+            }
+
             document.getElementById('edit-id').value = item.id;
             document.getElementById('asset-title').value = item.title || '';
             document.getElementById('asset-year').value = item.year || '';
@@ -1677,7 +1753,7 @@
                             <img class="w-8 h-8 rounded object-cover flex-shrink-0" src="${item.posterUrl}">
                             <span class="text-xs font-semibold text-zinc-300 truncate">${item.title}</span>
                         </div>
-                        <button onclick="toggleSliderPin('${item.id}', true)" type="button" class="px-2.5 py-1 text-[9px] font-bold bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded border border-zinc-700">PIN TO HERO</button>
+                        <button onclick="toggleSliderPin('${item.id}', true)" type="button" class="px-2.5 py-1 text-[9px] font-bold bg-zinc-800 hover:bg-zinc-750 text-zinc-300 rounded border border-zinc-700">PIN TO HERO</button>
                     </div>
                 `).join('');
             }
@@ -1758,58 +1834,28 @@
             reader.readAsText(file);
         }
 
-        // --- DELETE CONFIRMATION & REQUESTS ---
+        // --- DELETE CONFIRMATION ---
         function triggerDelete(id) {
-            if (currentUserRole === 'admin') {
-                const item = localCatalog.find(i => i.id === id);
-                if (!item) return;
+            const item = localCatalog.find(i => i.id === id);
+            if (!item) return;
 
-                document.getElementById('confirm-modal-title').innerText = "Submit Delete Request?";
-                document.getElementById('confirm-modal-desc').innerText = `You do not have direct deletion rights. Submit a request to the Owner to delete "${item.title}"?`;
-                
-                document.getElementById('confirm-modal').classList.remove('hidden');
-                
-                const btn = document.getElementById('confirm-delete-btn');
-                btn.innerText = "Request Delete";
-                btn.className = "flex-1 py-2.5 bg-brand hover:bg-brand-hover text-xs font-bold text-white rounded-lg";
-                
-                btn.onclick = async function() {
-                    const reqId = 'req_' + Date.now();
-                    const delReq = {
-                        id: reqId,
-                        movieId: id,
-                        movieTitle: item.title,
-                        requestedBy: currentUser.first_name + ' ' + currentUser.last_name,
-                        requestedById: currentUser.id,
-                        timestamp: Date.now()
-                    };
-
-                    try {
-                        showToast("Submitting deletion request...");
-                        await fetch(`${CLOUD_DB_URL}/delete_requests/${reqId}.json`, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(delReq)
-                        });
-                        showToast("Request submitted successfully!");
-                        closeConfirmModal();
-                    } catch (err) {
-                        showToast("Request submission failed.");
-                    }
-                };
-            } else {
-                currentDeleteId = id;
-                
-                document.getElementById('confirm-modal-title').innerText = "Remove Record permanently?";
-                document.getElementById('confirm-modal-desc').innerText = "This action can't be undone in sync memory.";
-                
-                document.getElementById('confirm-modal').classList.remove('hidden');
-                
-                const btn = document.getElementById('confirm-delete-btn');
-                btn.innerText = "Delete";
-                btn.className = "flex-1 py-2.5 bg-brand hover:bg-brand-hover text-xs font-bold text-white rounded-lg";
-                btn.onclick = executeDelete;
+            // Stop Admins deleting Owner's or other admins posts
+            if (currentUserRole === 'admin' && (!item.uploadedBy || item.uploadedBy.id !== currentUser.id)) {
+                showToast("Access Denied: You cannot delete another users posts.");
+                return;
             }
+
+            currentDeleteId = id;
+            
+            document.getElementById('confirm-modal-title').innerText = "Remove Record permanently?";
+            document.getElementById('confirm-modal-desc').innerText = `This will permanently remove "${item.title}" from the cloud database.`;
+            
+            document.getElementById('confirm-modal').classList.remove('hidden');
+            
+            const btn = document.getElementById('confirm-delete-btn');
+            btn.innerText = "Delete";
+            btn.className = "flex-1 py-2.5 bg-brand hover:bg-brand-hover text-xs font-bold text-white rounded-lg";
+            btn.onclick = executeDelete;
         }
 
         function closeConfirmModal() {
@@ -1873,6 +1919,23 @@
             }
 
             closeSelectSheet('type-sheet');
+        }
+
+        // --- CREATE CUSTOM GENRE TAG ---
+        function createNewGenreTag() {
+            const input = document.getElementById('new-genre-input');
+            const genre = input.value.trim();
+            if (!genre) return;
+            
+            if (!genresList.includes(genre)) {
+                genresList.push(genre);
+                localStorage.setItem('mlhbm_admin_genres', JSON.stringify(genresList));
+                renderGenresChecklist();
+                input.value = '';
+                showToast(`Genre "${genre}" added!`);
+            } else {
+                showToast("Genre already exists!");
+            }
         }
 
         function selectCategoryOption(val) {
@@ -2107,13 +2170,16 @@
         window.closeProfileModal = closeProfileModal;
         window.viewAdminDetails = viewAdminDetails;
         window.closeAdminDetailModal = closeAdminDetailModal;
-        window.toggleAdminStatus = toggleAdminStatus;
-        window.setAdminSubscription = setAdminSubscription;
+        window.saveAdminDetailSettings = saveAdminDetailSettings;
+        window.toggleAdminAccess = toggleAdminAccess;
         window.removeAdminIdentity = removeAdminIdentity;
-        window.approveDeleteRequest = approveDeleteRequest;
-        window.declineDeleteRequest = declineDeleteRequest;
         window.importTMDBAsset = importTMDBAsset;
         window.promptPromoteAdmin = promptPromoteAdmin;
+        window.switchUsersTab = switchUsersTab;
+        window.switchAdminPostsType = switchAdminPostsType;
+        window.searchAdminPosts = searchAdminPosts;
+        window.executeSelfPostDelete = executeSelfPostDelete;
+        window.executeAdminPostDelete = executeAdminPostDelete;
 
         function showToast(message) {
             const container = document.getElementById('toast-container');
