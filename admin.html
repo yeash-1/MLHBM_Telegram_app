@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="h-full select-none">
 <head>
     <meta charset="UTF-8">
@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* Custom scrollbars and transitions */
+        /* Custom scrollbars and styling */
         ::-webkit-scrollbar {
             display: none;
         }
@@ -56,7 +56,7 @@
         }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 font-sans h-full flex flex-col overflow-hidden">
+<body class="bg-zinc-950 text-zinc-100 font-sans min-h-full flex flex-col antialiased">
 
     <!-- Passcode Gate Overlay -->
     <div id="auth-overlay" class="fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center p-4">
@@ -72,7 +72,6 @@
             <form id="auth-form" class="space-y-4">
                 <div class="relative">
                     <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500"></i>
-                    <!-- Securely configured input field (Excludes passcode disclosure) -->
                     <input type="password" id="passcode-input" placeholder="••••••••" class="w-full bg-zinc-900 border border-zinc-800 rounded-xl py-3 pl-11 pr-4 text-zinc-100 placeholder-zinc-650 text-sm focus:outline-none focus:border-brand transition-colors" required>
                 </div>
                 <button type="submit" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-3 px-4 rounded-xl transition-all duration-150 transform active:scale-[0.98]">
@@ -97,7 +96,7 @@
             </button>
         </header>
 
-        <!-- Main Content Area with Bottom Padding for Navigation Bar -->
+        <!-- Main Content Area -->
         <main class="flex-1 overflow-y-auto no-scrollbar pb-28 p-4 space-y-6">
             
             <!-- Metrics Row -->
@@ -119,20 +118,29 @@
             <!-- Two-Column Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 
-                <!-- Dynamic Form (Takes up 5 columns in large layout) -->
+                <!-- Dynamic Form -->
                 <div id="left-form-container" class="lg:col-span-5 space-y-4">
                     <div class="glass-panel p-5 rounded-2xl border border-zinc-800 shadow-xl space-y-4">
                         <div class="flex items-center justify-between border-b border-zinc-900 pb-2">
-                            <h3 id="form-heading" class="text-xs font-bold text-white uppercase tracking-wider">Register New Movie</h3>
+                            <h3 id="form-heading" class="text-xs font-bold text-white uppercase tracking-wider">Register New Entry</h3>
                             <button id="form-reset-btn" class="text-xs text-brand font-semibold hover:underline hidden">
                                 Cancel Edit
                             </button>
                         </div>
 
                         <form id="master-form" class="space-y-4">
+                            <!-- Toggle switch for Movie vs Series -->
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-semibold text-zinc-400">Media Type</label>
+                                <select id="m-type" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand">
+                                    <option value="movie">Movie</option>
+                                    <option value="series">TV Show / Series</option>
+                                </select>
+                            </div>
+
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
-                                    <label class="text-[10px] font-semibold text-zinc-400">Media Title</label>
+                                    <label class="text-[10px] font-semibold text-zinc-400">Title</label>
                                     <input type="text" id="m-title" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. Silo" required>
                                 </div>
                                 <div class="space-y-1">
@@ -143,8 +151,8 @@
 
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="space-y-1">
-                                    <label class="text-[10px] font-semibold text-zinc-400">Duration/Episodes</label>
-                                    <input type="text" id="m-runtime" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. 2h 10m" required>
+                                    <label class="text-[10px] font-semibold text-zinc-400">Runtime / Total Seasons</label>
+                                    <input type="text" id="m-runtime" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. 2h 10m or 7 Seasons" required>
                                 </div>
                                 <div class="space-y-1">
                                     <label class="text-[10px] font-semibold text-zinc-400">Rating (0.0 - 10.0)</label>
@@ -152,11 +160,17 @@
                                 </div>
                             </div>
 
-                            <div id="category-select-wrapper" class="space-y-1">
-                                <label class="text-[10px] font-semibold text-zinc-400">Display Row Category</label>
-                                <select id="m-category" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand">
-                                    <!-- Populated Dynamically -->
-                                </select>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div id="category-select-wrapper" class="space-y-1">
+                                    <label class="text-[10px] font-semibold text-zinc-400">Display Row Category</label>
+                                    <select id="m-category" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand">
+                                        <!-- Populated Dynamically -->
+                                    </select>
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] font-semibold text-zinc-400">Status (For TV Shows)</label>
+                                    <input type="text" id="m-status" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="e.g. Returning Series">
+                                </div>
                             </div>
 
                             <!-- Multiple Dynamic Genre Tag Selection System -->
@@ -174,7 +188,7 @@
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-[10px] font-semibold text-zinc-400">Media Description / Overview</label>
+                                <label class="text-[10px] font-semibold text-zinc-400">Description / Overview</label>
                                 <textarea id="m-overview" rows="2" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand resize-none" placeholder="Enter overview text..." required></textarea>
                             </div>
 
@@ -188,9 +202,23 @@
                                 <input type="url" id="m-backdrop" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="https://domain.com/backdrop.jpg" required>
                             </div>
 
-                            <div class="space-y-1">
-                                <label class="text-[10px] font-semibold text-zinc-400">Download Target Link (URL)</label>
-                                <input type="url" id="m-download" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="https://t.me/your_bot" required>
+                            <!-- MOVIE DOWNLOAD URL (Shown only if type is 'movie') -->
+                            <div id="movie-only-fields" class="space-y-1">
+                                <label class="text-[10px] font-semibold text-zinc-400">Movie Download Target Link (URL)</label>
+                                <input type="url" id="m-download" class="w-full bg-zinc-900/60 border border-zinc-800 rounded-lg p-2 text-xs text-zinc-100 focus:outline-none focus:border-brand" placeholder="https://t.me/your_bot">
+                            </div>
+
+                            <!-- SERIES SEASONS & EPISODES BUILDER (Shown only if type is 'series') -->
+                            <div id="series-only-fields" class="space-y-3 border-t border-zinc-900 pt-3 hidden">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Seasons & Episodes Builder</label>
+                                    <button type="button" id="add-season-btn" class="text-[9px] bg-brand/20 border border-brand/30 hover:bg-brand/30 text-brand font-bold px-2 py-1 rounded">
+                                        <i class="fa-solid fa-plus mr-1"></i>Add Season
+                                    </button>
+                                </div>
+                                <div id="seasons-builder-list" class="space-y-4 max-h-[350px] overflow-y-auto no-scrollbar">
+                                    <!-- Embedded dynamic season structures with episode cards -->
+                                </div>
                             </div>
 
                             <button type="submit" id="form-submit-btn" class="w-full bg-brand hover:bg-brand-hover text-white font-bold py-2.5 rounded-xl text-xs transition-colors shadow-lg shadow-brand/10">
@@ -208,7 +236,7 @@
                     </div>
 
                     <!-- Card Grid Container -->
-                    <div id="records-grid-container" class="grid grid-cols-1 gap-3 max-h-[600px] overflow-y-auto pr-1 no-scrollbar pb-10">
+                    <div id="records-grid-container" class="grid grid-cols-1 gap-3 max-h-[750px] overflow-y-auto pr-1 no-scrollbar pb-10">
                         <!-- Dynamic Records Cards -->
                     </div>
                 </div>
@@ -297,7 +325,7 @@
 
     <!-- Application Controller Logic -->
     <script>
-        // Core Working State
+        // Core Working State (Matches the updated Multi-season schema)
         let dbState = {
             settings: { appName: "MLHBM", primaryColor: "#E50914" },
             categories: ["Trending Now", "Top Rated Movies", "Top Rated Series"],
@@ -305,8 +333,9 @@
             movies: []
         };
 
-        let dynamicGenres = ["Action", "Sci-Fi", "Thriller", "Adventure", "Fantasy", "Horror", "Drama", "Romance", "Comedy", "Animation"];
+        let dynamicGenres = ["Action", "Sci-Fi", "Thriller", "Adventure", "Fantasy", "Horror", "Drama", "Romance", "Comedy", "Animation", "Crime"];
         let selectedFormGenres = [];
+        let seasonsData = []; // Multi-season builder memory state
         let currentEditingId = null;
         let activeAdminTab = 'movies'; // 'movies', 'banners', 'io'
         let pendingDeleteTarget = null; // { type: 'movie'|'banner', id: string }
@@ -348,6 +377,7 @@
             setupTabControls();
             setupFormInteractions();
             setupDataHandlers();
+            setupSeasonBuilderListeners();
             
             // Sync current forms & dataset
             resetMasterForm();
@@ -365,27 +395,25 @@
             dbState.banners = [
                 {
                     id: "banner-1",
-                    title: "Silo",
-                    year: "2023",
-                    rating: "8.2",
-                    overview: "In a ruined and toxic future, thousands live in a giant silo deep underground. After its sheriff breaks a cardinal rule and residents die mysteriously, engineer Juliette starts to uncover shocking secrets.",
-                    backdrop: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1200",
-                    poster: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=600",
-                    runtime: "10 Episodes",
-                    genres: ["Sci-Fi", "Drama", "Thriller"],
-                    downloadUrl: "https://t.me/your_telegram_bot?start=silo"
-                },
-                {
-                    id: "banner-2",
-                    title: "The Odyssey",
-                    year: "2026",
-                    rating: "6.9",
-                    overview: "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point.",
-                    backdrop: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=1200",
-                    poster: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=600",
-                    runtime: "2h 53m",
-                    genres: ["Adventure", "Action", "Fantasy"],
-                    downloadUrl: "https://t.me/your_telegram_bot?start=odyssey"
+                    title: "The Rookie",
+                    type: "series",
+                    status: "Returning Series",
+                    year: "2018",
+                    rating: "8.5",
+                    overview: "Starting over isn't easy, especially for small-town guy John Nolan who, after a life-altering incident, is pursuing his dream of being an LAPD officer. As the force's oldest rookie, he's met with skepticism from some higher-ups who see him as just a walking midlife crisis.",
+                    backdrop: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=1200",
+                    poster: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=600",
+                    runtime: "7 Seasons",
+                    genres: ["Crime", "Drama", "Comedy"],
+                    seasons: [
+                        {
+                            seasonNumber: 1,
+                            episodes: [
+                                { episodeNumber: 1, title: "Pilot", duration: "43m", thumbnail: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=400", downloadUrl: "https://t.me/your_bot?start=rookie_s1e1" },
+                                { episodeNumber: 2, title: "Crash Course", duration: "42m", thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400", downloadUrl: "https://t.me/your_bot?start=rookie_s1e2" }
+                            ]
+                        }
+                    ]
                 }
             ];
 
@@ -393,6 +421,7 @@
                 {
                     id: "movie-1",
                     title: "The Odyssey",
+                    type: "movie",
                     category: "Trending Now",
                     year: "2026",
                     rating: "6.9",
@@ -405,59 +434,32 @@
                 },
                 {
                     id: "movie-2",
-                    title: "Backrooms",
+                    title: "The Rookie",
+                    type: "series",
+                    status: "Returning Series",
                     category: "Trending Now",
-                    year: "2026",
-                    rating: "7.0",
-                    overview: "An atmospheric exploration into the liminal terror of anomalous, yellow-walled spaces. A rescue team must map out an endless, repeating layout while evading unidentified entity signatures.",
-                    poster: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600",
-                    backdrop: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=1200",
-                    runtime: "1h 44m",
-                    genres: ["Horror", "Sci-Fi", "Thriller"],
-                    downloadUrl: "https://t.me/your_telegram_bot?start=backrooms"
+                    year: "2018",
+                    rating: "8.5",
+                    overview: "Starting over isn't easy, especially for small-town guy John Nolan who, after a life-altering incident, is pursuing his dream of being an LAPD officer. As the force's oldest rookie, he's met with skepticism from some higher-ups who see him as just a walking midlife crisis.",
+                    poster: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=600",
+                    backdrop: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=1200",
+                    runtime: "7 Seasons",
+                    genres: ["Crime", "Drama", "Comedy"],
+                    seasons: [
+                        {
+                            seasonNumber: 1,
+                            episodes: [
+                                { episodeNumber: 1, title: "Pilot", duration: "43m", thumbnail: "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&q=80&w=400", downloadUrl: "https://t.me/your_bot?start=rookie_s1e1" },
+                                { episodeNumber: 2, title: "Crash Course", duration: "42m", thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400", downloadUrl: "https://t.me/your_bot?start=rookie_s1e2" }
+                            ]
+                        }
+                    ]
                 },
                 {
                     id: "movie-3",
-                    title: "Obsession",
-                    category: "Trending Now",
-                    year: "2026",
-                    rating: "8.2",
-                    overview: "A psychological thriller detailing the breakdown of a renowned cryptographer who is lured into decoding ancient texts of unknown origin, gradually revealing secrets best kept forgotten.",
-                    poster: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=600",
-                    backdrop: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&q=80&w=1200",
-                    runtime: "2h 10m",
-                    genres: ["Drama", "Thriller"],
-                    downloadUrl: "https://t.me/your_telegram_bot?start=obsession"
-                },
-                {
-                    id: "movie-4",
-                    title: "Accidental Love",
-                    category: "Top Rated Movies",
-                    year: "2026",
-                    rating: "9.1",
-                    overview: "Two polar opposite rival investigators are forced together when their respective cases intersect. Soon they learn that their professional collision is anything but accidental.",
-                    poster: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&q=80&w=600",
-                    backdrop: "https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&q=80&w=1200",
-                    runtime: "2h 15m",
-                    genres: ["Romance", "Comedy"],
-                    downloadUrl: "https://t.me/your_telegram_bot?start=accident"
-                },
-                {
-                    id: "movie-5",
-                    title: "Swapped",
-                    category: "Top Rated Movies",
-                    year: "2026",
-                    rating: "8.9",
-                    overview: "When a world-renowned fantasy designer trades lives with a simple village artisan, chaotic high-stakes events force both to re-evaluate what truly matters.",
-                    poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=600",
-                    backdrop: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=1200",
-                    runtime: "1h 56m",
-                    genres: ["Animation", "Comedy", "Fantasy"],
-                    downloadUrl: "https://t.me/your_telegram_bot?start=swapped"
-                },
-                {
-                    id: "movie-6",
                     title: "Teach You a Lesson",
+                    type: "series",
+                    status: "Returning Series",
                     category: "Top Rated Series",
                     year: "2026",
                     rating: "9.5",
@@ -466,24 +468,17 @@
                     backdrop: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=1200",
                     runtime: "12 Episodes",
                     genres: ["Drama", "Thriller"],
-                    downloadUrl: "https://t.me/your_telegram_bot?start=teach"
-                },
-                {
-                    id: "movie-7",
-                    title: "Dutton Ranch",
-                    category: "Top Rated Series",
-                    year: "2026",
-                    rating: "9.3",
-                    overview: "A grit-infused drama exploring the legal maneuvers, family sacrifices, and high-tension standoffs of managing a historic mountain valley boundary reservation.",
-                    poster: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=600",
-                    backdrop: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1200",
-                    runtime: "8 Episodes",
-                    genres: ["Action", "Drama"],
-                    downloadUrl: "https://t.me/your_telegram_bot?start=dutton"
+                    seasons: [
+                        {
+                            seasonNumber: 1,
+                            episodes: [
+                                { episodeNumber: 1, title: "Unorthodox Start", duration: "50m", thumbnail: "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=400", downloadUrl: "https://t.me/your_bot?start=teach_s1e1" }
+                            ]
+                        }
+                    ]
                 }
             ];
 
-            // Auto-load genres
             const customPool = new Set(dynamicGenres);
             dbState.movies.forEach(m => m.genres?.forEach(g => customPool.add(g)));
             dynamicGenres = Array.from(customPool);
@@ -532,7 +527,7 @@
             });
         }
 
-        // Tag switches rendering engine
+        // Tag management rendering
         function renderGenreSwitches() {
             const pool = document.getElementById('genre-pool');
             pool.innerHTML = '';
@@ -559,7 +554,7 @@
             });
         }
 
-        // Populate dynamic drop-down selectors
+        // Initialize selectors
         function populateCategorySelectors() {
             const selector = document.getElementById('m-category');
             selector.innerHTML = '';
@@ -571,7 +566,7 @@
             });
         }
 
-        // Dynamically add a new genre pill switch
+        // Push new tags manually to the state list
         document.getElementById('add-genre-tag-btn').addEventListener('click', () => {
             const input = document.getElementById('new-genre-input');
             const val = input.value.trim();
@@ -583,14 +578,132 @@
             }
         });
 
-        // Form Submit Handler
+        // Initialize Series vs Movie Form switch events
+        function setupSeasonBuilderListeners() {
+            const typeSelect = document.getElementById('m-type');
+            const movieFields = document.getElementById('movie-only-fields');
+            const seriesFields = document.getElementById('series-only-fields');
+
+            typeSelect.addEventListener('change', () => {
+                if (typeSelect.value === 'series') {
+                    movieFields.classList.add('hidden');
+                    seriesFields.classList.remove('hidden');
+                    renderSeasonsBuilder();
+                } else {
+                    movieFields.classList.remove('hidden');
+                    seriesFields.classList.add('hidden');
+                }
+            });
+
+            document.getElementById('add-season-btn').addEventListener('click', () => {
+                const nextSeasonNum = seasonsData.length + 1;
+                seasonsData.push({
+                    seasonNumber: nextSeasonNum,
+                    episodes: []
+                });
+                renderSeasonsBuilder();
+            });
+        }
+
+        // Live rendering Seasons and Episodes Forms (Dynamic memory bindings)
+        function renderSeasonsBuilder() {
+            const container = document.getElementById('seasons-builder-list');
+            container.innerHTML = '';
+
+            if (seasonsData.length === 0) {
+                container.innerHTML = `<span class="text-[10px] text-zinc-600 block text-center py-4">No Seasons added yet. Click "Add Season" to begin.</span>`;
+                return;
+            }
+
+            seasonsData.forEach((s, sIdx) => {
+                const block = document.createElement('div');
+                block.className = "bg-zinc-900 p-3 rounded-lg border border-zinc-800/80 space-y-3 relative";
+                
+                block.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-zinc-850 pb-2">
+                        <span class="text-xs font-bold text-white">Season ${s.seasonNumber}</span>
+                        <div class="flex items-center space-x-2">
+                            <button type="button" onclick="addEpisodeToSeason(${sIdx})" class="text-[9px] bg-zinc-800 text-zinc-300 font-bold px-2 py-0.5 rounded border border-zinc-750">
+                                <i class="fa-solid fa-plus mr-1"></i>Episode
+                            </button>
+                            <button type="button" onclick="removeSeason(${sIdx})" class="text-[9px] text-brand hover:underline">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="episodes-wrapper-${sIdx}" class="space-y-3">
+                        <!-- Episode forms injected dynamically -->
+                    </div>
+                `;
+
+                const epWrapper = block.querySelector(`#episodes-wrapper-${sIdx}`);
+                s.episodes.forEach((ep, epIdx) => {
+                    const epForm = document.createElement('div');
+                    epForm.className = "bg-zinc-950 p-2.5 rounded-lg border border-zinc-900 space-y-2 relative";
+                    epForm.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold text-zinc-400">Episode ${ep.episodeNumber}</span>
+                            <button type="button" onclick="removeEpisodeFromSeason(${sIdx}, ${epIdx})" class="text-[9px] text-zinc-500 hover:text-brand">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" placeholder="Title" value="${ep.title || ''}" oninput="updateEpisodeField(${sIdx}, ${epIdx}, 'title', this.value)" class="w-full bg-zinc-900 border border-zinc-850 rounded p-1.5 text-[10px] text-zinc-100 focus:outline-none focus:border-brand" required>
+                            <input type="text" placeholder="Duration (e.g. 45m)" value="${ep.duration || ''}" oninput="updateEpisodeField(${sIdx}, ${epIdx}, 'duration', this.value)" class="w-full bg-zinc-900 border border-zinc-850 rounded p-1.5 text-[10px] text-zinc-100 focus:outline-none focus:border-brand" required>
+                        </div>
+                        <input type="url" placeholder="Thumbnail Image URL" value="${ep.thumbnail || ''}" oninput="updateEpisodeField(${sIdx}, ${epIdx}, 'thumbnail', this.value)" class="w-full bg-zinc-900 border border-zinc-850 rounded p-1.5 text-[10px] text-zinc-100 focus:outline-none focus:border-brand" required>
+                        <input type="url" placeholder="Download Link URL" value="${ep.downloadUrl || ''}" oninput="updateEpisodeField(${sIdx}, ${epIdx}, 'downloadUrl', this.value)" class="w-full bg-zinc-900 border border-zinc-850 rounded p-1.5 text-[10px] text-zinc-100 focus:outline-none focus:border-brand" required>
+                    `;
+                    epWrapper.appendChild(epForm);
+                });
+
+                container.appendChild(block);
+            });
+        }
+
+        // Interactive Builder Helper functions (Wired to global scope)
+        window.addEpisodeToSeason = function(sIdx) {
+            const nextEpNum = seasonsData[sIdx].episodes.length + 1;
+            seasonsData[sIdx].episodes.push({
+                episodeNumber: nextEpNum,
+                title: '',
+                duration: '',
+                thumbnail: '',
+                downloadUrl: ''
+            });
+            renderSeasonsBuilder();
+        };
+
+        window.removeSeason = function(sIdx) {
+            seasonsData.splice(sIdx, 1);
+            // Re-order season numbers safely
+            seasonsData.forEach((s, idx) => s.seasonNumber = idx + 1);
+            renderSeasonsBuilder();
+        };
+
+        window.removeEpisodeFromSeason = function(sIdx, epIdx) {
+            seasonsData[sIdx].episodes.splice(epIdx, 1);
+            // Re-order episode numbers safely
+            seasonsData[sIdx].episodes.forEach((ep, idx) => ep.episodeNumber = idx + 1);
+            renderSeasonsBuilder();
+        };
+
+        window.updateEpisodeField = function(sIdx, epIdx, field, value) {
+            seasonsData[sIdx].episodes[epIdx][field] = value;
+        };
+
+        // Form processing interface
         function setupFormInteractions() {
             const form = document.getElementById('master-form');
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
 
+                const mType = document.getElementById('m-type').value;
+
+                // Build dynamic object structure
                 const entryData = {
                     id: currentEditingId || (activeAdminTab === 'movies' ? `movie-${Date.now()}` : `banner-${Date.now()}`),
+                    type: mType,
                     title: document.getElementById('m-title').value.trim(),
                     year: document.getElementById('m-year').value.trim(),
                     runtime: document.getElementById('m-runtime').value.trim(),
@@ -598,9 +711,16 @@
                     overview: document.getElementById('m-overview').value.trim(),
                     poster: document.getElementById('m-poster').value.trim(),
                     backdrop: document.getElementById('m-backdrop').value.trim(),
-                    downloadUrl: document.getElementById('m-download').value.trim(),
                     genres: [...selectedFormGenres]
                 };
+
+                // Allocate movie vs series database parameters
+                if (mType === 'series') {
+                    entryData.status = document.getElementById('m-status').value.trim() || 'Returning Series';
+                    entryData.seasons = JSON.parse(JSON.stringify(seasonsData)); // Deep copy seasons builder state
+                } else {
+                    entryData.downloadUrl = document.getElementById('m-download').value.trim();
+                }
 
                 if (activeAdminTab === 'movies') {
                     entryData.category = document.getElementById('m-category').value;
@@ -634,11 +754,18 @@
         function resetMasterForm() {
             currentEditingId = null;
             selectedFormGenres = [];
+            seasonsData = [];
+            
             document.getElementById('master-form').reset();
             document.getElementById('form-reset-btn').classList.add('hidden');
             
+            const typeSelect = document.getElementById('m-type');
+            typeSelect.value = 'movie';
+            document.getElementById('movie-only-fields').classList.remove('hidden');
+            document.getElementById('series-only-fields').classList.add('hidden');
+
             if (activeAdminTab === 'movies') {
-                document.getElementById('form-heading').textContent = "Register New Movie";
+                document.getElementById('form-heading').textContent = "Register New Movie / Show";
                 document.getElementById('category-select-wrapper').classList.remove('hidden');
             } else {
                 document.getElementById('form-heading').textContent = "Register New Banner";
@@ -650,7 +777,7 @@
             populateCategorySelectors();
         }
 
-        // Sync and refresh catalog list layouts
+        // Sync view layout counters
         function syncDynamicDashboardView() {
             document.getElementById('stat-movies-count').textContent = dbState.movies.length;
             document.getElementById('stat-banners-count').textContent = dbState.banners.length;
@@ -692,11 +819,17 @@
                 card.className = "glass-card p-3 rounded-xl border border-zinc-800/60 flex items-center justify-between space-x-3";
                 const badgesHtml = item.genres ? item.genres.map(g => `<span class="bg-zinc-900 border border-zinc-800 text-zinc-400 text-[9px] font-bold px-1.5 py-0.5 rounded">${g}</span>`).join(' ') : '';
 
+                // Map movie vs series display parameters safely
+                const displayType = item.type === 'series' ? 'TV Show' : 'Movie';
+
                 card.innerHTML = `
                     <div class="flex items-center space-x-3 min-w-0 flex-1">
                         <img src="${item.poster}" alt="${item.title}" class="w-10 h-14 rounded-lg object-cover bg-zinc-900 border border-zinc-800/80 shrink-0">
                         <div class="min-w-0 flex-1 space-y-0.5">
-                            <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
+                            <div class="flex items-center space-x-2">
+                                <h4 class="text-xs font-bold text-white truncate">${item.title}</h4>
+                                <span class="bg-brand/10 border border-brand/20 text-brand text-[8px] font-bold px-1.5 py-0.2 rounded uppercase shrink-0">${displayType}</span>
+                            </div>
                             <div class="flex items-center space-x-1.5 text-[9px] text-zinc-500 font-semibold">
                                 <span>${item.year}</span>
                                 <span>•</span>
@@ -720,7 +853,7 @@
             });
         }
 
-        // Pre-populate Master Form inputs for Editing
+        // Pre-populate Master Form inputs for Editing (TV Shows & nested Seasons builder supported)
         window.triggerEditRecord = function(type, id) {
             const item = type === 'movie' 
                 ? dbState.movies.find(m => String(m.id) === String(id)) 
@@ -731,6 +864,10 @@
             currentEditingId = item.id;
             selectedFormGenres = [...(item.genres || [])];
 
+            const mType = item.type || 'movie';
+            const typeSelect = document.getElementById('m-type');
+            typeSelect.value = mType;
+
             document.getElementById('m-title').value = item.title;
             document.getElementById('m-year').value = item.year;
             document.getElementById('m-runtime').value = item.runtime;
@@ -738,7 +875,23 @@
             document.getElementById('m-overview').value = item.overview;
             document.getElementById('m-poster').value = item.poster;
             document.getElementById('m-backdrop').value = item.backdrop;
-            document.getElementById('m-download').value = item.downloadUrl;
+
+            const movieFields = document.getElementById('movie-only-fields');
+            const seriesFields = document.getElementById('series-only-fields');
+
+            if (mType === 'series') {
+                movieFields.classList.add('hidden');
+                seriesFields.classList.remove('hidden');
+                document.getElementById('m-status').value = item.status || 'Returning Series';
+                
+                // Load seasons/episodes array data deep cloned into builder memory
+                seasonsData = item.seasons ? JSON.parse(JSON.stringify(item.seasons)) : [];
+                renderSeasonsBuilder();
+            } else {
+                movieFields.classList.remove('hidden');
+                seriesFields.classList.add('hidden');
+                document.getElementById('m-download').value = item.downloadUrl || '';
+            }
 
             document.getElementById('form-reset-btn').classList.remove('hidden');
             document.getElementById('form-heading').textContent = `Editing: ${item.title}`;
