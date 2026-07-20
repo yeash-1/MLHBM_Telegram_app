@@ -83,7 +83,7 @@
                 Contact Owner
             </a>
             
-            <button onclick="logoutAdmin()" class="w-full py-2 rounded bg-zinc-800 hover:bg-zinc-770 text-xs font-bold text-zinc-400">Sign Out</button>
+            <button onclick="logoutAdmin()" class="w-full py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-400">Sign Out</button>
         </div>
     </div>
 
@@ -215,7 +215,7 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div class="space-y-1">
                             <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Media Type</label>
-                            <div onclick="openSelectSheet('type-sheet')" id="select-type-btn" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 flex items-center justify-between cursor-pointer text-xs text-white">
+                            <div onclick="window.openSelectSheet('type-sheet')" id="select-type-btn" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 flex items-center justify-between cursor-pointer text-xs text-white">
                                 <span id="selected-type-label">Movie</span>
                                 <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -226,7 +226,7 @@
 
                         <div class="space-y-1">
                             <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Display Row</label>
-                            <div onclick="openSelectSheet('category-sheet')" id="select-category-btn" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 flex items-center justify-between cursor-pointer text-xs text-white">
+                            <div onclick="window.openSelectSheet('category-sheet')" id="select-category-btn" class="w-full h-10 bg-zinc-900/60 border border-zinc-800 rounded px-3 flex items-center justify-between cursor-pointer text-xs text-white">
                                 <span id="selected-category-label">Trending Now</span>
                                 <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -276,7 +276,7 @@
                         <div id="genres-checklist" class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto py-1 pr-1"></div>
                         <div class="flex space-x-2 pt-2 border-t border-zinc-800/60">
                             <input type="text" id="new-genre-input" class="flex-1 h-8 bg-zinc-950 border border-zinc-800 rounded px-2.5 text-[11px] text-white focus:outline-none" placeholder="Create new custom genre tag">
-                            <button type="button" onclick="createNewGenreTag()" class="px-3 h-8 rounded bg-zinc-800 hover:bg-zinc-750 text-xs font-bold text-zinc-200 border border-zinc-700/50">+ CREATE</button>
+                            <button type="button" onclick="window.createNewGenreTag()" class="px-3 h-8 rounded bg-zinc-800 hover:bg-zinc-750 text-xs font-bold text-zinc-200 border border-zinc-700/50">+ CREATE</button>
                         </div>
                     </div>
 
@@ -332,14 +332,14 @@
             <section id="view-users" class="view-panel hidden p-4 space-y-4">
                 <div class="flex items-center justify-between border-b border-zinc-900 pb-2">
                     <div class="flex p-0.5 bg-zinc-900 rounded-lg border border-zinc-800 max-w-[180px]">
-                        <button id="users-toggle-regular" onclick="switchUsersTab('users')" class="px-3 py-1 text-[10px] font-bold rounded-md bg-brand/20 text-brand border border-brand/40">Users</button>
-                        <button id="users-toggle-admins" onclick="switchUsersTab('admins')" class="px-3 py-1 text-[10px] font-bold rounded-md text-zinc-400 hover:text-white">Admins</button>
+                        <button id="users-toggle-regular" onclick="window.switchUsersTab('users')" class="px-3 py-1 text-[10px] font-bold rounded-md bg-brand/20 text-brand border border-brand/40">Users</button>
+                        <button id="users-toggle-admins" onclick="window.switchUsersTab('admins')" class="px-3 py-1 text-[10px] font-bold rounded-md text-zinc-400 hover:text-white">Admins</button>
                     </div>
                     <span id="users-total-badge" class="px-2 py-0.5 text-[10px] font-bold bg-zinc-900 border border-zinc-800 text-brand rounded-full">0 Users</span>
                 </div>
 
                 <div class="relative">
-                    <input type="text" id="users-search" oninput="searchUsers()" placeholder="Search users by name/ID..." class="w-full h-10 bg-zinc-900 border border-zinc-800 rounded-lg px-3 text-xs text-white focus:outline-none focus:border-brand/50">
+                    <input type="text" id="users-search" oninput="window.searchUsers()" placeholder="Search users by name/ID..." class="w-full h-10 bg-zinc-900 border border-zinc-800 rounded-lg px-3 text-xs text-white focus:outline-none focus:border-brand/50">
                 </div>
 
                 <div id="users-list" class="space-y-2 max-h-[60vh] overflow-y-auto pr-1">
@@ -355,13 +355,13 @@
                 </div>
 
                 <div class="relative">
-                    <input type="text" id="admin-posts-search" oninput="searchAdminPosts()" placeholder="Search posts..." class="w-full h-10 bg-zinc-900 border border-zinc-800 rounded-lg px-3 text-xs text-white focus:outline-none focus:border-brand/50">
+                    <input type="text" id="admin-posts-search" oninput="window.searchAdminPosts()" placeholder="Search posts..." class="w-full h-10 bg-zinc-900 border border-zinc-800 rounded-lg px-3 text-xs text-white focus:outline-none focus:border-brand/50">
                 </div>
 
                 <!-- Segmented Type Selector inside Admin posts tab -->
                 <div class="flex p-0.5 bg-zinc-900 rounded-lg border border-zinc-800/80">
-                    <button id="admin-posts-toggle-movies" onclick="switchAdminPostsType('movie')" class="flex-1 py-1 text-[10px] font-bold rounded-md bg-brand/20 text-brand border border-brand/40">Movies</button>
-                    <button id="admin-posts-toggle-series" onclick="switchAdminPostsType('series')" class="flex-1 py-1 text-[10px] font-bold rounded-md text-zinc-400 hover:text-white">TV Shows</button>
+                    <button id="admin-posts-toggle-movies" onclick="window.switchAdminPostsType('movie')" class="flex-1 py-1 text-[10px] font-bold rounded-md bg-brand/20 text-brand border border-brand/40">Movies</button>
+                    <button id="admin-posts-toggle-series" onclick="window.switchAdminPostsType('series')" class="flex-1 py-1 text-[10px] font-bold rounded-md text-zinc-400 hover:text-white">TV Shows</button>
                 </div>
 
                 <div id="admin-posts-list" class="space-y-2 max-h-[55vh] overflow-y-auto pr-1">
@@ -540,7 +540,7 @@
         </div>
     </div>
 
-    <!-- FULL SCREEN ADMIN DETAILS MANAGER (Image 5 style) -->
+    <!-- FULL SCREEN ADMIN DETAILS MANAGER (Image 5 style with Segmented Package UI) -->
     <div id="admin-detail-modal" class="fixed inset-0 z-50 bg-zinc-950 flex flex-col hidden select-none max-w-md mx-auto overflow-hidden">
         <div class="flex items-center justify-between px-4 py-4 border-b border-zinc-900 bg-zinc-950">
             <h3 class="text-sm font-bold text-white tracking-widest uppercase">Admin Profile Options</h3>
@@ -550,7 +550,7 @@
         </div>
 
         <div id="admin-detail-content" class="flex-1 overflow-y-auto p-4 space-y-5">
-            <!-- Dynamically populated to match Image 5 design -->
+            <!-- Dynamically populated to match Image 5 design without OS dropdown -->
         </div>
     </div>
 
@@ -605,11 +605,11 @@
         <div class="relative w-full max-w-xs p-6 bg-zinc-900 border border-zinc-800 rounded-2xl text-center space-y-5 shadow-2xl glass-panel">
             <div class="w-12 h-12 bg-brand/10 border border-brand/30 text-brand rounded-full flex items-center justify-center mx-auto text-xl font-bold">!</div>
             <div class="space-y-1">
-                <h4 id="confirm-modal-title" class="text-sm font-bold text-white">Remove Record permanently?</h4>
+                <h4 id="confirm-modal-title">Remove Record permanently?</h4>
                 <p id="confirm-modal-desc" class="text-xs text-zinc-500">This action can't be undone in sync memory.</p>
             </div>
             <div class="flex items-center space-x-3">
-                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 rounded-lg border border-zinc-700/50">Cancel</button>
+                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-750 text-xs font-bold text-zinc-300 rounded-lg border border-zinc-700/50">Cancel</button>
                 <button id="confirm-delete-btn" class="flex-1 py-2.5 bg-brand hover:bg-brand-hover text-xs font-bold text-white rounded-lg">Delete</button>
             </div>
         </div>
@@ -639,6 +639,7 @@
         let currentUsersTab = 'users'; 
         let currentAdminPostsType = 'movie'; 
         let adminPostsSearchQuery = '';
+        let selectedPackageDays = 30; // Custom tracking duration state variable
 
         const trackerOptions = {
             type: 'movie',
@@ -759,7 +760,7 @@
                     if (val) {
                         const cleanVal = val.replace('@', '').trim();
                         document.getElementById('expired-contact-btn').href = `https://t.me/${cleanVal}`;
-                        document.getElementById('expired-contact-btn').innerText = `Contact Owner (${val})`;
+                        document.getElementById('expired-contact-btn').innerText = `Contact Owner`;
                         const settingInput = document.getElementById('setting-support-contact');
                         if (settingInput) settingInput.value = val;
                     }
@@ -891,14 +892,14 @@
                 if (e.key === 'Enter') searchTMDB();
             });
 
-            // Parallel background loading for extreme snappiness (Promise Handshake)
+            // Parallel background loading for rapid snappiness (Promise Handshake)
             showToast("Syncing database...");
             await Promise.all([
                 refreshData(),
                 fetchRegisteredUsers(),
                 fetchTMDBDiscoverFeed()
             ]);
-            showToast("Database connected.");
+            showToast("Console is ready.");
         }
 
         // Tab Switching logic
@@ -957,6 +958,7 @@
         // --- FETCH DYNAMIC DATABASE WRAPPERS (CONCURRENT PARALLEL HANDSHAKE FOR EXTREME SPEED) ---
         async function refreshData() {
             try {
+                // Perform concurrent background database reads simultaneously
                 const [catRes, viewsRes, adminsRes] = await Promise.all([
                     fetch(`${CLOUD_DB_URL}/catalog.json`).then(r => r.json()),
                     fetch(`${CLOUD_DB_URL}/views.json`).then(r => r.json()),
@@ -1035,7 +1037,7 @@
             }).join('');
         }
 
-        // --- USERS VIEW (OWNER SEGMENTS FILTER) ---
+        // --- USERS VIEW ---
         function switchUsersTab(tabName) {
             currentUsersTab = tabName;
             const btnReg = document.getElementById('users-toggle-regular');
@@ -1137,7 +1139,7 @@
             renderUsersList(filtered);
         }
 
-        // --- SUB-PANEL MANAGEMENT FOR ADMIN PROMOTION (Image 5 style) ---
+        // --- SUB-PANEL MANAGEMENT FOR ADMIN PROMOTION ---
         async function promptPromoteAdmin(userId) {
             const user = globalUsers.find(u => String(u.id) === String(userId));
             if (!user) return;
@@ -1184,6 +1186,9 @@
             const admin = globalAdmins[adminId];
             if (!admin) return;
 
+            // Sync state tracker before rendering
+            selectedPackageDays = 30; 
+
             const daysLeft = Math.ceil((new Date(admin.expiryDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
             const activePosts = localCatalog.filter(i => i.uploadedBy && i.uploadedBy.id === adminId);
 
@@ -1202,14 +1207,15 @@
                 </div>
 
                 <div class="space-y-4 pt-1">
+                    <!-- Dropdown Select & ON/OFF Switch (Image 5 Style with Segmented Custom UI to replace native dropdowns) -->
                     <div class="flex items-center justify-between">
                         <div class="flex flex-col space-y-1">
                             <span class="text-[10px] text-zinc-500 font-black uppercase">Set Manual Package</span>
-                            <select id="admin-detail-days" class="bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-xs text-white focus:outline-none">
-                                <option value="30">30 Days</option>
-                                <option value="60">60 Days</option>
-                                <option value="90">90 Days</option>
-                            </select>
+                            <div class="grid grid-cols-3 gap-1.5 mt-1" id="admin-package-select-container">
+                                <button onclick="window.selectPackageDuration(30)" id="pkg-btn-30" class="py-2 px-3 rounded bg-brand text-[10px] font-bold text-white border border-brand/50">30 Days</button>
+                                <button onclick="window.selectPackageDuration(60)" id="pkg-btn-60" class="py-2 px-3 rounded bg-zinc-900 hover:bg-zinc-850 text-[10px] font-bold text-zinc-400 border border-zinc-800">60 Days</button>
+                                <button onclick="window.selectPackageDuration(90)" id="pkg-btn-90" class="py-2 px-3 rounded bg-zinc-900 hover:bg-zinc-850 text-[10px] font-bold text-zinc-400 border border-zinc-800">90 Days</button>
+                            </div>
                         </div>
                         
                         <div class="flex flex-col items-end space-y-1">
@@ -1255,8 +1261,22 @@
             document.getElementById('admin-detail-modal').classList.add('hidden');
         }
 
+        // Custom function to handle package duration button styles
+        function selectPackageDuration(days) {
+            selectedPackageDays = days;
+            const btn30 = document.getElementById('pkg-btn-30');
+            const btn60 = document.getElementById('pkg-btn-60');
+            const btn90 = document.getElementById('pkg-btn-90');
+
+            if (btn30 && btn60 && btn90) {
+                btn30.className = days === 30 ? "py-2 px-3 rounded bg-brand text-[10px] font-bold text-white border border-brand/50" : "py-2 px-3 rounded bg-zinc-900 hover:bg-zinc-850 text-[10px] font-bold text-zinc-400 border border-zinc-800";
+                btn60.className = days === 60 ? "py-2 px-3 rounded bg-brand text-[10px] font-bold text-white border border-brand/50" : "py-2 px-3 rounded bg-zinc-900 hover:bg-zinc-850 text-[10px] font-bold text-zinc-400 border border-zinc-800";
+                btn90.className = days === 90 ? "py-2 px-3 rounded bg-brand text-[10px] font-bold text-white border border-brand/50" : "py-2 px-3 rounded bg-zinc-900 hover:bg-zinc-850 text-[10px] font-bold text-zinc-400 border border-zinc-800";
+            }
+        }
+
         async function saveAdminDetailSettings(adminId) {
-            const selectDays = parseInt(document.getElementById('admin-detail-days').value);
+            const selectDays = selectedPackageDays;
             const targetExpiry = Date.now() + selectDays * 24 * 60 * 60 * 1000;
             const updatedDate = new Date(targetExpiry).toISOString();
 
@@ -1880,7 +1900,7 @@
                             <img class="w-8 h-8 rounded object-cover flex-shrink-0" src="${item.posterUrl}">
                             <span class="text-xs font-semibold text-zinc-300 truncate">${item.title}</span>
                         </div>
-                        <button onclick="toggleSliderPin('${item.id}', true)" type="button" class="px-2.5 py-1 text-[9px] font-bold bg-brand/10 hover:bg-brand/20 text-brand rounded border border-brand/20">PIN TO HERO</button>
+                        <button onclick="toggleSliderPin('${item.id}', true)" type="button" class="px-2.5 py-1 text-[9px] font-bold bg-zinc-800 hover:bg-zinc-750 text-zinc-300 rounded border border-zinc-700">PIN TO HERO</button>
                     </div>
                 `).join('');
             }
@@ -2290,6 +2310,7 @@
         window.closeProfileModal = closeProfileModal;
         window.viewAdminDetails = viewAdminDetails;
         window.closeAdminDetailModal = closeAdminDetailModal;
+        window.selectPackageDuration = selectPackageDuration;
         window.saveAdminDetailSettings = saveAdminDetailSettings;
         window.toggleAdminAccess = toggleAdminAccess;
         window.removeAdminIdentity = removeAdminIdentity;
