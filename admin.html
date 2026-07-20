@@ -83,7 +83,7 @@
                 Contact Owner
             </a>
             
-            <button onclick="logoutAdmin()" class="w-full py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-400">Sign Out</button>
+            <button onclick="logoutAdmin()" class="w-full py-2 rounded bg-zinc-800 hover:bg-zinc-770 text-xs font-bold text-zinc-400">Sign Out</button>
         </div>
     </div>
 
@@ -376,8 +376,8 @@
                 </div>
                 
                 <div class="space-y-4">
-                    <!-- Telegram Support setting configuration -->
-                    <div class="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col space-y-4">
+                    <!-- Telegram Support setting configuration (RESTRICTED ONLY TO OWNER) -->
+                    <div id="setting-support-card" class="hidden p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col space-y-4">
                         <div class="flex items-start space-x-3.5">
                             <div class="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -391,7 +391,7 @@
                         </div>
                         <div class="flex space-x-2">
                             <input type="text" id="setting-support-contact" class="flex-1 h-10 bg-zinc-950 border border-zinc-800 rounded px-3 text-xs text-white focus:outline-none focus:border-brand/60" placeholder="e.g. @subzerx">
-                            <button onclick="saveSupportContact()" class="px-4 h-10 rounded bg-brand text-xs font-bold text-white">Save</button>
+                            <button onclick="window.saveSupportContact()" class="px-4 h-10 rounded bg-brand text-xs font-bold text-white">Save</button>
                         </div>
                     </div>
 
@@ -609,7 +609,7 @@
                 <p id="confirm-modal-desc" class="text-xs text-zinc-500">This action can't be undone in sync memory.</p>
             </div>
             <div class="flex items-center space-x-3">
-                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-750 text-xs font-bold text-zinc-300 rounded-lg border border-zinc-700/50">Cancel</button>
+                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 rounded-lg border border-zinc-700/50">Cancel</button>
                 <button id="confirm-delete-btn" class="flex-1 py-2.5 bg-brand hover:bg-brand-hover text-xs font-bold text-white rounded-lg">Delete</button>
             </div>
         </div>
@@ -713,7 +713,7 @@
             const userIdStr = String(currentUser.id);
             document.getElementById('denied-telegram-id').innerText = userIdStr;
 
-            // Load manual support contact setting before render
+            // Load support username settings before render
             fetchSupportContact();
 
             if (userIdStr === OWNER_ID) {
@@ -727,14 +727,13 @@
                 if (response.ok) {
                     const adminData = await response.json();
                     if (adminData) {
-                        // Check if account is active & within manual subscription expiry date
                         const expiry = new Date(adminData.expiryDate).getTime();
                         if (adminData.status === 'active' && expiry > Date.now()) {
                             currentUserRole = 'admin';
                             setupWorkspace();
                             return;
                         } else {
-                            // Account is expired or toggled OFF (Inactive)
+                            // BLOCK ACCESS IMMEDIATELY AND SHOW SUPPORT POPUP IF EXPIRED
                             document.getElementById('auth-gate').classList.add('hidden');
                             document.getElementById('admin-workspace').classList.add('hidden');
                             document.getElementById('expired-screen').classList.remove('hidden');
@@ -751,7 +750,7 @@
             document.getElementById('access-denied-screen').classList.remove('hidden');
         }
 
-        // Fetch support contact telegram settings dynamically
+        // Fetch support contact telegram username settings
         async function fetchSupportContact() {
             try {
                 const response = await fetch(`${CLOUD_DB_URL}/settings/support_contact.json`);
@@ -791,7 +790,6 @@
                 showToast("Failed to save setting.");
             }
         }
-        window.saveSupportContact = saveSupportContact;
 
         async function authSubmit() {
             const inputId = document.getElementById('passcode-id').value.trim();
@@ -893,14 +891,14 @@
                 if (e.key === 'Enter') searchTMDB();
             });
 
-            // Parallel operations setup for rapid snappiness 
-            showToast("Connecting to cloud sync...");
+            // Parallel background loading for extreme snappiness (Promise Handshake)
+            showToast("Syncing database...");
             await Promise.all([
                 refreshData(),
                 fetchRegisteredUsers(),
                 fetchTMDBDiscoverFeed()
             ]);
-            showToast("Console is ready.");
+            showToast("Database connected.");
         }
 
         // Tab Switching logic
@@ -937,6 +935,12 @@
                 fetchRegisteredUsers();
             } else if (viewName === 'database') {
                 document.getElementById('json-io').value = JSON.stringify(localCatalog, null, 4);
+                // RENDER CONFIGURATION OPTION ONLY IF OWNER
+                if (currentUserRole === 'owner') {
+                    document.getElementById('setting-support-card').classList.remove('hidden');
+                } else {
+                    document.getElementById('setting-support-card').classList.add('hidden');
+                }
             }
         }
 
@@ -950,10 +954,9 @@
             document.getElementById('stat-members').innerText = membersCount;
         }
 
-        // --- FETCH DYNAMIC DATABASE WRAPPERS (PROMISE ALL PARALLEL FETCHES FOR EXTREME SPEED) ---
+        // --- FETCH DYNAMIC DATABASE WRAPPERS (CONCURRENT PARALLEL HANDSHAKE FOR EXTREME SPEED) ---
         async function refreshData() {
             try {
-                // Perform concurrent background database reads simultaneously
                 const [catRes, viewsRes, adminsRes] = await Promise.all([
                     fetch(`${CLOUD_DB_URL}/catalog.json`).then(r => r.json()),
                     fetch(`${CLOUD_DB_URL}/views.json`).then(r => r.json()),
@@ -1032,7 +1035,7 @@
             }).join('');
         }
 
-        // --- USERS VIEW ---
+        // --- USERS VIEW (OWNER SEGMENTS FILTER) ---
         function switchUsersTab(tabName) {
             currentUsersTab = tabName;
             const btnReg = document.getElementById('users-toggle-regular');
@@ -1134,7 +1137,7 @@
             renderUsersList(filtered);
         }
 
-        // --- SUB-PANEL MANAGEMENT FOR ADMIN PROMOTION ---
+        // --- SUB-PANEL MANAGEMENT FOR ADMIN PROMOTION (Image 5 style) ---
         async function promptPromoteAdmin(userId) {
             const user = globalUsers.find(u => String(u.id) === String(userId));
             if (!user) return;
@@ -1877,7 +1880,7 @@
                             <img class="w-8 h-8 rounded object-cover flex-shrink-0" src="${item.posterUrl}">
                             <span class="text-xs font-semibold text-zinc-300 truncate">${item.title}</span>
                         </div>
-                        <button onclick="toggleSliderPin('${item.id}', true)" type="button" class="px-2.5 py-1 text-[9px] font-bold bg-zinc-800 hover:bg-zinc-750 text-zinc-300 rounded border border-zinc-700">PIN TO HERO</button>
+                        <button onclick="toggleSliderPin('${item.id}', true)" type="button" class="px-2.5 py-1 text-[9px] font-bold bg-brand/10 hover:bg-brand/20 text-brand rounded border border-brand/20">PIN TO HERO</button>
                     </div>
                 `).join('');
             }
