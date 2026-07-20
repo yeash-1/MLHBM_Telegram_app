@@ -69,6 +69,24 @@
 </head>
 <body class="bg-zinc-950 text-zinc-100 font-sans h-full relative overflow-hidden">
 
+    <!-- ADMIN SUBSCRIPTION EXPIRED SCREEN -->
+    <div id="expired-screen" class="hidden fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center p-6 text-center">
+        <div class="absolute inset-0 bg-radial-gradient from-brand/10 to-transparent pointer-events-none"></div>
+        <div class="w-full max-w-xs p-6 rounded-2xl bg-zinc-900/60 border border-zinc-800 space-y-4 relative z-10 glass-panel">
+            <div class="w-14 h-14 bg-brand/10 border border-brand/30 text-brand rounded-full flex items-center justify-center mx-auto text-2xl font-bold">!</div>
+            <div class="space-y-1">
+                <h2 class="text-base font-bold text-white">Subscription Expired</h2>
+                <p class="text-xs text-zinc-400">Your Admin subscription package has expired. To renew your package, please contact the Owner.</p>
+            </div>
+            
+            <a id="expired-contact-btn" href="https://t.me/subzerx" target="_blank" class="w-full h-11 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-bold flex items-center justify-center shadow-lg uppercase tracking-wider">
+                Contact Owner
+            </a>
+            
+            <button onclick="logoutAdmin()" class="w-full py-2 rounded bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-400">Sign Out</button>
+        </div>
+    </div>
+
     <!-- ACCESS DENIED SCREEN -->
     <div id="access-denied-screen" class="hidden fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center p-6 text-center">
         <div class="absolute inset-0 bg-radial-gradient from-brand/10 to-transparent pointer-events-none"></div>
@@ -358,6 +376,25 @@
                 </div>
                 
                 <div class="space-y-4">
+                    <!-- Telegram Support setting configuration -->
+                    <div class="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col space-y-4">
+                        <div class="flex items-start space-x-3.5">
+                            <div class="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                                </svg>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-sm font-bold text-white tracking-tight">Telegram Support Settings</h3>
+                                <p class="text-[11px] text-zinc-500 leading-normal">Update the Telegram support username shown to expired admins.</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <input type="text" id="setting-support-contact" class="flex-1 h-10 bg-zinc-950 border border-zinc-800 rounded px-3 text-xs text-white focus:outline-none focus:border-brand/60" placeholder="e.g. @subzerx">
+                            <button onclick="saveSupportContact()" class="px-4 h-10 rounded bg-brand text-xs font-bold text-white">Save</button>
+                        </div>
+                    </div>
+
                     <!-- Export Card Mockup -->
                     <div class="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col space-y-4">
                         <div class="flex items-start space-x-3.5">
@@ -524,11 +561,11 @@
             <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mb-2"></div>
             <h4 class="text-xs font-bold tracking-widest text-zinc-400 uppercase text-center">Select Media Type</h4>
             <div class="space-y-2">
-                <button onclick="selectTypeOption('movie', 'Movie')" class="w-full p-4 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 flex items-center justify-between transition-colors">
+                <button onclick="window.selectTypeOption('movie', 'Movie')" class="w-full p-4 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 flex items-center justify-between transition-colors">
                     <span class="text-xs font-bold text-white">Movie</span>
                     <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="type-movie-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
-                <button onclick="selectTypeOption('series', 'TV Series')" class="w-full p-4 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 flex items-center justify-between transition-colors">
+                <button onclick="window.selectTypeOption('series', 'TV Series')" class="w-full p-4 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 flex items-center justify-between transition-colors">
                     <span class="text-xs font-bold text-white">TV Series</span>
                     <span class="w-4 h-4 rounded-full border border-zinc-800 p-0.5 flex items-center justify-center" id="type-series-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
@@ -542,19 +579,19 @@
             <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mb-2"></div>
             <h4 class="text-xs font-bold tracking-widest text-zinc-400 uppercase text-center">Select Display Category</h4>
             <div class="space-y-2">
-                <button onclick="selectCategoryOption('Trending Now')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-brand flex items-center justify-between transition-colors">
+                <button onclick="window.selectCategoryOption('Trending Now')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-brand flex items-center justify-between transition-colors">
                     <span class="text-xs font-bold text-white">Trending Now</span>
                     <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="cat-Trending-Now-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
-                <button onclick="selectCategoryOption('Popular Movies')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-brand flex items-center justify-between transition-colors">
+                <button onclick="window.selectCategoryOption('Popular Movies')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-brand flex items-center justify-between transition-colors">
                     <span class="text-xs font-bold text-white">Popular Movies</span>
                     <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="cat-Popular-Movies-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
-                <button onclick="selectCategoryOption('Popular Series')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-brand flex items-center justify-between transition-colors">
+                <button onclick="window.selectCategoryOption('Popular Series')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-brand flex items-center justify-between transition-colors">
                     <span class="text-xs font-bold text-white">Popular Series</span>
                     <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="cat-Popular-Series-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
-                <button onclick="selectCategoryOption('None')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-brand flex items-center justify-between transition-colors">
+                <button onclick="window.selectCategoryOption('None')" class="w-full p-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-brand flex items-center justify-between transition-colors">
                     <span class="text-xs font-bold text-white">None</span>
                     <span class="w-4 h-4 rounded-full border border-brand p-0.5 flex items-center justify-center" id="cat-None-radio"><span class="w-2 h-2 rounded-full bg-brand hidden"></span></span>
                 </button>
@@ -572,7 +609,7 @@
                 <p id="confirm-modal-desc" class="text-xs text-zinc-500">This action can't be undone in sync memory.</p>
             </div>
             <div class="flex items-center space-x-3">
-                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-zinc-300 rounded-lg border border-zinc-700/50">Cancel</button>
+                <button onclick="closeConfirmModal()" class="flex-1 py-2.5 bg-zinc-800 hover:bg-zinc-750 text-xs font-bold text-zinc-300 rounded-lg border border-zinc-700/50">Cancel</button>
                 <button id="confirm-delete-btn" class="flex-1 py-2.5 bg-brand hover:bg-brand-hover text-xs font-bold text-white rounded-lg">Delete</button>
             </div>
         </div>
@@ -676,6 +713,9 @@
             const userIdStr = String(currentUser.id);
             document.getElementById('denied-telegram-id').innerText = userIdStr;
 
+            // Load manual support contact setting before render
+            fetchSupportContact();
+
             if (userIdStr === OWNER_ID) {
                 currentUserRole = 'owner';
                 setupWorkspace();
@@ -686,11 +726,18 @@
                 const response = await fetch(`${CLOUD_DB_URL}/admins/${userIdStr}.json`);
                 if (response.ok) {
                     const adminData = await response.json();
-                    if (adminData && adminData.status === 'active') {
+                    if (adminData) {
+                        // Check if account is active & within manual subscription expiry date
                         const expiry = new Date(adminData.expiryDate).getTime();
-                        if (expiry > Date.now()) {
+                        if (adminData.status === 'active' && expiry > Date.now()) {
                             currentUserRole = 'admin';
                             setupWorkspace();
+                            return;
+                        } else {
+                            // Account is expired or toggled OFF (Inactive)
+                            document.getElementById('auth-gate').classList.add('hidden');
+                            document.getElementById('admin-workspace').classList.add('hidden');
+                            document.getElementById('expired-screen').classList.remove('hidden');
                             return;
                         }
                     }
@@ -703,6 +750,48 @@
             document.getElementById('admin-workspace').classList.add('hidden');
             document.getElementById('access-denied-screen').classList.remove('hidden');
         }
+
+        // Fetch support contact telegram settings dynamically
+        async function fetchSupportContact() {
+            try {
+                const response = await fetch(`${CLOUD_DB_URL}/settings/support_contact.json`);
+                if (response.ok) {
+                    const val = await response.json();
+                    if (val) {
+                        const cleanVal = val.replace('@', '').trim();
+                        document.getElementById('expired-contact-btn').href = `https://t.me/${cleanVal}`;
+                        document.getElementById('expired-contact-btn').innerText = `Contact Owner (${val})`;
+                        const settingInput = document.getElementById('setting-support-contact');
+                        if (settingInput) settingInput.value = val;
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function saveSupportContact() {
+            const val = document.getElementById('setting-support-contact').value.trim();
+            if (!val) {
+                showToast("Please enter a username.");
+                return;
+            }
+            const cleanVal = val.startsWith('@') ? val : '@' + val;
+
+            try {
+                showToast("Saving support setting...");
+                await fetch(`${CLOUD_DB_URL}/settings/support_contact.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cleanVal)
+                });
+                showToast("Support setting saved!");
+                fetchSupportContact();
+            } catch (err) {
+                showToast("Failed to save setting.");
+            }
+        }
+        window.saveSupportContact = saveSupportContact;
 
         async function authSubmit() {
             const inputId = document.getElementById('passcode-id').value.trim();
@@ -759,6 +848,7 @@
             document.getElementById('admin-workspace').classList.add('hidden');
             document.getElementById('profile-modal').classList.add('hidden');
             document.getElementById('access-denied-screen').classList.add('hidden');
+            document.getElementById('expired-screen').classList.add('hidden');
             document.getElementById('auth-gate').classList.remove('hidden');
             document.getElementById('passcode-id').value = '';
             document.getElementById('passcode-password').value = '';
@@ -964,7 +1054,7 @@
                 if (!response.ok) throw new Error();
                 const data = await response.json();
 
-                globalUsers = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).reverse() : [];
+                globalUsers = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
                 document.getElementById('users-total-badge').innerText = `${globalUsers.length} Users`;
                 renderUsersAndAdminsList();
                 updateDashboardStats();
@@ -1046,7 +1136,6 @@
 
         // --- SUB-PANEL MANAGEMENT FOR ADMIN PROMOTION ---
         async function promptPromoteAdmin(userId) {
-            // Locate user directly in memory cached list to avoid UI breaking strings
             const user = globalUsers.find(u => String(u.id) === String(userId));
             if (!user) return;
 
@@ -1146,7 +1235,7 @@
                                 <div class="p-2.5 bg-zinc-900 border border-zinc-850 rounded-xl flex items-center justify-between">
                                     <span class="text-[10px] text-white truncate max-w-[150px] font-semibold">${p.title}</span>
                                     <div class="flex space-x-1">
-                                        <button onclick="window.editRecord('${p.id}'); window.closeAdminDetailModal(); window.closeProfileModal();" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-700 text-[9px] font-bold text-zinc-300 rounded border border-zinc-700">Edit</button>
+                                        <button onclick="window.editRecord('${p.id}'); window.closeAdminDetailModal(); window.closeProfileModal();" class="px-2 py-1 bg-zinc-800 hover:bg-zinc-750 text-[9px] font-bold text-zinc-300 rounded border border-zinc-700">Edit</button>
                                         <button onclick="window.executeAdminPostDelete('${p.id}'); window.closeAdminDetailModal();" class="px-2 py-1 bg-brand/10 hover:bg-brand/20 text-[9px] font-bold text-brand rounded border border-brand/20">Delete</button>
                                     </div>
                                 </div>
@@ -1869,7 +1958,7 @@
             reader.readAsText(file);
         }
 
-        // --- DELETE CONFIRMATION & REQUESTS ---
+        // --- DELETE CONFIRMATION ---
         function triggerDelete(id) {
             const item = localCatalog.find(i => i.id === id);
             if (!item) return;
@@ -1916,12 +2005,11 @@
             }
         }
 
-        // --- CUSTOM SELECT SHEETS (COMPLETELY ROBUST OVERWRITE) ---
+        // --- CUSTOM SELECT SHEET ANIMATIONS ---
         function openSelectSheet(sheetId) {
             const el = document.getElementById(sheetId);
             if (!el) return;
             el.classList.remove('hidden');
-            // Safely target the sliding wrapper pane directly
             const panel = el.querySelector('.glass-panel') || el.children[1];
             if (panel) {
                 panel.classList.remove('translate-y-full');
@@ -1999,7 +2087,7 @@
             });
         }
 
-        // --- SEASONS & EPISODES BUILDER (STABLE DOM EVENT-DRIVEN IMPLEMENTATION) ---
+        // --- SEASONS & EPISODES BUILDER ---
         function addSeasonRecord() {
             seasonsList.push({
                 name: `Season ${seasonsList.length + 1}`,
