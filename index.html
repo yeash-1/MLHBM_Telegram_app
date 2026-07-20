@@ -938,7 +938,7 @@
                 }
 
                 updateDetailsModalButtons();
-                incrementViewCount(itemId); 
+                incrementViewCount(item.id); 
 
                 const m = document.getElementById('details-modal');
                 m.classList.remove('hidden');
@@ -972,7 +972,7 @@
                         </div>
                     </div>
                     <a href="${ep.downloadUrl || '#'}" target="_blank" class="w-8 h-8 rounded-full bg-brand/10 border border-brand/50 flex items-center justify-center text-brand flex-shrink-0 active:scale-95 transition-all">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003 3h-10a3 3 0 00-3-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     </a>
                 `;
                 targetContainer.appendChild(epCard);
@@ -1074,12 +1074,40 @@
 
             // Fetch dynamic cloud catalog database securely from Firebase Realtime Database
             try {
-                const response = await fetch(`${CLOUD_DB_URL}/catalog.json`);
-                if (!response.ok) throw new Error();
-                const data = await response.json();
-                
-                // Map Firebase objects to array safely
-                mediaAssets = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : FALLBACK_DATA;
+                // Fetch catalog AND admin status synchronously in parallel to avoid browser caching of deleted posts!
+                const cacheBuster = `?nocache=${Date.now()}`;
+                const [catalogRes, adminsRes] = await Promise.all([
+                    fetch(`${CLOUD_DB_URL}/catalog.json${cacheBuster}`),
+                    fetch(`${CLOUD_DB_URL}/admins.json${cacheBuster}`)
+                ]);
+
+                if (!catalogRes.ok) throw new Error("Catalog load failed.");
+                const catalogData = await catalogRes.json();
+                const activeAdminsMap = adminsRes.ok ? (await adminsRes.json() || {}) : {};
+
+                const rawAssets = catalogData ? Object.keys(catalogData).map(key => ({ id: key, ...catalogData[key] })) : FALLBACK_DATA;
+
+                // --- DYNAMIC SUBSCRIPTION ENFORCEMENT & HARD DELETION CASCADE ---
+                // Silently omit posts belonging to expired or disabled admins from the UI list in real-time
+                mediaAssets = rawAssets.filter(item => {
+                    if (!item.uploadedBy || item.uploadedBy.id === OWNER_ID) {
+                        return true; // Always display posts uploaded by the Owner
+                    }
+
+                    const uploaderId = item.uploadedBy.id;
+                    const admin = activeAdminsMap[uploaderId];
+                    if (!admin) {
+                        return false; // Skip if admin account does not exist in database
+                    }
+
+                    const expiryTime = new Date(admin.expiryDate).getTime();
+                    const isExpired = expiryTime < Date.now();
+                    const isActive = admin.status === 'active';
+
+                    // Only show post if admin is active and subscription is unexpired
+                    return isActive && !isExpired;
+                });
+
             } catch (err) {
                 console.warn("Using default static fallback database...", err);
                 mediaAssets = FALLBACK_DATA;
