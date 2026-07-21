@@ -537,8 +537,9 @@
 
         const trackerOptions = { type: 'movie', category: 'Trending Now' };
 
+        // DOMContentLoaded এ sessionStorage চেক করা হবে
         document.addEventListener('DOMContentLoaded', () => {
-            const cachedUser = localStorage.getItem('mlhbm_user_session');
+            const cachedUser = sessionStorage.getItem('mlhbm_user_session');
             if (cachedUser) {
                 currentUser = JSON.parse(cachedUser);
                 checkAuthorization();
@@ -643,7 +644,7 @@
 
             if (inputPass === MASTER_PASSCODE && (!inputId || inputId === OWNER_ID || inputId.toLowerCase() === 'owner')) {
                 currentUser = { id: OWNER_ID, first_name: "Developer", last_name: "Tester", username: "owner_dev" };
-                localStorage.setItem('mlhbm_user_session', JSON.stringify(currentUser));
+                sessionStorage.setItem('mlhbm_user_session', JSON.stringify(currentUser));
                 document.getElementById('auth-gate').classList.add('hidden');
                 checkAuthorization();
                 return;
@@ -656,7 +657,7 @@
                     const admin = await response.json();
                     if (admin && admin.passcode === inputPass) {
                         currentUser = { id: admin.id, first_name: admin.name, last_name: "", username: admin.username };
-                        localStorage.setItem('mlhbm_user_session', JSON.stringify(currentUser));
+                        sessionStorage.setItem('mlhbm_user_session', JSON.stringify(currentUser));
                         document.getElementById('auth-gate').classList.add('hidden');
                         checkAuthorization();
                         return;
@@ -667,7 +668,7 @@
         }
 
         function logoutAdmin() {
-            localStorage.removeItem('mlhbm_user_session'); 
+            sessionStorage.removeItem('mlhbm_user_session'); 
             currentUser = null;
             currentUserRole = 'guest';
             document.getElementById('admin-workspace').classList.add('hidden');
@@ -1496,7 +1497,6 @@
             });
         }
 
-        // --- NEW IMPLEMENTATIONS FOR THE BLANK SCREEN ISSUE ---
         function openSelectSheet(sheetId) {
             const el = document.getElementById(sheetId);
             if (el) el.classList.remove('hidden');
